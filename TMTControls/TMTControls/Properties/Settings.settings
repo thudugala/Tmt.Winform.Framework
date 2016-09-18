@@ -1,0 +1,60 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TMTControls.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PanelLabelBackColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">CornflowerBlue</Value>
+    </Setting>
+    <Setting Name="PanelLabelForeColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="DataGridViewBackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="DataGridViewDefaultCellBackColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="DataGridViewDefaultCellForeColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">ControlText</Value>
+    </Setting>
+    <Setting Name="DataGridViewDefaultCellSelectionBackColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Highlight</Value>
+    </Setting>
+    <Setting Name="DataGridViewDefaultCellSelectionForeColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">HighlightText</Value>
+    </Setting>
+    <Setting Name="TileButtonBackColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">DimGray</Value>
+    </Setting>
+    <Setting Name="TileButtonForeColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="LogInUserId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ththlk</Value>
+    </Setting>
+    <Setting Name="LogInPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">tmt242001</Value>
+    </Setting>
+    <Setting Name="LDAPAuth" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ServerURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">http://localhost:49235</Value>
+    </Setting>
+    <Setting Name="WebAPIName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">EasyBillWebAPI.asmx</Value>
+    </Setting>
+    <Setting Name="LDAPServerURL" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.16.1.168:3268</Value>
+    </Setting>
+    <Setting Name="DatabaseName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DatabaseServerName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DatabaseServerPort" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

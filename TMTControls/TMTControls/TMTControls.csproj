@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4C0973FC-B348-4CE3-AC39-6DAAC4F3B174}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TMTControls</RootNamespace>
+    <AssemblyName>TMTControls</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PhoneNumberFormatter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\food_menu_gen\trunk\IfsFoodMenuGenerator\packages\PhoneNumberFormatter.1.0.4\lib\net45\PhoneNumberFormatter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="LovEvent.cs" />
+    <Compile Include="MaskValidateType.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="PanelBackgroundWorke.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="TMTButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTButtonLov.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTChart.Designer.cs">
+      <DependentUpon>TMTChart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTColumnManagerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTColumnManagerDialog.Designer.cs">
+      <DependentUpon>TMTColumnManagerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTCurrencyBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTDatabaseLoginDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTDatabaseLoginDialog.Designer.cs">
+      <DependentUpon>TMTDatabaseLoginDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTDataGrid\TMTDataGridView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTDataGrid\TMTDataGridViewButtonColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewCalendarCell.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewCalendarColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewCalendarEditingControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTDataGrid\TMTDataGridViewCheckBoxColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewComboBoxColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewDataSourceInformation.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewImageColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownCell.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownEditingControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTDataGrid\TMTDataGridViewReadOnlyTextBoxColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewTextBoxColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxCell.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxEditingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTDataSourceInformation.cs" />
+    <Compile Include="TMTDateTimePicker.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTDateTimePickerForSearch.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTDateTimePickerForSearch.Designer.cs">
+      <DependentUpon>TMTDateTimePickerForSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTDateTimePickerDropDown.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTDateTimePickerDropDown.Designer.cs">
+      <DependentUpon>TMTDateTimePickerDropDown.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTDialog.Designer.cs">
+      <DependentUpon>TMTDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTExtendard.cs" />
+    <Compile Include="TMTLOVDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTLOVDialog.Designer.cs">
+      <DependentUpon>TMTLOVDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTMultipleColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelForm.Designer.cs">
+      <DependentUpon>TMTPanelForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelHome.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelHome.Designer.cs">
+      <DependentUpon>TMTPanelHome.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelTable.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelTable.Designer.cs">
+      <DependentUpon>TMTPanelTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelV2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\TMTPanelV2.Designer.cs">
+      <DependentUpon>TMTPanelV2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTSearchDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTSearchDialog.Designer.cs">
+      <DependentUpon>TMTSearchDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTTextButtonBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTTextButtonBoxBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTTextButtonBoxBase.Designer.cs">
+      <DependentUpon>TMTTextButtonBoxBase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTTileButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTUserControl.Designer.cs">
+      <DependentUpon>TMTUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTWebAPILoginDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTWebAPILoginDialog.Designer.cs">
+      <DependentUpon>TMTWebAPILoginDialog.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTButtonLov.resx">
+      <DependentUpon>TMTButtonLov.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTChart.resx">
+      <DependentUpon>TMTChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTColumnManagerDialog.resx">
+      <DependentUpon>TMTColumnManagerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDatabaseLoginDialog.resx">
+      <DependentUpon>TMTDatabaseLoginDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDataGrid\TMTDataGridView.resx">
+      <DependentUpon>TMTDataGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDataGrid\TMTDataGridViewCalendarEditingControl.resx">
+      <DependentUpon>TMTDataGridViewCalendarEditingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDataGrid\TMTDataGridViewTextButtonBoxEditingControl.resx">
+      <DependentUpon>TMTDataGridViewTextButtonBoxEditingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDateTimePickerForSearch.resx">
+      <DependentUpon>TMTDateTimePickerForSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDateTimePickerDropDown.resx">
+      <DependentUpon>TMTDateTimePickerDropDown.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDialog.resx">
+      <DependentUpon>TMTDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTLOVDialog.resx">
+      <DependentUpon>TMTLOVDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTPanels\TMTPanelForm.resx">
+      <DependentUpon>TMTPanelForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTPanels\TMTPanelHome.resx">
+      <DependentUpon>TMTPanelHome.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTPanels\TMTPanelTable.resx">
+      <DependentUpon>TMTPanelTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTPanels\TMTPanelV2.resx">
+      <DependentUpon>TMTPanelV2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTSearchDialog.resx">
+      <DependentUpon>TMTSearchDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTTextButtonBox.resx">
+      <DependentUpon>TMTTextButtonBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTTextButtonBoxBase.resx">
+      <DependentUpon>TMTTextButtonBoxBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTUserControl.resx">
+      <DependentUpon>TMTUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTWebAPILoginDialog.resx">
+      <DependentUpon>TMTWebAPILoginDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\back.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\searchTitle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\login.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\list.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\columns.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\reloadV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\removeV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\saveV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\searchV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\addV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\duplicateV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\columnsV2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\clean48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CountryCodes.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
