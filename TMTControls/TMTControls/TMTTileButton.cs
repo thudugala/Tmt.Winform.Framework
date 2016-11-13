@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls
@@ -25,6 +26,19 @@ namespace TMTControls
             this.FlatAppearance.BorderColor = this.BackColor;
             this.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+        }
+
+        [DefaultValue(ContentAlignment.BottomCenter)]
+        public override ContentAlignment TextAlign
+        {
+            get
+            {
+                return base.TextAlign;
+            }
+            set
+            {
+                base.TextAlign = value;
+            }
         }
 
         [Category("TMT")]

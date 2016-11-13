@@ -178,5 +178,35 @@ namespace TMTControls
             // Return the week of our adjusted day
             return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
         }
+
+        public static List<DataGridViewRow> GetSelectedRowList(this DataGridView table)
+        {
+            List<DataGridViewRow> rowList = new List<DataGridViewRow>();
+
+            var selectedCellsRowIndexes = table.SelectedCells.Cast<DataGridViewCell>().Select(c => c.RowIndex);
+            var selectedRowIndexes = new HashSet<int>(selectedCellsRowIndexes.Distinct());
+            if (selectedRowIndexes.Count() > 0)
+            {
+                rowList = table.Rows.Cast<DataGridViewRow>().Where(r => selectedRowIndexes.Contains(r.Index)).ToList();
+            }
+            return rowList;
+        }
+
+        public static string IsSameRowTypeSelected(this DataGridView table, string columnName)
+        {
+            string selectedType = string.Empty;
+
+            var selectedRowList = table.GetSelectedRowList();
+            if (selectedRowList.Count() > 0)
+            {
+                var statusGroups = selectedRowList.Select(r => r.Cells[columnName].Value).GroupBy(s => s.ToString());
+                if (statusGroups.Count() == 1)
+                {
+                    selectedType = statusGroups.First().Key;
+                }
+            }
+
+            return selectedType;
+        }
     }
 }

@@ -50,7 +50,7 @@ namespace TMTControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Error Showing Calendar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ShowCalendar);
             }
         }
 
@@ -88,7 +88,7 @@ namespace TMTControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Error setting sellected date", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_SetSelectedDate);
             }
         }
 
@@ -104,7 +104,7 @@ namespace TMTControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, "Error Closing Calendar", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_CloseCalendar);
             }
         }
     }

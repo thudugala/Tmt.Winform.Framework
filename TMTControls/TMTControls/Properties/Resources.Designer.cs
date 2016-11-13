@@ -139,6 +139,16 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap error {
+            get {
+                object obj = ResourceManager.GetObject("error", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error adding new.
         /// </summary>
         public static string ERROR_AddingNew {
@@ -189,6 +199,15 @@ namespace TMTControls.Properties {
         public static string ERROR_ClearingData {
             get {
                 return ResourceManager.GetString("ERROR_ClearingData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Closing Calendar.
+        /// </summary>
+        public static string ERROR_CloseCalendar {
+            get {
+                return ResourceManager.GetString("ERROR_CloseCalendar", resourceCulture);
             }
         }
         
@@ -310,6 +329,15 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Removing.
+        /// </summary>
+        public static string ERROR_Removing {
+            get {
+                return ResourceManager.GetString("ERROR_Removing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error saving data.
         /// </summary>
         public static string ERROR_SavingData {
@@ -324,6 +352,24 @@ namespace TMTControls.Properties {
         public static string ERROR_SavingDataValidation {
             get {
                 return ResourceManager.GetString("ERROR_SavingDataValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error setting selected date.
+        /// </summary>
+        public static string ERROR_SetSelectedDate {
+            get {
+                return ResourceManager.GetString("ERROR_SetSelectedDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Showing Calendar.
+        /// </summary>
+        public static string ERROR_ShowCalendar {
+            get {
+                return ResourceManager.GetString("ERROR_ShowCalendar", resourceCulture);
             }
         }
         

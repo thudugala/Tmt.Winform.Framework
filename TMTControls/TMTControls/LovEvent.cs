@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows.Forms;
 
 namespace TMTControls
 {
@@ -19,12 +20,18 @@ namespace TMTControls
 
     public class LovLoadingEventArgs : EventArgs
     {
-        public bool LoadAll { get; set; }
+        public bool IsValidate { get; set; }
 
         public DataTable LovDataTable { get; set; }
 
         public string PrimaryColumnName { get; set; }
 
         public int RowIndex { get; set; }
+
+        public DataGridViewRow Row { get; set; }
+
+        public DataTable SearchConditionTable { get; set; }
+
+        public string LovViewName { get; set; }
     }
 }

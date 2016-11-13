@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls
@@ -45,9 +44,9 @@ namespace TMTControls
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // 
+            //
             // TMTButtonLov
-            // 
+            //
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -60,7 +59,6 @@ namespace TMTControls
             this.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.UseVisualStyleBackColor = false;
             this.ResumeLayout(false);
-
         }
     }
 }

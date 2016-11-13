@@ -91,7 +91,7 @@ namespace TMTControls
             {
                 if (e.Error != null)
                 {
-                    MessageBox.Show(this, e.Error.Message, Properties.Resources.ERROR_BW_Issue, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    TMTErrorDialog.Show(this, e.Error, Properties.Resources.ERROR_BW_Issue);
                 }
                 else
                 {
@@ -105,7 +105,7 @@ namespace TMTControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_BW_Issue, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_BW_Issue);
             }
             finally
             {

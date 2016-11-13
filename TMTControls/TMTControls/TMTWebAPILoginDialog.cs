@@ -71,7 +71,7 @@ namespace TMTControls
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "LDAP:" + ex.Message, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoginDialog_Header);
                     return;
                 }
             }

@@ -133,7 +133,7 @@ namespace TMTControls.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ththlk")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LogInUserId {
             get {
                 return ((string)(this["LogInUserId"]));
@@ -145,7 +145,7 @@ namespace TMTControls.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("tmt242001")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LogInPassword {
             get {
                 return ((string)(this["LogInPassword"]));
@@ -169,7 +169,7 @@ namespace TMTControls.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:49235")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string ServerURL {
             get {
                 return ((string)(this["ServerURL"]));
@@ -181,7 +181,7 @@ namespace TMTControls.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("EasyBillWebAPI.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string WebAPIName {
             get {
                 return ((string)(this["WebAPIName"]));
@@ -193,7 +193,7 @@ namespace TMTControls.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10.16.1.168:3268")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string LDAPServerURL {
             get {
                 return ((string)(this["LDAPServerURL"]));
@@ -229,7 +229,7 @@ namespace TMTControls.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string DatabaseServerPort {
             get {
                 return ((string)(this["DatabaseServerPort"]));

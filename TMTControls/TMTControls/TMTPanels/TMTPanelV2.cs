@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows.Forms;
 
 namespace TMTControls.TMTPanels
 {
@@ -30,7 +29,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_AddingNew, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_AddingNew);
             }
         }
 
@@ -42,7 +41,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_ClearingData, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ClearingData);
             }
         }
 
@@ -54,7 +53,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_ColumnManager, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ColumnManager);
             }
         }
 
@@ -66,7 +65,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_AddingNew, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_Removing);
             }
         }
 
@@ -78,7 +77,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_DuplicatingNew, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_DuplicatingNew);
             }
         }
 
@@ -90,7 +89,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_ReLoadingData, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ReLoadingData);
             }
         }
 
@@ -102,7 +101,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_SavingData, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_SavingData);
             }
         }
 
@@ -117,7 +116,7 @@ namespace TMTControls.TMTPanels
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_LoadingData, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoadingData);
             }
         }
 
@@ -135,8 +134,6 @@ namespace TMTControls.TMTPanels
         private void TMTPanel_DataLoaded(object sender, EventArgs e)
         {
             tmtButtonReload.Enabled = true;
-            tmtButtonDuplicate.Enabled = true;
-            tmtButtonDelete.Enabled = true;
             tmtButtonClear.Enabled = true;
 
             tmtButtonSave.Enabled = false;

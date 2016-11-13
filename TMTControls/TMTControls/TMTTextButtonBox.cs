@@ -129,26 +129,25 @@ namespace TMTControls
 
         [Category("Design"), DefaultValue(MaskValidateType.None)]
         public MaskValidateType ValidateType { get; set; }
-                
+
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            // 
+            //
             // InnerTextBox
-            // 
+            //
             this.InnerTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.InnerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.InnerTextBox.Size = new System.Drawing.Size(172, 26);
             this.InnerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.InnerTextBox_Validating);
-            // 
+            //
             // TMTTextButtonBox
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.Name = "TMTTextButtonBox";
             this.Size = new System.Drawing.Size(200, 26);
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         private void InnerTextBox_Validating(object sender, CancelEventArgs e)

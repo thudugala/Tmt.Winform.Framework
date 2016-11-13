@@ -16,7 +16,7 @@ namespace TMTControls
         public PanelBackgroundWorkeArg()
         {
             this.ChangedDataSet = new DataSet();
-            this.ChildViewList = new List<KeyValuePair<string, DataTable>>();
+            this.ChildViewList = new List<PanelBackgroundWorkeArg>();
             this.SaveResults = new List<int>();
             this.IsCaseSensitive = true;
         }
@@ -27,11 +27,14 @@ namespace TMTControls
         public List<string> HeaderViewColumnDbNameList { get; set; }
         public DataTable HeaderSearchConditionTable { get; set; }
         public string HeaderViewName { get; set; }
+        public string DefaultWhereStatment { get; set; }
 
-        public List<KeyValuePair<string, DataTable>> ChildViewList { get; private set; }
+        public List<PanelBackgroundWorkeArg> ChildViewList { get; private set; }
 
         public List<int> SaveResults { get; private set; }
         public bool IsCaseSensitive { get; set; }
         public int? ViewRowCount { get; set; }
+
+        public HashSet<int> SelectedRowIndexList { get; set; }
     }
 }

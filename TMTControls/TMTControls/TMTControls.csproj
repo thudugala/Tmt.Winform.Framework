@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\..\..\resciit\branches\MySnapSellAdmin\packages\NLog.4.3.10\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PhoneNumberFormatter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\..\food_menu_gen\trunk\IfsFoodMenuGenerator\packages\PhoneNumberFormatter.1.0.4\lib\net45\PhoneNumberFormatter.dll</HintPath>
       <Private>True</Private>
@@ -146,6 +150,12 @@
     <Compile Include="TMTDialog.Designer.cs">
       <DependentUpon>TMTDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="TMTErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTErrorDialog.Designer.cs">
+      <DependentUpon>TMTErrorDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TMTExtendard.cs" />
     <Compile Include="TMTLOVDialog.cs">
       <SubType>Form</SubType>
@@ -221,6 +231,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTButtonLov.resx">
       <DependentUpon>TMTButtonLov.cs</DependentUpon>
@@ -251,6 +262,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TMTDialog.resx">
       <DependentUpon>TMTDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTErrorDialog.resx">
+      <DependentUpon>TMTErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTLOVDialog.resx">
       <DependentUpon>TMTLOVDialog.cs</DependentUpon>
@@ -285,6 +299,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
@@ -334,6 +354,7 @@
     <Content Include="CountryCodes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

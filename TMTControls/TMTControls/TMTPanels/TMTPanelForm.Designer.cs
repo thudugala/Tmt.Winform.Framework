@@ -120,6 +120,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.tmtNavigator);
             this.Name = "TMTPanelForm";
+            this.Load += new System.EventHandler(this.TMTPanelForm_Load);
             this.Controls.SetChildIndex(this.labelPanelName, 0);
             this.Controls.SetChildIndex(this.tmtNavigator, 0);
             this.Controls.SetChildIndex(this.panelMain, 0);

@@ -9,6 +9,7 @@ namespace TMTControls.TMTDataGrid
             this.LovViewName = string.Empty;
             this.KeyColum = false;
             this.MandatoryColum = false;
+            this.EditAllowed = false;
             this.IsFuntion = false;
         }
 
@@ -20,6 +21,9 @@ namespace TMTControls.TMTDataGrid
 
         [DefaultValue(false)]
         public bool MandatoryColum { get; set; }
+
+        [DefaultValue(false)]
+        public bool EditAllowed { get; set; }
 
         [DefaultValue(false)]
         public bool IsFuntion { get; set; }

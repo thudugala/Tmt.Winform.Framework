@@ -149,6 +149,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "TMTPanelTable";
+            this.Load += new System.EventHandler(this.TMTPanelTable_Load);
             this.panelControlContainer.ResumeLayout(false);
             this.panelButtons.ResumeLayout(false);
             this.panelButtons.PerformLayout();

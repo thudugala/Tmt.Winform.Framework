@@ -30,22 +30,22 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="LogInUserId" Type="System.String" Scope="User">
-      <Value Profile="(Default)">ththlk</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LogInPassword" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tmt242001</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LDAPAuth" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ServerURL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://localhost:49235</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="WebAPIName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">EasyBillWebAPI.asmx</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LDAPServerURL" Type="System.String" Scope="User">
-      <Value Profile="(Default)">10.16.1.168:3268</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DatabaseName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -54,7 +54,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DatabaseServerPort" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

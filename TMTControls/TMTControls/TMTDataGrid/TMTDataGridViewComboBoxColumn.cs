@@ -57,6 +57,8 @@ namespace TMTControls.TMTDataGrid
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+            that.DisplayMember = this.DisplayMember;
+            that.ValueMember = this.ValueMember;
 
             return that;
         }

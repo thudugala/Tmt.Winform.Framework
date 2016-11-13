@@ -139,7 +139,7 @@ namespace TMTControls
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_FilteringLovValues, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_FilteringLovValues);
             }
         }
 

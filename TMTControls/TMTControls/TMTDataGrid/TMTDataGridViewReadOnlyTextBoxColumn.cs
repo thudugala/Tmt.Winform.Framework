@@ -49,6 +49,32 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory
+        {
+            get
+            {
+                return this.GetDataSourceInformation().MandatoryColum;
+            }
+            set
+            {
+                this.GetDataSourceInformation().MandatoryColum = value;
+            }
+        }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyEditAllowed
+        {
+            get
+            {
+                return this.GetDataSourceInformation().EditAllowed;
+            }
+            set
+            {
+                this.GetDataSourceInformation().EditAllowed = value;
+            }
+        }
+
         [Category("Data"), DefaultValue(TypeCode.String)]
         public TypeCode DataPropertyType
         {
@@ -86,6 +112,8 @@ namespace TMTControls.TMTDataGrid
 
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+            that.DataPropertyMandatory = this.DataPropertyMandatory;
+            that.DataPropertyEditAllowed = this.DataPropertyEditAllowed;
             that.DataPropertyIsFuntion = this.DataPropertyIsFuntion;
 
             return that;

@@ -16,6 +16,24 @@ namespace TMTControls.TMTPanels
             tmtButtonColumnManager.Enabled = true;
         }
 
+        private void TMTPanelTable_Load(object sender, EventArgs e)
+        {
+            this.InitializeTableControls();
+
+            tmtButtonAdd.Enabled = tmtDataGridViewMain.AddDataAllowed;
+            tmtButtonDuplicate.Enabled = tmtDataGridViewMain.AddDataAllowed;
+            tmtButtonDelete.Enabled = tmtDataGridViewMain.DeleteDataAllowed;
+        }
+
+        public void LoadWindowWithDataWhenActive()
+        {
+            if (tmtDataGridViewMain.LoadDataWhenActive)
+            {
+                this.SearchDialog.DialogResult = DialogResult.Ignore;
+                this.LoadData();
+            }
+        }
+
         public override void ClearData()
         {
             tmtDataGridViewMain.DataSourceTable.Clear();
@@ -104,6 +122,7 @@ namespace TMTControls.TMTPanels
                 arg.HeaderViewName = tmtDataGridViewMain.ViewName;
                 arg.HeaderViewColumnDbNameList = tmtDataGridViewMain.GetViewColumnDbNameDictionary().Keys.ToList();
                 arg.ViewRowCount = tmtDataGridViewMain.ViewRowCount;
+                arg.DefaultWhereStatment = tmtDataGridViewMain.DefaultWhereStatment;
 
                 string dbColumnName;
                 foreach (DataRow searchRow in arg.HeaderSearchConditionTable.Rows)
@@ -209,11 +228,13 @@ namespace TMTControls.TMTPanels
 
                 if (worker.CancellationPending == false)
                 {
-                    PanelBackgroundWorkeArg arg = e.Argument as PanelBackgroundWorkeArg;
+                    if (e.Argument is PanelBackgroundWorkeArg)
+                    {
+                        PanelBackgroundWorkeArg arg = e.Argument as PanelBackgroundWorkeArg;
+                        e.Result = arg;
 
-                    this.OnDataManager(arg);
-
-                    e.Result = arg;
+                        this.OnDataManager(arg);
+                    }
                 }
 
                 // If the operation was canceled by the user,
@@ -236,7 +257,7 @@ namespace TMTControls.TMTPanels
             {
                 if (e.Error != null)
                 {
-                    MessageBox.Show(this, e.Error.Message, Properties.Resources.ERROR_BW_Issue, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    TMTErrorDialog.Show(this, e.Error, Properties.Resources.ERROR_BW_Issue);
                 }
                 else
                 {
@@ -249,6 +270,25 @@ namespace TMTControls.TMTPanels
                             tmtDataGridViewMain.DataSourceTable = arg.ChangedDataSet.Tables[arg.HeaderViewName];
                             base.LoadData();
                             tmtDataGridViewMain.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+
+                            if (arg.SelectedRowIndexList != null && arg.SelectedRowIndexList.Count > 0)
+                            {
+                                bool firstIndex = true;
+                                //tmtDataGridViewMain.SelectedRows.Clear();
+                                foreach (DataGridViewRow row in tmtDataGridViewMain.Rows)
+                                {
+                                    if (arg.SelectedRowIndexList.Contains(row.Index))
+                                    {
+                                        row.Selected = true;
+                                        if (firstIndex)
+                                        {
+                                            tmtDataGridViewMain.FirstDisplayedScrollingRowIndex = row.Index;
+                                            firstIndex = false;
+                                        }
+                                    }
+                                }
+                                arg.SelectedRowIndexList = null;
+                            }
                         }
                         else if (arg.Type == PanelBackgroundWorkeType.Save)
                         {
@@ -263,15 +303,11 @@ namespace TMTControls.TMTPanels
                             }
                         }
                     }
-                    else
-                    {
-                        MessageBox.Show(this, Properties.Resources.MSG_SAVE_Null, Properties.Resources.MSG_HEADER_Save, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_BW_Issue, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_BW_Issue);
             }
             finally
             {
@@ -288,15 +324,25 @@ namespace TMTControls.TMTPanels
                 this.UseWaitCursor = true;
                 PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
                 arg.Type = PanelBackgroundWorkeType.Load;
+                var selectedCellsRowIndexes = this.tmtDataGridViewMain.SelectedCells.Cast<DataGridViewCell>().Select(c => c.RowIndex);
+                var selectedRowIndexes = selectedCellsRowIndexes.Distinct();
+                if (selectedRowIndexes.Count() > 0)
+                {
+                    arg.SelectedRowIndexList = new HashSet<int>(selectedRowIndexes);
+                }
                 arg.HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition();
                 arg.IsCaseSensitive = this.SearchDialog.IsCaseSensitive;
-                if (this.SearchDialog.DialogResult != DialogResult.OK)
+                if (this.SearchDialog.DialogResult != DialogResult.OK &&
+                    this.SearchDialog.DialogResult != DialogResult.Ignore)
                 {
                     List<DataGridViewColumn> keyViewColumnList = tmtDataGridViewMain.GetKeyViewColumnList();
                     this.SetSearchConditionTable(arg.HeaderSearchConditionTable, savedData, keyViewColumnList);
                 }
 
                 arg.HeaderViewName = tmtDataGridViewMain.ViewName;
+                arg.HeaderViewColumnDbNameList = tmtDataGridViewMain.GetViewColumnDbNameDictionary().Keys.ToList();
+                arg.ViewRowCount = tmtDataGridViewMain.ViewRowCount;
+                arg.DefaultWhereStatment = tmtDataGridViewMain.DefaultWhereStatment;
 
                 backgroundWorkerMain.RunWorkerAsync(arg);
             }
@@ -327,7 +373,7 @@ namespace TMTControls.TMTPanels
                     }
                     else
                     {
-                        searchConditionTable.Rows.Add(keyViewColumn.DataPropertyName, idConcatList, keyViewColumn.ValueType.FullName);
+                        searchConditionTable.Rows.Add(keyViewColumn.DataPropertyName, idConcatList, keyViewColumn.ValueType.FullName, "FALSE");
                     }
                 }
             }

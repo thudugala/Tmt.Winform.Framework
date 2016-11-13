@@ -8,48 +8,11 @@ namespace TMTControls
         public TMTDatabaseLoginDialog()
         {
             InitializeComponent();
-            this.DialogResult = System.Windows.Forms.DialogResult.None;
         }
 
         private void TMTDatabaseLoginDialog_Load(object sender, EventArgs e)
         {
-            textBoxUserId.Text = Properties.Settings.Default.LogInUserId;
-            textBoxUserId.Tag = textBoxUserId.Text;
-            textBoxPassword.Text = Properties.Settings.Default.LogInPassword;
-
-            textBoxDatabaseName.Text = Properties.Settings.Default.DatabaseName;
-        }
-
-        public LoginDataEntity LoginData
-        {
-            get
-            {
-                LoginDataEntity myLoginDataEntity = new LoginDataEntity();
-
-                myLoginDataEntity.UserId = textBoxUserId.Text.Trim();
-                myLoginDataEntity.Password = textBoxPassword.Text.Trim();
-
-                myLoginDataEntity.DatabaseServerName = textBoxServer.Text.Trim();
-                myLoginDataEntity.DatabasePort = int.Parse(textBoxPort.Text.Trim());
-                myLoginDataEntity.DatabaseName = textBoxDatabaseName.Text.Trim();
-
-                return myLoginDataEntity;
-            }
-            set
-            {
-                textBoxPassword.Text = value.Password;
-                textBoxDatabaseName.Text = value.DatabaseName;
-            }
-        }
-
-        public class LoginDataEntity
-        {
-            public string UserId { get; set; }
-            public string Password { get; set; }
-
-            public string DatabaseServerName { get; set; }
-            public int DatabasePort { get; set; }
-            public string DatabaseName { get; set; }
+            this.DialogResult = System.Windows.Forms.DialogResult.None;
         }
 
         private void buttonLogin_Click(object sender, EventArgs e)
@@ -79,6 +42,8 @@ namespace TMTControls
                 MessageBox.Show(this, Properties.Resources.ERROR_LoginDialog_DatabaseNameEmpty, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            Properties.Settings.Default.Save();
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
         }

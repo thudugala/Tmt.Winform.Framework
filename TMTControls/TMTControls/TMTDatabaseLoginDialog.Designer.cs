@@ -99,6 +99,7 @@
             // 
             this.tmtButtonLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.tmtButtonLogin.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.tmtButtonLogin.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.tmtButtonLogin.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonLogin.FlatAppearance.BorderSize = 0;
             this.tmtButtonLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -165,6 +166,7 @@
             // 
             // TMTDatabaseLoginDialog
             // 
+            this.AcceptButton = this.tmtButtonLogin;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;

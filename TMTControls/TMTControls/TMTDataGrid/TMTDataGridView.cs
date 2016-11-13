@@ -51,11 +51,14 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("TMT Data")]
+        [Category("TMT Data"), DefaultValue(true)]
         public bool AddDataAllowed { get; set; }
 
-        [Category("TMT Data")]
+        [Category("TMT Data"), DefaultValue(true)]
         public bool DeleteDataAllowed { get; set; }
+
+        [Category("TMT Data"), DefaultValue(false)]
+        public bool LoadDataWhenActive { get; set; }
 
         [Category("TMT Data")]
         public string TableName { get; set; }
@@ -66,6 +69,9 @@ namespace TMTControls.TMTDataGrid
         [Category("TMT Data")]
         public int? ViewRowCount { get; set; }
 
+        [Category("TMT Data")]
+        public string DefaultWhereStatment { get; set; }
+
         public DataTable GetDataSourceTableChanges()
         {
             if (this.DataSourceTable != null)
@@ -74,12 +80,14 @@ namespace TMTControls.TMTDataGrid
 
                 DataTable changedData = this.DataSourceTable.GetDataSourceTableChanges(this.TableName);
 
-                if (changedData != null && changedData.Rows.Count > 0 && 
+                if (changedData != null && changedData.Rows.Count > 0 &&
                     this.Columns != null && this.Columns.Count > 0)
                 {
                     var readOnlyColumnNames = this.Columns.Cast<DataGridViewColumn>().Where(c => c.ReadOnly &&
                                                                                                  string.IsNullOrWhiteSpace(c.DataPropertyName) == false &&
-                                                                                                 c.GetDataSourceInformation().KeyColum == false).Select(c => c.DataPropertyName);
+                                                                                                 c.GetDataSourceInformation().KeyColum == false &&
+                                                                                                 c.GetDataSourceInformation().MandatoryColum == false &&
+                                                                                                 c.GetDataSourceInformation().EditAllowed == false).Select(c => c.DataPropertyName);
                     foreach (string readOnlyColumnName in readOnlyColumnNames)
                     {
                         changedData.Columns.Remove(readOnlyColumnName);
@@ -234,7 +242,7 @@ namespace TMTControls.TMTDataGrid
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.MSG_LOV_LoadError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_LoadError);
             }
         }
 
@@ -266,7 +274,7 @@ namespace TMTControls.TMTDataGrid
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.MSG_LOV_SetError, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
             }
         }
 
@@ -288,7 +296,7 @@ namespace TMTControls.TMTDataGrid
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_CellClick, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_CellClick);
             }
         }
 
@@ -301,8 +309,11 @@ namespace TMTControls.TMTDataGrid
 
             LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
             lovEvent.RowIndex = rowIndex;
-            lovEvent.LoadAll = true;
+            lovEvent.IsValidate = false;
             lovEvent.PrimaryColumnName = primaryColumnName;
+            lovEvent.Row = this.Rows[lovEvent.RowIndex];
+            lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
+            lovEvent.LovViewName = this.Columns[lovEvent.PrimaryColumnName].GetDataSourceInformation().LovViewName;
 
             this.GetLovSelectedRow(lovEvent);
 
@@ -321,10 +332,7 @@ namespace TMTControls.TMTDataGrid
                 currectRow.Cells[primaryColumnName].Selected = true;
                 this.CurrentCell.Tag = this.CurrentCell.Value;
                 this.CurrentCell.Style.BackColor = Color.Empty;
-                //this.NotifyCurrentCellDirty(true);
                 this.EndEdit();
-                //this.NotifyCurrentCellDirty(false);
-                //this.AutoResizeColumn(columnIndex);
             }
         }
 
@@ -370,8 +378,11 @@ namespace TMTControls.TMTDataGrid
                         {
                             LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
                             lovEvent.RowIndex = e.RowIndex;
-                            lovEvent.LoadAll = false;
+                            lovEvent.IsValidate = true;
                             lovEvent.PrimaryColumnName = primaryColumnName;
+                            lovEvent.Row = this.Rows[lovEvent.RowIndex];
+                            lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
+                            lovEvent.LovViewName = this.Columns[lovEvent.PrimaryColumnName].GetDataSourceInformation().LovViewName;
 
                             this.GetLovSelectedRow(lovEvent);
 
@@ -395,7 +406,6 @@ namespace TMTControls.TMTDataGrid
                                 }
 
                                 validatingPrimaryViewCell.Style.BackColor = (dataFound) ? Color.Empty : Color.Red;
-                                //this.AutoResizeColumn(e.ColumnIndex);
                             }
                             else
                             {
@@ -434,7 +444,31 @@ namespace TMTControls.TMTDataGrid
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, ex.Message, Properties.Resources.ERROR_CellValidation, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_CellValidation);
+            }
+        }
+
+        public void FillSearchConditionTable(LovLoadingEventArgs e, string lovViewPrimaryColumnName, params KeyValuePair<string, string>[] filterColumns)
+        {
+            if (e.IsValidate)
+            {
+                e.SearchConditionTable.Rows.Add(lovViewPrimaryColumnName,
+                                              e.Row.Cells[e.PrimaryColumnName].Value,
+                                              this.Columns[e.PrimaryColumnName].ValueType.FullName,
+                                              false);
+            }
+            else
+            {
+                foreach (KeyValuePair<string, string> filterColumn in filterColumns)
+                {
+                    if (e.Row.Cells[filterColumn.Value].Value != null)
+                    {
+                        e.SearchConditionTable.Rows.Add(filterColumn.Key,
+                                                        e.Row.Cells[filterColumn.Value].Value,
+                                                        this.Columns[filterColumn.Value].ValueType.FullName,
+                                                        false);
+                    }
+                }
             }
         }
 
@@ -443,9 +477,9 @@ namespace TMTControls.TMTDataGrid
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
-            // 
+            //
             // TMTDataGridView
-            // 
+            //
             this.AllowUserToAddRows = false;
             this.AllowUserToDeleteRows = false;
             this.AllowUserToOrderColumns = true;
@@ -464,7 +498,6 @@ namespace TMTControls.TMTDataGrid
             this.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.TMTDataGridView_CellValidated);
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
-
         }
     }
 }
