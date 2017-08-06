@@ -50,10 +50,9 @@
             legend1.Name = "LegendMain";
             this.chartMain.Legends.Add(legend1);
             this.chartMain.Location = new System.Drawing.Point(0, 0);
-            this.chartMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.chartMain.Name = "chartMain";
             this.chartMain.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SemiTransparent;
-            this.chartMain.Size = new System.Drawing.Size(400, 400);
+            this.chartMain.Size = new System.Drawing.Size(484, 379);
             this.chartMain.TabIndex = 0;
             this.chartMain.Text = "TMT Chart";
             // 
@@ -66,25 +65,23 @@
             // 
             this.progressBarMain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarMain.Location = new System.Drawing.Point(4, 372);
-            this.progressBarMain.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.progressBarMain.Location = new System.Drawing.Point(3, 361);
             this.progressBarMain.Name = "progressBarMain";
-            this.progressBarMain.Size = new System.Drawing.Size(392, 23);
+            this.progressBarMain.Size = new System.Drawing.Size(478, 15);
             this.progressBarMain.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBarMain.TabIndex = 1;
             this.progressBarMain.Visible = false;
             // 
             // TMTChart
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.progressBarMain);
             this.Controls.Add(this.chartMain);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(20);
+            this.Margin = new System.Windows.Forms.Padding(13);
             this.Name = "TMTChart";
-            this.Size = new System.Drawing.Size(400, 400);
+            this.Size = new System.Drawing.Size(484, 379);
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).EndInit();
             this.ResumeLayout(false);
 

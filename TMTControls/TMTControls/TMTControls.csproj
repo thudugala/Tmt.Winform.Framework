@@ -9,13 +9,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TMTControls</RootNamespace>
     <AssemblyName>TMTControls</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -30,13 +31,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\resciit\branches\MySnapSellAdmin\packages\NLog.4.3.10\lib\net45\NLog.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PhoneNumberFormatter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\food_menu_gen\trunk\IfsFoodMenuGenerator\packages\PhoneNumberFormatter.1.0.4\lib\net45\PhoneNumberFormatter.dll</HintPath>
+      <HintPath>..\packages\PhoneNumberFormatter.1.0.4\lib\net45\PhoneNumberFormatter.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -69,11 +72,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="TMTButton.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="TMTButtonLov.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TMTChart.cs">
@@ -103,10 +102,10 @@
     <Compile Include="TMTDatabaseLoginDialog.Designer.cs">
       <DependentUpon>TMTDatabaseLoginDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="TMTDataGrid\ITMTDataGridViewColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTDataGrid\TMTDataGridViewButtonColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewCalendarCell.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewCalendarColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewCalendarEditingControl.cs">
@@ -114,8 +113,8 @@
     </Compile>
     <Compile Include="TMTDataGrid\TMTDataGridViewCheckBoxColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewComboBoxColumn.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewDataSourceInformation.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewImageColumn.cs" />
+    <Compile Include="TMTDataGrid\TMTDataGridViewLinkColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownCell.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownEditingControl.cs">
@@ -157,6 +156,12 @@
       <DependentUpon>TMTErrorDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TMTExtendard.cs" />
+    <Compile Include="TMTFormMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTFormMain.Designer.cs">
+      <DependentUpon>TMTFormMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="TMTLOVDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +169,9 @@
       <DependentUpon>TMTLOVDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TMTMultipleColumnComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTNumberTextBoxForSearch.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TMTNumericUpDown.cs">
@@ -233,9 +241,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTButtonLov.resx">
-      <DependentUpon>TMTButtonLov.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TMTChart.resx">
       <DependentUpon>TMTChart.cs</DependentUpon>
     </EmbeddedResource>
@@ -266,8 +271,14 @@
     <EmbeddedResource Include="TMTErrorDialog.resx">
       <DependentUpon>TMTErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TMTFormMain.resx">
+      <DependentUpon>TMTFormMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TMTLOVDialog.resx">
       <DependentUpon>TMTLOVDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTNumberTextBoxForSearch.resx">
+      <DependentUpon>TMTNumberTextBoxForSearch.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTPanels\TMTPanelForm.resx">
       <DependentUpon>TMTPanelForm.cs</DependentUpon>
@@ -290,6 +301,9 @@
     <EmbeddedResource Include="TMTTextButtonBoxBase.resx">
       <DependentUpon>TMTTextButtonBoxBase.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TMTTileButton.resx">
+      <DependentUpon>TMTTileButton.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TMTUserControl.resx">
       <DependentUpon>TMTUserControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -302,6 +316,7 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="app.manifest" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

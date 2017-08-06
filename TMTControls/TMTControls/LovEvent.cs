@@ -11,9 +11,13 @@ namespace TMTControls
 
     public class LovLoadedEventArgs : EventArgs
     {
+        public bool IsValidate { get; set; }
+
         public string PrimaryColumnName { get; set; }
 
         public int RowIndex { get; set; }
+
+        public string LovViewName { get; set; }
 
         public Dictionary<string, object> SelectedRow { get; set; }
     }
@@ -26,6 +30,10 @@ namespace TMTControls
 
         public string PrimaryColumnName { get; set; }
 
+        public string PrimaryColumnType { get; set; }
+
+        public string PrimaryColumnValue { get; set; }
+
         public int RowIndex { get; set; }
 
         public DataGridViewRow Row { get; set; }
@@ -33,5 +41,9 @@ namespace TMTControls
         public DataTable SearchConditionTable { get; set; }
 
         public string LovViewName { get; set; }
+
+        public string LovHeaderText { get; set; }
+
+        public bool LimitLoad { get; set; }
     }
 }

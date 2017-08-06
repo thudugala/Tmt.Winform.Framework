@@ -24,6 +24,16 @@ namespace TMTControls
             }
         }
 
+        public bool LimitLoad
+        {
+            get
+            {
+                return checkBoxTop100.Checked;
+            }
+        }
+
+        public event LovLoadingEventHandler SearchLovLoading;
+
         public List<SearchEntity> EntityList { get; private set; }
 
         public DataTable GetSearchCondition()
@@ -51,33 +61,36 @@ namespace TMTControls
             SearchEntity sEntity;
             foreach (Control dbControl in tableLayoutPanelMain.Controls)
             {
-                if (dbControl is TextBox)
+                sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
+                if (sEntity != null)
                 {
-                    sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
-                    if (sEntity != null)
+                    if (dbControl is CheckBox)
+                    {
+                        var dbCheckControl = dbControl as CheckBox;
+                        if (dbCheckControl.CheckState != CheckState.Indeterminate)
+                        {
+                            sEntity.Value = (dbCheckControl.Checked) ? Boolean.TrueString.ToUpper() : Boolean.FalseString.ToUpper();
+                        }
+                        else
+                        {
+                            sEntity.Value = string.Empty;
+                        }
+                    }
+                    else
                     {
                         sEntity.Value = dbControl.Text.Trim();
                     }
                 }
-                else if (dbControl is TMTDateTimePickerForSearch)
-                {
-                    sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
-                    if (sEntity != null)
-                    {
-                        sEntity.Value = (dbControl as TMTDateTimePickerForSearch).Text.Trim();
-                    }
-                }
             }
 
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.DialogResult = DialogResult.OK;
         }
 
         private void TMTSearchDialog_Load(object sender, EventArgs e)
         {
             try
             {
-                int vertScrollWidth = SystemInformation.VerticalScrollBarWidth;
-                tableLayoutPanelMain.Padding = new Padding(0, 0, vertScrollWidth, 0);
+                tableLayoutPanelMain.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
 
                 tableLayoutPanelMain.Controls.Clear();
 
@@ -85,58 +98,134 @@ namespace TMTControls
 
                 int rowIndex = 0;
 
-                Label propertyLabel;
-                TextBox propertyTextBox;
-                TMTDateTimePickerForSearch propertyDateTimePicker;
                 Control fistControl = null;
                 foreach (SearchEntity pi in EntityList)
                 {
-                    if (pi.DataType == typeof(string) ||
-                        pi.DataType == typeof(int) ||
-                        pi.DataType == typeof(Int32) ||
-                        pi.DataType == typeof(Int64) ||
-                        pi.DataType == typeof(decimal) ||
-                        pi.DataType == typeof(DateTime))
+                    var propertyLabel = new Label()
                     {
-                        propertyLabel = new Label();
-                        propertyLabel.Dock = DockStyle.Fill;
-                        propertyLabel.TextAlign = ContentAlignment.MiddleLeft;
-                        propertyLabel.AutoSize = true;
-                        propertyLabel.Name = "propertyLabel" + pi.ColumnName;
-                        propertyLabel.Text = (pi.Caption.EndsWith(":")) ? pi.Caption : pi.Caption + ":";
+                        Dock = DockStyle.Fill,
+                        TextAlign = ContentAlignment.MiddleLeft,
+                        AutoSize = true,
+                        Name = "propertyLabel" + pi.ColumnName,
+                        Text = (pi.Caption.EndsWith(":")) ? pi.Caption : pi.Caption + ":"
+                    };
+                    tableLayoutPanelMain.SetColumn(propertyLabel, 0);
+                    tableLayoutPanelMain.SetRow(propertyLabel, rowIndex);
+                    tableLayoutPanelMain.Controls.Add(propertyLabel);
 
-                        tableLayoutPanelMain.SetColumn(propertyLabel, 0);
-                        tableLayoutPanelMain.SetRow(propertyLabel, rowIndex);
-                        tableLayoutPanelMain.Controls.Add(propertyLabel);
+                    if (string.IsNullOrWhiteSpace(pi.LovView) == false)
+                    {
+                        var propertyTextButtonBox = new TMTTextButtonBox()
+                        {
+                            Dock = DockStyle.Fill,
+                            Name = pi.ColumnName,
+                            DbColumnName = pi.ColumnName,
+                            ConnectedLabel = propertyLabel,
+                            LovViewName = pi.LovView
+                        };
+                        object value = pi.Value;
+                        if (value != null)
+                        {
+                            propertyTextButtonBox.Text = value.ToString();
+                        }
+                        propertyTextButtonBox.LovLoading += (lovSender, lovArg) =>
+                        {
+                            SearchLovLoading?.Invoke(lovSender, lovArg);
+                        };
 
-                        if (pi.DataType == typeof(string) ||
-                            pi.DataType == typeof(int) ||
+                        tableLayoutPanelMain.SetColumn(propertyTextButtonBox, 1);
+                        tableLayoutPanelMain.SetRow(propertyTextButtonBox, rowIndex);
+                        tableLayoutPanelMain.Controls.Add(propertyTextButtonBox);
+
+                        if (fistControl == null)
+                        {
+                            fistControl = propertyTextButtonBox;
+                        }
+                    }
+                    else
+                    {
+                        if (pi.DataType == typeof(string))
+                        {
+                            if (pi.IsCheckBox)
+                            {
+                                var propertyCheckBox = new CheckBox()
+                                {
+                                    Dock = DockStyle.Fill,
+                                    Name = pi.ColumnName,
+                                    ThreeState = true
+                                };
+                                object value = pi.Value;
+                                if (value != null && string.IsNullOrWhiteSpace(value.ToString()) == false)
+                                {
+                                    propertyCheckBox.Checked = Boolean.Parse(value.ToString());
+                                }
+                                else
+                                {
+                                    propertyCheckBox.CheckState = CheckState.Indeterminate;
+                                }
+                                tableLayoutPanelMain.SetColumn(propertyCheckBox, 1);
+                                tableLayoutPanelMain.SetRow(propertyCheckBox, rowIndex);
+                                tableLayoutPanelMain.Controls.Add(propertyCheckBox);
+
+                                if (fistControl == null)
+                                {
+                                    fistControl = propertyCheckBox;
+                                }
+                            }
+                            else
+                            {
+                                var propertyTextBox = new TextBox()
+                                {
+                                    Dock = DockStyle.Fill,
+                                    Name = pi.ColumnName
+                                };
+                                object value = pi.Value;
+                                if (value != null)
+                                {
+                                    propertyTextBox.Text = value.ToString();
+                                }
+                                tableLayoutPanelMain.SetColumn(propertyTextBox, 1);
+                                tableLayoutPanelMain.SetRow(propertyTextBox, rowIndex);
+                                tableLayoutPanelMain.Controls.Add(propertyTextBox);
+
+                                if (fistControl == null)
+                                {
+                                    fistControl = propertyTextBox;
+                                }
+                            }
+                        }
+                        else if (pi.DataType == typeof(int) ||
                             pi.DataType == typeof(Int32) ||
                             pi.DataType == typeof(Int64) ||
+                            pi.DataType == typeof(double) ||
                             pi.DataType == typeof(decimal))
                         {
-                            propertyTextBox = new TextBox();
-                            propertyTextBox.Dock = DockStyle.Fill;
-                            propertyTextBox.Name = pi.ColumnName;
+                            var propertyNumberTextBox = new TMTNumberTextBoxForSearch()
+                            {
+                                Dock = DockStyle.Fill,
+                                Name = pi.ColumnName
+                            };
                             object value = pi.Value;
                             if (value != null)
                             {
-                                propertyTextBox.Text = value.ToString();
+                                propertyNumberTextBox.Text = value.ToString();
                             }
-                            tableLayoutPanelMain.SetColumn(propertyTextBox, 1);
-                            tableLayoutPanelMain.SetRow(propertyTextBox, rowIndex);
-                            tableLayoutPanelMain.Controls.Add(propertyTextBox);
+                            tableLayoutPanelMain.SetColumn(propertyNumberTextBox, 1);
+                            tableLayoutPanelMain.SetRow(propertyNumberTextBox, rowIndex);
+                            tableLayoutPanelMain.Controls.Add(propertyNumberTextBox);
 
                             if (fistControl == null)
                             {
-                                fistControl = propertyTextBox;
+                                fistControl = propertyNumberTextBox;
                             }
                         }
                         else if (pi.DataType == typeof(DateTime))
                         {
-                            propertyDateTimePicker = new TMTDateTimePickerForSearch();
-                            propertyDateTimePicker.Dock = DockStyle.Fill;
-                            propertyDateTimePicker.Name = pi.ColumnName;
+                            var propertyDateTimePicker = new TMTDateTimePickerForSearch()
+                            {
+                                Dock = DockStyle.Fill,
+                                Name = pi.ColumnName
+                            };
                             object value = pi.Value;
                             if (value != null && string.IsNullOrWhiteSpace(value.ToString()) == false)
                             {
@@ -151,9 +240,9 @@ namespace TMTControls
                                 fistControl = propertyDateTimePicker;
                             }
                         }
-
-                        rowIndex++;
                     }
+
+                    rowIndex++;
                 }
 
                 if (fistControl != null)
@@ -176,6 +265,13 @@ namespace TMTControls
             public Type DataType { get; set; }
 
             public string Value { get; set; }
+
+            public bool IsCheckBox { get; set; }
+            public object FalseValue { get; set; }
+            public object TrueValue { get; set; }
+            public object IndeterminateValue { get; set; }
+
+            public string LovView { get; set; }
         }
     }
 }

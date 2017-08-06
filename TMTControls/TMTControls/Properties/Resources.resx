@@ -274,4 +274,16 @@
   <data name="ERROR_ShowCalendar" xml:space="preserve">
     <value>Error Showing Calendar</value>
   </data>
+  <data name="Exclamation_NoDataFound" xml:space="preserve">
+    <value>No Data found</value>
+  </data>
+  <data name="Exclamation_NoDataFoundText" xml:space="preserve">
+    <value>No Data found, Try changing search condition. </value>
+  </data>
+  <data name="ERROR_CellDataError" xml:space="preserve">
+    <value>Data Error at Column: {0}, Row: {1}</value>
+  </data>
+  <data name="ERROR_PanelLoadIssue" xml:space="preserve">
+    <value>Error Loading Panel</value>
+  </data>
 </root>

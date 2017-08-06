@@ -9,8 +9,6 @@ namespace TMTControls
         {
             this.SuspendLayout();
 
-            //this.AutoSize = true;
-            //this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.FlatStyle = FlatStyle.Flat;
             this.BackColor = Color.FromArgb(224, 224, 224);
             this.FlatAppearance.BorderColor = Color.Silver;

@@ -4,44 +4,14 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewTextButtonBoxColumn : DataGridViewColumn
+    public class TMTDataGridViewTextButtonBoxColumn : DataGridViewColumn, ITMTDataGridViewColumn
     {
-        private EventHandler buttonClick;
-
         public TMTDataGridViewTextButtonBoxColumn()
             : base(new TMTDataGridViewTextButtonBoxCell())
         {
             base.ValueType = typeof(string);
             base.SortMode = DataGridViewColumnSortMode.Automatic;
-            base.DefaultCellStyle = new DataGridViewCellStyle() { WrapMode = DataGridViewTriState.True };
-        }
-
-        [
-            Browsable(false),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
-        ]
-        public EventHandler ButtonClick
-        {
-            get
-            {
-                return this.buttonClick;
-            }
-            set
-            {
-                TMTDataGridViewTextButtonBoxCell cell = CellTemplate as TMTDataGridViewTextButtonBoxCell;
-                if (cell != null)
-                {
-                    if (value != null)
-                    {
-                        cell.ButtonClickHandler += value;
-                    }
-                    else if (buttonClick != null)
-                    {
-                        cell.ButtonClickHandler -= this.buttonClick;
-                    }
-                }
-                this.buttonClick = value;
-            }
+            base.DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft, WrapMode = DataGridViewTriState.True };
         }
 
         [
@@ -63,15 +33,10 @@ namespace TMTControls.TMTDataGrid
                     throw new InvalidCastException("Must be a TMTDataGridViewTextButtonBoxCell");
                 }
                 base.CellTemplate = value;
-                TMTDataGridViewTextButtonBoxCell cell = CellTemplate as TMTDataGridViewTextButtonBoxCell;
-                if (cell != null)
-                {
-                    cell.ButtonClickHandler = this.ButtonClick;
-                }
             }
         }
 
-        [Category("Data"), RefreshProperties(RefreshProperties.All)]
+        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
             get
@@ -84,51 +49,21 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("LOV Data")]
-        public string LOVViewName
-        {
-            get
-            {
-                return this.GetDataSourceInformation().LovViewName;
-            }
-            set
-            {
-                this.GetDataSourceInformation().LovViewName = value;
-            }
-        }
+        [Category("LOV Data"), DefaultValue("")]
+        public string LovViewName { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
+        public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool DataPropertyPrimaryKey { get; set; }
 
         public override object Clone()
         {
             TMTDataGridViewTextButtonBoxColumn that = (TMTDataGridViewTextButtonBoxColumn)base.Clone();
 
+            that.LovViewName = this.LovViewName;
             that.DataPropertyType = this.DataPropertyType;
-            that.LOVViewName = this.LOVViewName;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
 

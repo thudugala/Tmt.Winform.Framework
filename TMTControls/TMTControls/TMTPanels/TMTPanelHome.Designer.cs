@@ -32,11 +32,12 @@
             // 
             // TMTPanelHome
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "TMTPanelHome";
-            this.Size = new System.Drawing.Size(800, 600);
+            this.Size = new System.Drawing.Size(600, 400);
+            this.Load += new System.EventHandler(this.TMTPanelHome_Load);
             this.ResumeLayout(false);
 
         }

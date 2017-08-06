@@ -48,10 +48,7 @@ namespace TMTControls
 
         public virtual void AddData()
         {
-            if (DataAdded != null)
-            {
-                DataAdded(this, EventArgs.Empty);
-            }
+            DataAdded?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void RemoveData()
@@ -64,52 +61,34 @@ namespace TMTControls
 
         public virtual void ClearData()
         {
-            if (DataCleared != null)
-            {
-                DataCleared(this, EventArgs.Empty);
-            }
+            DataCleared?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void DuplicateData()
         {
-            if (DataDuplicated != null)
-            {
-                DataDuplicated(this, EventArgs.Empty);
-            }
+            DataDuplicated?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void LoadData()
         {
-            if (DataLoaded != null)
-            {
-                DataLoaded(this, EventArgs.Empty);
-            }
+            DataLoaded?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void OnDataChanged()
         {
-            if (DataChanged != null)
-            {
-                DataChanged(this, EventArgs.Empty);
-            }
+            DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void OnDataManager(PanelBackgroundWorkeArg data)
         {
-            if (DataManager != null)
-            {
-                DataManager(this, data);
-            }
+            DataManager?.Invoke(this, data);
         }
 
         public virtual void OnValidateBeforeSave(DataValidatingEventArgs dataToBeSaved)
         {
             try
             {
-                if (DataValidateBeforeSave != null)
-                {
-                    DataValidateBeforeSave(this, dataToBeSaved);
-                }
+                DataValidateBeforeSave?.Invoke(this, dataToBeSaved);
             }
             catch (Exception ex)
             {
@@ -119,18 +98,12 @@ namespace TMTControls
 
         public virtual void SaveData()
         {
-            if (DataSaved != null)
-            {
-                DataSaved(this, EventArgs.Empty);
-            }
+            DataSaved?.Invoke(this, EventArgs.Empty);
         }
 
         private void buttonBack_Click(object sender, EventArgs e)
         {
-            if (BackButtonClicked != null)
-            {
-                BackButtonClicked(sender, e);
-            }
+            BackButtonClicked?.Invoke(this, e);
         }
 
         public class DataValidatingEventArgs : EventArgs

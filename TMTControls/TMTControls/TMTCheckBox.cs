@@ -13,7 +13,11 @@ namespace TMTControls
             this.SuspendLayout();
 
             this.DbColumnType = TypeCode.String;
-            this.GetDataSourceInformation().DbValue = this.IndetetermibateValue;
+            this.FalseValue = Boolean.FalseString.ToUpper();
+            this.IndeterminateValue = this.FalseValue;
+            this.TrueValue = Boolean.TrueString.ToUpper();
+
+            this.DbValue = this.FalseValue;
             this.CheckedChanged += TMTCheckBox_CheckedChanged;
 
             this.ResumeLayout(false);
@@ -27,29 +31,15 @@ namespace TMTControls
             }
         }
 
-        public override string Text
-        {
-            get
-            {
-                return base.Text;
-            }
-            set
-            {
-                base.Text = value;
-                this.GetDataSourceInformation().DbLabelText = base.Text;
-            }
-        }
-
-        [Category("Data"), DefaultValue("")]
+        [Browsable(false), DefaultValue("FALSE")]
         public string DbValue
         {
             get
             {
-                return this.GetDataSourceInformation().DbValue;
+                return (this.Checked) ? this.TrueValue : this.FalseValue;
             }
             set
             {
-                this.GetDataSourceInformation().DbValue = value;
                 this._DbValueUpdateLooked = true;
                 this.Checked = (value == this.TrueValue) ? true : false;
                 this._DbValueUpdateLooked = false;
@@ -57,107 +47,24 @@ namespace TMTControls
         }
 
         [Category("Data"), DefaultValue("")]
-        public string DbColumnName
-        {
-            get
-            {
-                return this.GetDataSourceInformation().DbColumnName;
-            }
-            set
-            {
-                this.GetDataSourceInformation().DbColumnName = value;
-            }
-        }
+        public string DbColumnName { get; set; }
 
         [Category("Data"), DefaultValue(TypeCode.String)]
-        public TypeCode DbColumnType
-        {
-            get
-            {
-                return this.GetDataSourceInformation().DbColumnType;
-            }
-            set
-            {
-                this.GetDataSourceInformation().DbColumnType = value;
-            }
-        }
+        public TypeCode DbColumnType { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool MandatoryColum
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
+        public bool MandatoryColum { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool KeyColum
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool KeyColum { get; set; }
 
         [Category("Data"), DefaultValue("FALSE")]
-        public string FalseValue
-        {
-            get
-            {
-                return this.GetDataSourceInformation().FalseValue;
-            }
-            set
-            {
-                this.GetDataSourceInformation().FalseValue = value;
-            }
-        }
+        public string FalseValue { get; set; }
 
         [Category("Data"), DefaultValue("FALSE")]
-        public string IndetetermibateValue
-        {
-            get
-            {
-                return this.GetDataSourceInformation().IndetetermibateValue;
-            }
-            set
-            {
-                this.GetDataSourceInformation().IndetetermibateValue = value;
-            }
-        }
+        public string IndeterminateValue { get; set; }
 
         [Category("Data"), DefaultValue("TRUE")]
-        public string TrueValue
-        {
-            get
-            {
-                return this.GetDataSourceInformation().TrueValue;
-            }
-            set
-            {
-                this.GetDataSourceInformation().TrueValue = value;
-            }
-        }
-
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new object Tag
-        {
-            get
-            {
-                return base.Tag;
-            }
-            set
-            {
-                base.Tag = value;
-            }
-        }
+        public string TrueValue { get; set; }
     }
 }

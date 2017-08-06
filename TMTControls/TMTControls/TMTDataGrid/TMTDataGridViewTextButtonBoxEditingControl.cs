@@ -6,10 +6,6 @@ namespace TMTControls.TMTDataGrid
 {
     public class TMTDataGridViewTextButtonBoxEditingControl : TMTTextButtonBoxBase, IDataGridViewEditingControl
     {
-        private DataGridView dataGridView;
-        private bool valueChanged = false;
-        private int rowIndex;
-
         public TMTDataGridViewTextButtonBoxEditingControl()
         {
             InitializeComponent();
@@ -32,17 +28,7 @@ namespace TMTControls.TMTDataGrid
             this.TextAlign = TMTDataGridViewTextButtonBoxCell.TranslateAlignment(dataGridViewCellStyle.Alignment);
         }
 
-        public DataGridView EditingControlDataGridView
-        {
-            get
-            {
-                return this.dataGridView;
-            }
-            set
-            {
-                this.dataGridView = value;
-            }
-        }
+        public DataGridView EditingControlDataGridView { get; set; }
 
         public object EditingControlFormattedValue
         {
@@ -71,29 +57,9 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        public int EditingControlRowIndex
-        {
-            get
-            {
-                return this.rowIndex;
-            }
-            set
-            {
-                this.rowIndex = value;
-            }
-        }
+        public int EditingControlRowIndex { get; set; }
 
-        public bool EditingControlValueChanged
-        {
-            get
-            {
-                return this.valueChanged;
-            }
-            set
-            {
-                this.valueChanged = value;
-            }
-        }
+        public bool EditingControlValueChanged { get; set; }
 
         public bool EditingControlWantsInputKey(Keys keyData, bool dataGridViewWantsInputKey)
         {
@@ -212,7 +178,7 @@ namespace TMTControls.TMTDataGrid
             if (this.EditingControlValueChanged == false)
             {
                 this.EditingControlValueChanged = true;
-                this.dataGridView.NotifyCurrentCellDirty(true);
+                this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
             }
         }
 
@@ -227,7 +193,8 @@ namespace TMTControls.TMTDataGrid
             //
             // TMTDataGridViewTextButtonBoxEditingControl
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoSize = true;
             this.Name = "TMTDataGridViewTextButtonBoxEditingControl";
             this.ResumeLayout(false);
             this.PerformLayout();

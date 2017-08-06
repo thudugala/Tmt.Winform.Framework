@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TMTControls.TMTDataGrid;
@@ -12,15 +11,11 @@ namespace TMTControls.TMTPanels
     [DefaultEvent("LovLoading")]
     public partial class TMTPanelForm : TMTPanelV2
     {
-        private List<TMTDataGridView> _childDataGridViewList;
         private TMTDataGridView _focusedChildDataGridView;
         private bool _ignoreNavigatorSelectedIndexChange = false;
         private bool _isDataGridViewDataClear = false;
         private bool _isHeaderDataSourceTableLoading = false;
         private bool _isChildDataSourceTablesLoading = false;
-        private List<string> _keyFieldListDbColumnList;
-        private TMTLOVDialog _lovDialog;
-        private List<Control> _mandatoryFieldList;
 
         public TMTPanelForm()
         {
@@ -37,7 +32,7 @@ namespace TMTControls.TMTPanels
 
             this.InitializeTMTControls();
 
-            foreach (TMTDataGridView childDataGridView in this._childDataGridViewList)
+            foreach (TMTDataGridView childDataGridView in this.panelControlContainer.GetChildDataGridViewList())
             {
                 childDataGridView.InitializeTableControls();
             }
@@ -46,12 +41,6 @@ namespace TMTControls.TMTPanels
             tmtButtonDuplicate.Enabled = this.AddDataAllowed;
             tmtButtonDelete.Enabled = this.DeleteDataAllowed;
         }
-
-        [Category("TMT Data")]
-        public event LovLoadedEventHandler LovLoaded;
-
-        [Category("TMT Data")]
-        public event LovLoadingEventHandler LovLoading;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -66,6 +55,9 @@ namespace TMTControls.TMTPanels
         [Category("TMT Data")]
         public string DefaultWhereStatment { get; set; }
 
+        [Category("TMT Data")]
+        public string DefaultOrderByStatment { get; set; }
+
         [Category("TMT Data"), DefaultValue(true)]
         public bool AddDataAllowed { get; set; }
 
@@ -77,16 +69,25 @@ namespace TMTControls.TMTPanels
 
         public override void AddData()
         {
-            if (this._focusedChildDataGridView != null && this._focusedChildDataGridView.AddDataAllowed)
+            if (this._focusedChildDataGridView != null)
             {
-                DataRow newRow = this._focusedChildDataGridView.DataSourceTable.NewRow();
-                this._focusedChildDataGridView.DataSourceTable.Rows.Add(newRow);
+                this._focusedChildDataGridView.AddNewRow();
             }
             else
             {
+                foreach (DataColumn aColumn in this.DataSourceTable.Columns)
+                {
+                    if (aColumn.AllowDBNull == false)
+                    {
+                        aColumn.AllowDBNull = true;
+                    }
+                }
                 DataRow newRow = this.DataSourceTable.NewRow();
                 this.DataSourceTable.Rows.Add(newRow);
-                tmtNavigator.SelectedIndex = this.DataSourceTable.Rows.IndexOf(newRow);
+                if (tmtNavigator.DataSourceTable != null)
+                {
+                    tmtNavigator.SelectedIndex = this.DataSourceTable.Rows.IndexOf(newRow);
+                }
 
                 foreach (Control tmtControl in this.panelControlContainer.Controls)
                 {
@@ -120,11 +121,6 @@ namespace TMTControls.TMTPanels
             }
 
             base.AddData();
-        }
-
-        public void AddHiddenKeyFieldDbColumn(string dbColumnName)
-        {
-            this._keyFieldListDbColumnList.Add(dbColumnName);
         }
 
         public override void ClearData()
@@ -166,31 +162,28 @@ namespace TMTControls.TMTPanels
 
         public override void ColumnManager()
         {
-            if (this._childDataGridViewList.Count > 0)
+            if (this._focusedChildDataGridView != null)
             {
-                if (this._focusedChildDataGridView != null)
+                List<TMTColumnManagerDialog.ColumnData> colList = new List<TMTColumnManagerDialog.ColumnData>();
+
+                foreach (DataGridViewColumn viewCol in this._focusedChildDataGridView.Columns)
                 {
-                    List<TMTColumnManagerDialog.ColumnData> colList = new List<TMTColumnManagerDialog.ColumnData>();
+                    if ((viewCol is DataGridViewButtonColumn) == false)
+                    {
+                        colList.Add(new TMTColumnManagerDialog.ColumnData(viewCol.HeaderText, viewCol.Visible));
+                    }
+                }
+
+                ColumnManagerDialog.SetColumnList(colList);
+                if (ColumnManagerDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    Dictionary<string, TMTColumnManagerDialog.ColumnData> colDictionary = ColumnManagerDialog.GetColumnList().ToDictionary(c => c.Name);
 
                     foreach (DataGridViewColumn viewCol in this._focusedChildDataGridView.Columns)
                     {
-                        if ((viewCol is DataGridViewButtonColumn) == false)
+                        if (colDictionary.ContainsKey(viewCol.HeaderText))
                         {
-                            colList.Add(new TMTColumnManagerDialog.ColumnData(viewCol.HeaderText, viewCol.Visible));
-                        }
-                    }
-
-                    ColumnManagerDialog.SetColumnList(colList);
-                    if (ColumnManagerDialog.ShowDialog(this) == DialogResult.OK)
-                    {
-                        Dictionary<string, TMTColumnManagerDialog.ColumnData> colDictionary = ColumnManagerDialog.GetColumnList().ToDictionary(c => c.Name);
-
-                        foreach (DataGridViewColumn viewCol in this._focusedChildDataGridView.Columns)
-                        {
-                            if (colDictionary.ContainsKey(viewCol.HeaderText))
-                            {
-                                viewCol.Visible = colDictionary[viewCol.HeaderText].Visibility;
-                            }
+                            viewCol.Visible = colDictionary[viewCol.HeaderText].Visibility;
                         }
                     }
                 }
@@ -198,16 +191,8 @@ namespace TMTControls.TMTPanels
             base.ColumnManager();
         }
 
-        public List<TMTDataGridView> GetChildDataGridViewList()
-        {
-            return this._childDataGridViewList;
-        }
-
         public void InitializeTMTControls()
         {
-            this._keyFieldListDbColumnList = new List<string>();
-            this._mandatoryFieldList = new List<Control>();
-
             this.SearchDialog.EntityList.Clear();
             TMTSearchDialog.SearchEntity searchEntity;
             TMTDataSourceInformation sourceInfor;
@@ -216,37 +201,72 @@ namespace TMTControls.TMTPanels
             {
                 sourceInfor = tmtControl.GetDataSourceInformation();
 
-                if (string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
+                if (sourceInfor != null &&
+                    string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
                 {
                     if (tmtControl.Visible)
                     {
-                        searchEntity = new TMTSearchDialog.SearchEntity();
-                        searchEntity.Caption = sourceInfor.DbLabelText;
-                        searchEntity.ColumnName = sourceInfor.DbColumnName;
-                        searchEntity.DataType = sourceInfor.GetDbColumnType();
+                        searchEntity = new TMTSearchDialog.SearchEntity()
+                        {
+                            Caption = sourceInfor.DbLabelText,
+                            ColumnName = sourceInfor.DbColumnName,
+                            DataType = sourceInfor.GetDbColumnType(),
+                            LovView = sourceInfor.LovViewName
+                        };
+
+                        if (tmtControl is TMTCheckBox myTmtCheckBox)
+                        {
+                            searchEntity.IsCheckBox = true;
+                            searchEntity.FalseValue = myTmtCheckBox.FalseValue;
+                            searchEntity.TrueValue = myTmtCheckBox.TrueValue;
+                            searchEntity.IndeterminateValue = myTmtCheckBox.IndeterminateValue;
+                        }
 
                         this.SearchDialog.EntityList.Add(searchEntity);
                     }
 
                     this.DataSourceTable.Columns.Add(sourceInfor.DbColumnName, sourceInfor.GetDbColumnType());
 
-                    tmtControl.TextChanged += tmtControl_TextChanged;
-                    tmtControl.GotFocus += tmtControl_GotFocus;
-
-                    if (sourceInfor.KeyColum)
+                    if (tmtControl is TMTCheckBox tmtCheckBox)
                     {
-                        this._keyFieldListDbColumnList.Add(sourceInfor.DbColumnName);
+                        tmtCheckBox.CheckedChanged += tmtControl_CheckedChanged;
                     }
-                    if (sourceInfor.MandatoryColum)
+                    else
                     {
-                        this._mandatoryFieldList.Add(tmtControl);
+                        tmtControl.TextChanged += TmtControl_TextChanged;
                     }
+                    tmtControl.GotFocus += TmtControl_GotFocus;
                 }
             }
 
             this.SetTMTControlDataBindings();
 
             this.SetTMTControlLovEvents();
+        }
+
+        private void tmtControl_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this._isHeaderDataSourceTableLoading == false &&
+                this._ignoreNavigatorSelectedIndexChange == false)
+            {
+                this.OnDataChanged();
+            }
+        }
+
+        private void TmtControl_TextChanged(object sender, EventArgs e)
+        {
+            if (this._isHeaderDataSourceTableLoading == false &&
+                this._ignoreNavigatorSelectedIndexChange == false)
+            {
+                this.OnDataChanged();
+            }
+        }
+
+        private void TmtControl_GotFocus(object sender, EventArgs e)
+        {
+            this._focusedChildDataGridView = null;
+            tmtButtonColumnManager.Enabled = false;
+            tmtButtonAdd.Enabled = this.AddDataAllowed;
         }
 
         public bool IsChildDataGridViewFocused()
@@ -261,15 +281,20 @@ namespace TMTControls.TMTPanels
                 PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
                 arg.Type = PanelBackgroundWorkeType.LoadChild;
 
-                if (this._childDataGridViewList.Count > 0)
+                var childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
+                if (childDataGridViewList.Count > 0)
                 {
-                    foreach (TMTDataGridView childDataGridView in this._childDataGridViewList)
+                    foreach (TMTDataGridView childDataGridView in childDataGridViewList)
                     {
                         arg.ChildViewList.Add(new PanelBackgroundWorkeArg()
                         {
                             HeaderViewName = childDataGridView.ViewName,
                             HeaderSearchConditionTable = TMTExtendard.GetSearchConditionTable(),
-                            DefaultWhereStatment = childDataGridView.DefaultWhereStatment
+                            LimitLoad = this.SearchDialog.LimitLoad,
+                            IsCaseSensitive = true,
+                            HeaderViewColumnDbNameList = childDataGridView.GetViewColumnDbNameDictionary().Keys.ToList(),
+                            DefaultWhereStatment = childDataGridView.DefaultWhereStatment,
+                            DefaultOrderByStatment = childDataGridView.DefaultOrderByStatment
                         });
                     }
 
@@ -282,8 +307,26 @@ namespace TMTControls.TMTPanels
 
         public virtual void SetChildTableListSearchConditionTables(DataRow primarySelectedRow, List<PanelBackgroundWorkeArg> childViewList)
         {
+            List<string> keyFieldListDbColumnList = new List<string>();
+
+            TMTDataSourceInformation sourceInfor;
+            var tmtControlList = this.panelControlContainer.Controls.Cast<Control>().OrderBy(c => c.TabIndex);
+            foreach (Control tmtControl in tmtControlList)
+            {
+                sourceInfor = tmtControl.GetDataSourceInformation();
+
+                if (sourceInfor != null &&
+                    string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
+                {
+                    if (sourceInfor.KeyColumn)
+                    {
+                        keyFieldListDbColumnList.Add(sourceInfor.DbColumnName);
+                    }
+                }
+            }
+
             object searchValue;
-            foreach (string keyFieldDbColumnName in this._keyFieldListDbColumnList)
+            foreach (string keyFieldDbColumnName in keyFieldListDbColumnList)
             {
                 searchValue = primarySelectedRow[keyFieldDbColumnName];
 
@@ -312,15 +355,53 @@ namespace TMTControls.TMTPanels
 
                 this.ClearChildDataGridViews(true);
 
-                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
-                arg.Type = PanelBackgroundWorkeType.Load;
-                arg.HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition();
-                arg.IsCaseSensitive = this.SearchDialog.IsCaseSensitive;
-                arg.HeaderViewName = this.ViewName;
-                arg.DefaultWhereStatment = this.DefaultWhereStatment;
+                Dictionary<string, bool> viewColumnDbNameDictionary = this.GetViewColumnDbNameDictionary();
+
+                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg()
+                {
+                    Type = PanelBackgroundWorkeType.Load,
+                    HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition(),
+                    IsCaseSensitive = this.SearchDialog.IsCaseSensitive,
+                    LimitLoad = this.SearchDialog.LimitLoad,
+                    HeaderViewName = this.ViewName,
+                    HeaderViewColumnDbNameList = viewColumnDbNameDictionary.Keys.ToList(),
+                    DefaultWhereStatment = this.DefaultWhereStatment,
+                    DefaultOrderByStatment = this.DefaultOrderByStatment
+                };
+                string dbColumnName;
+                foreach (DataRow searchRow in arg.HeaderSearchConditionTable.Rows)
+                {
+                    dbColumnName = searchRow["COLUMN"].ToString();
+                    if (viewColumnDbNameDictionary.ContainsKey(dbColumnName))
+                    {
+                        searchRow["IS_FUNCTION"] = viewColumnDbNameDictionary[dbColumnName];
+                    }
+                }
 
                 backgroundWorkerMain.RunWorkerAsync(arg);
             }
+        }
+
+        public Dictionary<string, bool> GetViewColumnDbNameDictionary()
+        {
+            TMTDataSourceInformation sourceInfor;
+            var tmtControlList = this.panelControlContainer.Controls.Cast<Control>().OrderBy(c => c.TabIndex);
+            List<TMTDataSourceInformation> sourceInforList = new List<TMTDataSourceInformation>();
+            foreach (Control tmtControl in tmtControlList)
+            {
+                sourceInfor = tmtControl.GetDataSourceInformation();
+
+                if (sourceInfor != null &&
+                    string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
+                {
+                    sourceInforList.Add(sourceInfor);
+                }
+            }
+            if (sourceInforList != null && sourceInforList.Count() > 0)
+            {
+                return sourceInforList.ToDictionary(c => c.DbColumnName, c => c.IsFuntion);
+            }
+            return null;
         }
 
         public override void OnValidateBeforeSave(TMTUserControl.DataValidatingEventArgs dataToBeSaved)
@@ -329,47 +410,66 @@ namespace TMTControls.TMTPanels
             string connectedLabelText = string.Empty;
             if (dataToBeSaved.DataToBeSaved.Tables.Contains(this.TableName))
             {
-                if (this._mandatoryFieldList != null &&
-                    this._mandatoryFieldList.Count > 0)
+                List<Control> mandatoryFieldList = new List<Control>();
+                var tmtControlList = this.panelControlContainer.Controls.Cast<Control>().OrderBy(c => c.TabIndex);
+                foreach (Control tmtControl in tmtControlList)
+                {
+                    sourceInfor = tmtControl.GetDataSourceInformation();
+                    if (sourceInfor != null &&
+                        sourceInfor.MandatoryColumn)
+                    {
+                        if (((tmtControl is NumericUpDown) && (tmtControl as NumericUpDown).ReadOnly == false) ||
+                            ((tmtControl is TextBox) && (tmtControl as TextBox).ReadOnly == false))
+                        {
+                            mandatoryFieldList.Add(tmtControl);
+                        }
+                    }
+                }
+
+                if (mandatoryFieldList != null &&
+                    mandatoryFieldList.Count > 0)
                 {
                     DataRowCollection rowCollection = dataToBeSaved.DataToBeSaved.Tables[this.TableName].Rows;
                     foreach (DataRow row in rowCollection)
                     {
                         if (row.RowState != DataRowState.Deleted)
                         {
-                            foreach (Control mandatoryField in this._mandatoryFieldList)
+                            foreach (Control mandatoryField in mandatoryFieldList)
                             {
                                 sourceInfor = mandatoryField.GetDataSourceInformation();
 
-                                if (mandatoryField is TMTTextBox)
+                                if (sourceInfor != null)
                                 {
-                                    connectedLabelText = (mandatoryField as TMTTextBox).ConnectedLabel.Text;
-                                }
-                                if (mandatoryField is TMTTextButtonBox)
-                                {
-                                    connectedLabelText = (mandatoryField as TMTTextButtonBox).ConnectedLabel.Text;
-                                }
-                                else if (mandatoryField is TMTCheckBox)
-                                {
-                                    connectedLabelText = (mandatoryField as TMTCheckBox).Text;
-                                }
-                                else if (mandatoryField is TMTNumericUpDown)
-                                {
-                                    connectedLabelText = (mandatoryField as TMTNumericUpDown).ConnectedLabel.Text;
-                                }
-                                else if (mandatoryField is TMTComboBox)
-                                {
-                                    connectedLabelText = (mandatoryField as TMTComboBox).ConnectedLabel.Text;
-                                }
-                                else if (mandatoryField is TMTDateTimePicker)
-                                {
-                                    connectedLabelText = (mandatoryField as TMTDateTimePicker).ConnectedLabel.Text;
-                                }
+                                    if (mandatoryField is TMTTextBox mandatoryTMTTextBox)
+                                    {
+                                        connectedLabelText = mandatoryTMTTextBox.ConnectedLabel.Text;
+                                    }
+                                    if (mandatoryField is TMTTextButtonBox mandatoryTMTTextButtonBox)
+                                    {
+                                        connectedLabelText = mandatoryTMTTextButtonBox.ConnectedLabel.Text;
+                                    }
+                                    else if (mandatoryField is TMTNumericUpDown mandatoryTMTNumericUpDown)
+                                    {
+                                        connectedLabelText = mandatoryTMTNumericUpDown.ConnectedLabel.Text;
+                                    }
+                                    else if (mandatoryField is TMTComboBox mandatoryTMTComboBox)
+                                    {
+                                        connectedLabelText = mandatoryTMTComboBox.ConnectedLabel.Text;
+                                    }
+                                    else if (mandatoryField is TMTDateTimePicker mandatoryTMTDateTimePicker)
+                                    {
+                                        connectedLabelText = mandatoryTMTDateTimePicker.ConnectedLabel.Text;
+                                    }
+                                    else if (mandatoryField is TMTCheckBox mandatoryTMTCheckBox)
+                                    {
+                                        connectedLabelText = mandatoryTMTCheckBox.Text;
+                                    }
 
-                                dataToBeSaved.CancelSave = this.ShowEmptyExclamation(row[sourceInfor.DbColumnName], connectedLabelText);
-                                if (dataToBeSaved.CancelSave)
-                                {
-                                    return;
+                                    dataToBeSaved.CancelSave = this.ShowEmptyExclamation(row[sourceInfor.DbColumnName], connectedLabelText);
+                                    if (dataToBeSaved.CancelSave)
+                                    {
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -377,9 +477,10 @@ namespace TMTControls.TMTPanels
                 }
             }
 
-            if (this._childDataGridViewList.Count > 0)
+            var childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
+            if (childDataGridViewList.Count > 0)
             {
-                foreach (TMTDataGridView childDataView in this._childDataGridViewList)
+                foreach (TMTDataGridView childDataView in childDataGridViewList)
                 {
                     if (dataToBeSaved.DataToBeSaved.Tables.Contains(childDataView.TableName))
                     {
@@ -456,8 +557,10 @@ namespace TMTControls.TMTPanels
                     tmtNavigator.Tag = tmtNavigator.SelectedValue;
                 }
 
-                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
-                arg.Type = PanelBackgroundWorkeType.Save;
+                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg()
+                {
+                    Type = PanelBackgroundWorkeType.Save
+                };
 
                 this.Validate();
                 this.bindingSourceMain.EndEdit();
@@ -471,10 +574,11 @@ namespace TMTControls.TMTPanels
                     {
                         sourceInfor = tmtControl.GetDataSourceInformation();
 
-                        if (string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
+                        if (sourceInfor != null &&
+                            string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
                         {
                             columnInView.Add(sourceInfor.DbColumnName);
-                            if (sourceInfor.KeyColum == false)
+                            if (sourceInfor.KeyColumn == false && sourceInfor.MandatoryColumn == false)
                             {
                                 if (((tmtControl is NumericUpDown) && (tmtControl as NumericUpDown).ReadOnly) ||
                                     ((tmtControl is TextBox) && (tmtControl as TextBox).ReadOnly))
@@ -502,12 +606,16 @@ namespace TMTControls.TMTPanels
                     arg.ChangedDataSet.Tables.Add(changedData);
                 }
 
-                foreach (TMTDataGridView childDataGridView in this._childDataGridViewList)
+                var childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
+                if (childDataGridViewList.Count > 0)
                 {
-                    changedData = childDataGridView.GetDataSourceTableChanges();
-                    if (changedData != null && changedData.Rows.Count > 0)
+                    foreach (TMTDataGridView childDataGridView in childDataGridViewList)
                     {
-                        arg.ChangedDataSet.Tables.Add(changedData);
+                        changedData = childDataGridView.GetDataSourceTableChanges();
+                        if (changedData != null && changedData.Rows.Count > 0)
+                        {
+                            arg.ChangedDataSet.Tables.Add(changedData);
+                        }
                     }
                 }
 
@@ -528,7 +636,10 @@ namespace TMTControls.TMTPanels
                 }
                 else
                 {
-                    MessageBox.Show(this, Properties.Resources.MSG_SAVE_Null, Properties.Resources.MSG_HEADER_Save, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    MessageBox.Show(this, Properties.Resources.MSG_SAVE_Null,
+                                          Properties.Resources.MSG_HEADER_Save,
+                                          MessageBoxButtons.OK,
+                                          MessageBoxIcon.Asterisk);
                 }
 
                 this._ignoreNavigatorSelectedIndexChange = false;
@@ -628,9 +739,10 @@ namespace TMTControls.TMTPanels
                         {
                             this._isChildDataSourceTablesLoading = true;
 
-                            if (this._childDataGridViewList.Count > 0)
+                            var childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
+                            if (childDataGridViewList.Count > 0)
                             {
-                                foreach (TMTDataGridView childDataGridView in this._childDataGridViewList)
+                                foreach (TMTDataGridView childDataGridView in childDataGridViewList)
                                 {
                                     childDataGridView.DataSourceTable = arg.ChangedDataSet.Tables[childDataGridView.ViewName];
                                     childDataGridView.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
@@ -693,8 +805,28 @@ namespace TMTControls.TMTPanels
 
         private void childDataGridView_GotFocus(object sender, EventArgs e)
         {
-            this._focusedChildDataGridView = sender as TMTDataGridView;
-            tmtButtonColumnManager.Enabled = true;
+            if (sender is TMTDataGridView gridView)
+            {
+                if (gridView.Visible)
+                {
+                    this._focusedChildDataGridView = gridView;
+                    tmtButtonColumnManager.Enabled = true;
+                    tmtButtonAdd.Enabled = this._focusedChildDataGridView.AddDataAllowed && this.DataSourceTable.Rows.Count > 0;
+                }
+            }
+        }
+
+        private void ChildDataGridView_VisibleChanged(object sender, EventArgs e)
+        {
+            if (sender is TMTDataGridView gridView)
+            {
+                if (gridView.Visible)
+                {
+                    this._focusedChildDataGridView = gridView;
+                    tmtButtonColumnManager.Enabled = true;
+                    tmtButtonAdd.Enabled = this._focusedChildDataGridView.AddDataAllowed && this.DataSourceTable.Rows.Count > 0;
+                }
+            }
         }
 
         private void childDataGridView_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
@@ -716,9 +848,10 @@ namespace TMTControls.TMTPanels
         private void ClearChildDataGridViews(bool enable)
         {
             this._isDataGridViewDataClear = true;
-            if (this._childDataGridViewList.Count > 0)
+            var childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
+            if (childDataGridViewList.Count > 0)
             {
-                foreach (TMTDataGridView childDataGridView in this._childDataGridViewList)
+                foreach (TMTDataGridView childDataGridView in childDataGridViewList)
                 {
                     if (childDataGridView.DataSourceTable != null)
                     {
@@ -728,36 +861,6 @@ namespace TMTControls.TMTPanels
                 }
             }
             this._isDataGridViewDataClear = false;
-        }
-
-        private void GetLovSelectedRow(LovLoadingEventArgs rowEvent)
-        {
-            try
-            {
-                if (LovLoading != null)
-                {
-                    LovLoading(this, rowEvent);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_LoadError);
-            }
-        }
-
-        private void SetLovSelectedRow(LovLoadedEventArgs rowEvent)
-        {
-            try
-            {
-                if (LovLoaded != null)
-                {
-                    LovLoaded(this, rowEvent);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
-            }
         }
 
         private void SetTMTControlDataBindings()
@@ -771,7 +874,8 @@ namespace TMTControls.TMTPanels
             {
                 sourceInfor = tmtControl.GetDataSourceInformation();
 
-                if (string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
+                if (sourceInfor != null &&
+                    string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
                 {
                     if (tmtControl is NumericUpDown ||
                         tmtControl is DateTimePicker)
@@ -797,47 +901,16 @@ namespace TMTControls.TMTPanels
 
         private void SetTMTControlLovEvents()
         {
-            this._childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
-            if (this._childDataGridViewList.Count > 0)
+            var childDataGridViewList = this.panelControlContainer.GetChildDataGridViewList();
+            if (childDataGridViewList.Count > 0)
             {
-                foreach (TMTDataGridView childDataGridView in this._childDataGridViewList)
+                foreach (TMTDataGridView childDataGridView in childDataGridViewList)
                 {
                     childDataGridView.CellValueChanged += childDataGridView_CellValueChanged;
                     childDataGridView.RowsRemoved += childDataGridView_RowsRemoved;
                     childDataGridView.RowsAdded += childDataGridView_RowsAdded;
                     childDataGridView.GotFocus += childDataGridView_GotFocus;
-                }
-            }
-
-            TMTDataSourceInformation sourceInfor;
-            foreach (Control tmtControl in this.panelControlContainer.Controls)
-            {
-                if (tmtControl.Visible)
-                {
-                    if (tmtControl is NumericUpDown ||
-                        tmtControl is TextBox)
-                    {
-                        sourceInfor = tmtControl.GetDataSourceInformation();
-
-                        if (string.IsNullOrWhiteSpace(sourceInfor.LovViewName) == false)
-                        {
-                            tmtControl.Validated += tmtControl_Validated;
-                        }
-                    }
-                    else if (tmtControl is TMTButtonLov)
-                    {
-                        tmtControl.Click += TMTButtonLov_Click;
-                    }
-                    else if (tmtControl is TMTTextButtonBox)
-                    {
-                        (tmtControl as TMTTextButtonBox).ButtonClick += TMTTextButtonBox_ButtonClick;
-                        sourceInfor = tmtControl.GetDataSourceInformation();
-
-                        if (string.IsNullOrWhiteSpace(sourceInfor.LovViewName) == false)
-                        {
-                            tmtControl.Validated += tmtControl_Validated;
-                        }
-                    }
+                    childDataGridView.VisibleChanged += ChildDataGridView_VisibleChanged;
                 }
             }
         }
@@ -855,173 +928,6 @@ namespace TMTControls.TMTPanels
                 cancelSave = true;
             }
             return cancelSave;
-        }
-
-        private void TMTButtonLov_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                TMTButtonLov tmtButton = sender as TMTButtonLov;
-                if (tmtButton.ConnectedBox != null)
-                {
-                    if (this._lovDialog == null)
-                    {
-                        this._lovDialog = new TMTLOVDialog();
-                    }
-
-                    TMTDataSourceInformation sourceInfor = tmtButton.ConnectedBox.GetDataSourceInformation();
-
-                    LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
-                    lovEvent.IsValidate = false;
-                    lovEvent.PrimaryColumnName = sourceInfor.DbColumnName;
-                    lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
-                    lovEvent.LovViewName = sourceInfor.LovViewName;
-
-                    this.GetLovSelectedRow(lovEvent);
-
-                    this._lovDialog.SetDataSourceTable(lovEvent.LovDataTable);
-
-                    if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
-                    {
-                        LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs();
-                        lovLoaded.SelectedRow = this._lovDialog.SelectedRow;
-                        lovLoaded.PrimaryColumnName = sourceInfor.DbColumnName;
-
-                        if (tmtButton.ConnectedBox is TMTTextBox)
-                        {
-                            TMTTextBox textBox = tmtButton.ConnectedBox as TMTTextBox;
-                            textBox.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
-                            textBox.LovText = textBox.Text;
-                        }
-                        else if (tmtButton.ConnectedBox is NumericUpDown)
-                        {
-                            (tmtButton.ConnectedBox as NumericUpDown).Value = Convert.ToDecimal(lovLoaded.SelectedRow[lovEvent.PrimaryColumnName]);
-                        }
-
-                        tmtButton.ConnectedBox.CausesValidation = true;
-                        tmtButton.ConnectedBox.Focus();
-
-                        this.SetLovSelectedRow(lovLoaded);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show(this, Properties.Resources.DESIN_ERROR_NoConnectedControl, Properties.Resources.DESIN_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
-            }
-        }
-
-        private void TMTTextButtonBox_ButtonClick(object sender, EventArgs e)
-        {
-            try
-            {
-                TMTTextButtonBox tmtTextButton = sender as TMTTextButtonBox;
-
-                if (this._lovDialog == null)
-                {
-                    this._lovDialog = new TMTLOVDialog();
-                }
-
-                TMTDataSourceInformation sourceInfor = tmtTextButton.GetDataSourceInformation();
-
-                LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
-                lovEvent.IsValidate = false;
-                lovEvent.PrimaryColumnName = sourceInfor.DbColumnName;
-                lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
-                lovEvent.LovViewName = sourceInfor.LovViewName;
-
-                this.GetLovSelectedRow(lovEvent);
-
-                this._lovDialog.SetDataSourceTable(lovEvent.LovDataTable);
-
-                if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs();
-                    lovLoaded.SelectedRow = this._lovDialog.SelectedRow;
-                    lovLoaded.PrimaryColumnName = sourceInfor.DbColumnName;
-
-                    tmtTextButton.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
-                    tmtTextButton.LovText = tmtTextButton.Text;
-
-                    tmtTextButton.CausesValidation = true;
-                    tmtTextButton.Focus();
-
-                    this.SetLovSelectedRow(lovLoaded);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
-            }
-        }
-
-        private void tmtControl_GotFocus(object sender, EventArgs e)
-        {
-            this._focusedChildDataGridView = null;
-            tmtButtonColumnManager.Enabled = false;
-        }
-
-        private void tmtControl_TextChanged(object sender, EventArgs e)
-        {
-            if (this._isHeaderDataSourceTableLoading == false &&
-                this._ignoreNavigatorSelectedIndexChange == false)
-            {
-                this.OnDataChanged();
-            }
-        }
-
-        private void tmtControl_Validated(object sender, EventArgs e)
-        {
-            try
-            {
-                Control tmtControl = sender as Control;
-                TMTDataSourceInformation sourceInfor = tmtControl.GetDataSourceInformation();
-
-                if (string.IsNullOrWhiteSpace(sourceInfor.LovViewName) == false)
-                {
-                    if (sourceInfor.LovText != tmtControl.Text)
-                    {
-                        LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
-                        lovEvent.IsValidate = true;
-                        lovEvent.PrimaryColumnName = sourceInfor.DbColumnName;
-                        lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
-                        lovEvent.LovViewName = sourceInfor.LovViewName;
-
-                        this.GetLovSelectedRow(lovEvent);
-
-                        bool dataFound = (lovEvent.LovDataTable != null && lovEvent.LovDataTable.Rows.Count == 1);
-                        if (dataFound)
-                        {
-                            LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs();
-
-                            DataRow selectedDataRow = lovEvent.LovDataTable.Rows[0];
-                            Dictionary<string, Object> selectedRow = new Dictionary<string, object>();
-                            foreach (DataColumn col in lovEvent.LovDataTable.Columns)
-                            {
-                                selectedRow.Add(col.ColumnName, selectedDataRow[col]);
-                            }
-                            lovLoaded.SelectedRow = selectedRow;
-                            lovLoaded.PrimaryColumnName = lovEvent.PrimaryColumnName;
-
-                            this.SetLovSelectedRow(lovLoaded);
-                        }
-
-                        this.BackColor = (dataFound) ? Color.Empty : Color.Red;
-                    }
-                    else
-                    {
-                        this.BackColor = Color.Empty;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
-            }
         }
 
         private void tmtNavigator_SelectedIndexChanged(object sender, EventArgs e)
@@ -1049,6 +955,17 @@ namespace TMTControls.TMTPanels
                     progressBarMain.Visible = false;
                     this.UseWaitCursor = false;
                 }
+            }
+        }
+
+        private void TMTPanelForm_DataLoaded(object sender, EventArgs e)
+        {
+            if (this.DataSourceTable == null || this.DataSourceTable.Rows.Count == 0)
+            {
+                MessageBox.Show(this, Properties.Resources.Exclamation_NoDataFoundText,
+                                      Properties.Resources.Exclamation_NoDataFound,
+                                      MessageBoxButtons.OK,
+                                      MessageBoxIcon.Asterisk);
             }
         }
     }

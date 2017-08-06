@@ -44,18 +44,20 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(48, 105);
+            this.label2.Location = new System.Drawing.Point(42, 114);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(82, 20);
+            this.label2.Size = new System.Drawing.Size(88, 20);
             this.label2.TabIndex = 1;
             this.label2.Text = "Password:";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(47, 169);
+            this.label5.Location = new System.Drawing.Point(41, 179);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(83, 20);
+            this.label5.Size = new System.Drawing.Size(86, 20);
             this.label5.TabIndex = 4;
             this.label5.Text = "Database:";
             // 
@@ -64,10 +66,11 @@
             this.textBoxDatabaseName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxDatabaseName.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::TMTControls.Properties.Settings.Default, "DatabaseName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxDatabaseName.Location = new System.Drawing.Point(136, 166);
+            this.textBoxDatabaseName.Location = new System.Drawing.Point(142, 175);
+            this.textBoxDatabaseName.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxDatabaseName.Name = "textBoxDatabaseName";
-            this.textBoxDatabaseName.Size = new System.Drawing.Size(308, 26);
-            this.textBoxDatabaseName.TabIndex = 9;
+            this.textBoxDatabaseName.Size = new System.Drawing.Size(336, 27);
+            this.textBoxDatabaseName.TabIndex = 4;
             this.textBoxDatabaseName.Text = global::TMTControls.Properties.Settings.Default.DatabaseName;
             // 
             // labelHeader
@@ -81,7 +84,7 @@
             this.labelHeader.Location = new System.Drawing.Point(0, 0);
             this.labelHeader.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHeader.Name = "labelHeader";
-            this.labelHeader.Size = new System.Drawing.Size(492, 60);
+            this.labelHeader.Size = new System.Drawing.Size(494, 75);
             this.labelHeader.TabIndex = 11;
             this.labelHeader.Text = "Login";
             this.labelHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -89,9 +92,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(37, 73);
+            this.label1.Location = new System.Drawing.Point(34, 81);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 20);
+            this.label1.Size = new System.Drawing.Size(99, 20);
             this.label1.TabIndex = 13;
             this.label1.Text = "User Name:";
             // 
@@ -103,10 +107,11 @@
             this.tmtButtonLogin.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonLogin.FlatAppearance.BorderSize = 0;
             this.tmtButtonLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tmtButtonLogin.Location = new System.Drawing.Point(405, 201);
+            this.tmtButtonLogin.Location = new System.Drawing.Point(418, 206);
+            this.tmtButtonLogin.Margin = new System.Windows.Forms.Padding(2);
             this.tmtButtonLogin.Name = "tmtButtonLogin";
-            this.tmtButtonLogin.Size = new System.Drawing.Size(75, 30);
-            this.tmtButtonLogin.TabIndex = 15;
+            this.tmtButtonLogin.Size = new System.Drawing.Size(62, 34);
+            this.tmtButtonLogin.TabIndex = 5;
             this.tmtButtonLogin.Text = "OK";
             this.tmtButtonLogin.UseVisualStyleBackColor = false;
             this.tmtButtonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
@@ -114,9 +119,10 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(71, 137);
+            this.label3.Location = new System.Drawing.Point(61, 146);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 20);
+            this.label3.Size = new System.Drawing.Size(63, 20);
             this.label3.TabIndex = 16;
             this.label3.Text = "Server:";
             // 
@@ -124,10 +130,11 @@
             // 
             this.textBoxPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPort.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::TMTControls.Properties.Settings.Default, "DatabaseServerPort", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxPort.Location = new System.Drawing.Point(375, 134);
+            this.textBoxPort.Location = new System.Drawing.Point(400, 142);
+            this.textBoxPort.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxPort.Name = "textBoxPort";
-            this.textBoxPort.Size = new System.Drawing.Size(69, 26);
-            this.textBoxPort.TabIndex = 18;
+            this.textBoxPort.Size = new System.Drawing.Size(79, 27);
+            this.textBoxPort.TabIndex = 3;
             this.textBoxPort.Text = global::TMTControls.Properties.Settings.Default.DatabaseServerPort;
             // 
             // textBoxServer
@@ -135,10 +142,11 @@
             this.textBoxServer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxServer.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::TMTControls.Properties.Settings.Default, "DatabaseServerName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxServer.Location = new System.Drawing.Point(136, 134);
+            this.textBoxServer.Location = new System.Drawing.Point(142, 142);
+            this.textBoxServer.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxServer.Name = "textBoxServer";
-            this.textBoxServer.Size = new System.Drawing.Size(233, 26);
-            this.textBoxServer.TabIndex = 17;
+            this.textBoxServer.Size = new System.Drawing.Size(252, 27);
+            this.textBoxServer.TabIndex = 2;
             this.textBoxServer.Text = global::TMTControls.Properties.Settings.Default.DatabaseServerName;
             // 
             // textBoxUserId
@@ -146,10 +154,11 @@
             this.textBoxUserId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxUserId.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::TMTControls.Properties.Settings.Default, "LogInUserId", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxUserId.Location = new System.Drawing.Point(136, 70);
+            this.textBoxUserId.Location = new System.Drawing.Point(142, 78);
+            this.textBoxUserId.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxUserId.Name = "textBoxUserId";
-            this.textBoxUserId.Size = new System.Drawing.Size(308, 26);
-            this.textBoxUserId.TabIndex = 14;
+            this.textBoxUserId.Size = new System.Drawing.Size(336, 27);
+            this.textBoxUserId.TabIndex = 0;
             this.textBoxUserId.Text = global::TMTControls.Properties.Settings.Default.LogInUserId;
             // 
             // textBoxPassword
@@ -157,20 +166,21 @@
             this.textBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPassword.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::TMTControls.Properties.Settings.Default, "LogInPassword", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxPassword.Location = new System.Drawing.Point(136, 102);
+            this.textBoxPassword.Location = new System.Drawing.Point(142, 110);
+            this.textBoxPassword.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxPassword.Name = "textBoxPassword";
-            this.textBoxPassword.Size = new System.Drawing.Size(308, 26);
-            this.textBoxPassword.TabIndex = 6;
+            this.textBoxPassword.Size = new System.Drawing.Size(336, 27);
+            this.textBoxPassword.TabIndex = 1;
             this.textBoxPassword.Text = global::TMTControls.Properties.Settings.Default.LogInPassword;
             this.textBoxPassword.UseSystemPasswordChar = true;
             // 
             // TMTDatabaseLoginDialog
             // 
             this.AcceptButton = this.tmtButtonLogin;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(492, 243);
+            this.ClientSize = new System.Drawing.Size(494, 254);
             this.Controls.Add(this.textBoxPort);
             this.Controls.Add(this.textBoxServer);
             this.Controls.Add(this.label3);
@@ -182,8 +192,8 @@
             this.Controls.Add(this.textBoxPassword);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label2);
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "TMTDatabaseLoginDialog";

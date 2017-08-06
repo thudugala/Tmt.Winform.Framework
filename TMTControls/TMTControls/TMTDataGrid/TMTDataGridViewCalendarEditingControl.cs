@@ -5,10 +5,6 @@ namespace TMTControls.TMTDataGrid
 {
     public class TMTDataGridViewCalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
     {
-        private DataGridView dataGridView;
-        private bool valueChanged = false;
-        private int rowIndex;
-
         public TMTDataGridViewCalendarEditingControl()
         {
             InitializeComponent();
@@ -63,17 +59,7 @@ namespace TMTControls.TMTDataGrid
 
         // Implements the IDataGridViewEditingControl.EditingControlRowIndex
         // property.
-        public int EditingControlRowIndex
-        {
-            get
-            {
-                return rowIndex;
-            }
-            set
-            {
-                rowIndex = value;
-            }
-        }
+        public int EditingControlRowIndex { get; set; }
 
         // Implements the IDataGridViewEditingControl.EditingControlWantsInputKey
         // method.
@@ -117,31 +103,11 @@ namespace TMTControls.TMTDataGrid
 
         // Implements the IDataGridViewEditingControl
         // .EditingControlDataGridView property.
-        public DataGridView EditingControlDataGridView
-        {
-            get
-            {
-                return dataGridView;
-            }
-            set
-            {
-                dataGridView = value;
-            }
-        }
+        public DataGridView EditingControlDataGridView { get; set; }
 
         // Implements the IDataGridViewEditingControl
         // .EditingControlValueChanged property.
-        public bool EditingControlValueChanged
-        {
-            get
-            {
-                return valueChanged;
-            }
-            set
-            {
-                valueChanged = value;
-            }
-        }
+        public bool EditingControlValueChanged { get; set; }
 
         // Implements the IDataGridViewEditingControl
         // .EditingPanelCursor property.
@@ -153,13 +119,27 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        protected override void OnValueChanged(EventArgs eventargs)
+        protected override void OnValueChanged(EventArgs e)
         {
-            // Notify the DataGridView that the contents of the cell
-            // have changed.
-            EditingControlValueChanged = true;
-            this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
-            base.OnValueChanged(eventargs);
+            base.OnValueChanged(e);
+            if (this.Focused)
+            {
+                // Let the DataGridView know about the value change
+                NotifyDataGridViewOfValueChange();
+            }
+        }
+
+        /// <summary>
+        /// Small utility function that updates the local dirty state and
+        /// notifies the grid of the value change.
+        /// </summary>
+        private void NotifyDataGridViewOfValueChange()
+        {
+            if (this.EditingControlValueChanged == false)
+            {
+                this.EditingControlValueChanged = true;
+                this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
+            }
         }
 
         private void InitializeComponent()

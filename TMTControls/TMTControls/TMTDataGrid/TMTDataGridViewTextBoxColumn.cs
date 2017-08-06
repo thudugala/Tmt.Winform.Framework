@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewTextBoxColumn : DataGridViewTextBoxColumn
+    public class TMTDataGridViewTextBoxColumn : DataGridViewTextBoxColumn, ITMTDataGridViewColumn
     {
         public TMTDataGridViewTextBoxColumn()
         {
@@ -19,7 +19,7 @@ namespace TMTControls.TMTDataGrid
         [Category("Design"), DefaultValue("lk")]
         public string CountryCode { get; set; }
 
-        [Category("Data"), DefaultValue(TypeCode.String)]
+        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
             get
@@ -32,53 +32,20 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("LOV Data")]
-        public string LOVViewName
-        {
-            get
-            {
-                return this.GetDataSourceInformation().LovViewName;
-            }
-            set
-            {
-                this.GetDataSourceInformation().LovViewName = value;
-            }
-        }
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool DataPropertyPrimaryKey { get; set; }
 
         public override object Clone()
         {
             TMTDataGridViewTextBoxColumn that = (TMTDataGridViewTextBoxColumn)base.Clone();
 
             that.DataPropertyType = this.DataPropertyType;
-            that.LOVViewName = this.LOVViewName;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+
             that.ValidateType = this.ValidateType;
             that.CountryCode = this.CountryCode;
 

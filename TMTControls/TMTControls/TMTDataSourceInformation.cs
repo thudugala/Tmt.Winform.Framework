@@ -10,15 +10,16 @@ namespace TMTControls
             this.DbColumnType = TypeCode.Empty;
             this.DbColumnName = string.Empty;
             this.DbLabelText = string.Empty;
-            this.KeyColum = false;
-            this.MandatoryColum = false;
+            this.KeyColumn = false;
+            this.MandatoryColumn = false;
             this.LovViewName = string.Empty;
             this.LovText = string.Empty;
 
             this.FalseValue = "FALSE";
-            this.IndetetermibateValue = "FALSE";
+            this.IndeterminateValue = "FALSE";
             this.TrueValue = "TRUE";
             this.DbValue = string.Empty;
+            this.IsFuntion = false;
         }
 
         public string DbColumnName { get; set; }
@@ -26,19 +27,25 @@ namespace TMTControls
         public string DbLabelText { get; set; }
 
         [DefaultValue(false)]
-        public bool KeyColum { get; set; }
+        public bool KeyColumn { get; set; }
 
         public string LovText { get; set; }
 
         public string LovViewName { get; set; }
 
         [DefaultValue(false)]
-        public bool MandatoryColum { get; set; }
+        public bool MandatoryColumn { get; set; }
+
+        [DefaultValue(false)]
+        public bool EditAllowed { get; set; }
 
         public string FalseValue { get; set; }
-        public string IndetetermibateValue { get; set; }
+        public string IndeterminateValue { get; set; }
         public string TrueValue { get; set; }
         public string DbValue { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsFuntion { get; set; }
 
         public Type GetDbColumnType()
         {

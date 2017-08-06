@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewCalendarColumn : DataGridViewColumn
+    public class TMTDataGridViewCalendarColumn : DataGridViewColumn, ITMTDataGridViewColumn
     {
         public TMTDataGridViewCalendarColumn()
             : base(new TMTDataGridViewCalendarCell())
@@ -35,42 +35,22 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("LOV Data")]
-        public string LOVViewName
-        {
-            get
-            {
-                return this.GetDataSourceInformation().LovViewName;
-            }
-            set
-            {
-                this.GetDataSourceInformation().LovViewName = value;
-            }
-        }
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
+        public bool DataPropertyPrimaryKey { get; set; }
 
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey
+        [Category("Data"), DefaultValue(TypeCode.DateTime)]
+        public TypeCode DataPropertyType
         {
             get
             {
-                return this.GetDataSourceInformation().KeyColum;
+                return Type.GetTypeCode(base.ValueType);
             }
             set
             {
-                this.GetDataSourceInformation().KeyColum = value;
+                base.ValueType = Type.GetType("System." + value);
             }
         }
 
@@ -78,7 +58,6 @@ namespace TMTControls.TMTDataGrid
         {
             TMTDataGridViewCalendarColumn that = (TMTDataGridViewCalendarColumn)base.Clone();
 
-            that.LOVViewName = this.LOVViewName;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
 

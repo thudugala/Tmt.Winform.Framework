@@ -41,6 +41,7 @@
             this.panelButtons = new System.Windows.Forms.Panel();
             this.tmtButtonClear = new TMTControls.TMTButton();
             this.panelMain.SuspendLayout();
+            this.panelTop.SuspendLayout();
             this.panelButtons.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -191,7 +192,7 @@
             this.progressBarMain.Location = new System.Drawing.Point(54, 517);
             this.progressBarMain.Margin = new System.Windows.Forms.Padding(0);
             this.progressBarMain.Name = "progressBarMain";
-            this.progressBarMain.Size = new System.Drawing.Size(746, 23);
+            this.progressBarMain.Size = new System.Drawing.Size(746, 29);
             this.progressBarMain.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBarMain.TabIndex = 3;
             this.progressBarMain.Visible = false;
@@ -226,12 +227,11 @@
             this.panelButtons.Location = new System.Drawing.Point(0, 0);
             this.panelButtons.Margin = new System.Windows.Forms.Padding(0);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(54, 540);
+            this.panelButtons.Size = new System.Drawing.Size(54, 546);
             this.panelButtons.TabIndex = 0;
             // 
             // tmtButtonClear
             // 
-            this.tmtButtonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tmtButtonClear.AutoSize = true;
             this.tmtButtonClear.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tmtButtonClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
@@ -251,8 +251,7 @@
             // 
             // TMTPanelV2
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Name = "TMTPanelV2";
             this.DataAdded += new System.EventHandler(this.TMTPanel_DataAdded);
             this.DataChanged += new System.EventHandler(this.TMTPanel_DataChanged);
@@ -261,6 +260,7 @@
             this.DataCleared += new System.EventHandler(this.TMTPanelV2_DataCleared);
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
+            this.panelTop.ResumeLayout(false);
             this.panelButtons.ResumeLayout(false);
             this.panelButtons.PerformLayout();
             this.ResumeLayout(false);

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewReadOnlyTextBoxColumn : DataGridViewTextBoxColumn
+    public class TMTDataGridViewReadOnlyTextBoxColumn : DataGridViewTextBoxColumn, ITMTDataGridViewColumn
     {
         public TMTDataGridViewReadOnlyTextBoxColumn()
         {
@@ -37,45 +37,18 @@ namespace TMTControls.TMTDataGrid
         }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool DataPropertyPrimaryKey { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
+        public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyEditAllowed
-        {
-            get
-            {
-                return this.GetDataSourceInformation().EditAllowed;
-            }
-            set
-            {
-                this.GetDataSourceInformation().EditAllowed = value;
-            }
-        }
+        public bool DataPropertyEditAllowed { get; set; }
 
-        [Category("Data"), DefaultValue(TypeCode.String)]
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyIsFuntion { get; set; }
+
+        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
             get
@@ -85,24 +58,12 @@ namespace TMTControls.TMTDataGrid
             set
             {
                 base.ValueType = Type.GetType("System." + value);
-                if (value == TypeCode.Decimal)
+                if (value == TypeCode.Decimal ||
+                    value == TypeCode.Double)
                 {
                     this.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                     this.DefaultCellStyle.Format = "N2";
                 }
-            }
-        }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyIsFuntion
-        {
-            get
-            {
-                return this.GetDataSourceInformation().IsFuntion;
-            }
-            set
-            {
-                this.GetDataSourceInformation().IsFuntion = value;
             }
         }
 

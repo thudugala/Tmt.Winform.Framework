@@ -185,6 +185,15 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data Error at Column: {0}, Row: {1}.
+        /// </summary>
+        public static string ERROR_CellDataError {
+            get {
+                return ResourceManager.GetString("ERROR_CellDataError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Cell Validation.
         /// </summary>
         public static string ERROR_CellValidation {
@@ -320,6 +329,15 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Loading Panel.
+        /// </summary>
+        public static string ERROR_PanelLoadIssue {
+            get {
+                return ResourceManager.GetString("ERROR_PanelLoadIssue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error reloading data to the window.
         /// </summary>
         public static string ERROR_ReLoadingData {
@@ -388,6 +406,24 @@ namespace TMTControls.Properties {
         public static string Exclamation_MandatoryValueEmpty {
             get {
                 return ResourceManager.GetString("Exclamation_MandatoryValueEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Data found.
+        /// </summary>
+        public static string Exclamation_NoDataFound {
+            get {
+                return ResourceManager.GetString("Exclamation_NoDataFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Data found, Try changing search condition. .
+        /// </summary>
+        public static string Exclamation_NoDataFoundText {
+            get {
+                return ResourceManager.GetString("Exclamation_NoDataFoundText", resourceCulture);
             }
         }
         

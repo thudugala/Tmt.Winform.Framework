@@ -4,14 +4,15 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewComboBoxColumn : DataGridViewComboBoxColumn
+    public class TMTDataGridViewComboBoxColumn : DataGridViewComboBoxColumn, ITMTDataGridViewColumn
     {
         public TMTDataGridViewComboBoxColumn()
         {
             this.FlatStyle = FlatStyle.Flat;
+            base.ValueType = typeof(string);
         }
 
-        [Category("Data")]
+        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
             get
@@ -25,30 +26,10 @@ namespace TMTControls.TMTDataGrid
         }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
+        public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool DataPropertyPrimaryKey { get; set; }
 
         public override object Clone()
         {

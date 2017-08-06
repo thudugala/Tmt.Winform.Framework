@@ -4,14 +4,14 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewCheckBoxColumn : DataGridViewCheckBoxColumn
+    public class TMTDataGridViewCheckBoxColumn : DataGridViewCheckBoxColumn, ITMTDataGridViewColumn
     {
         public TMTDataGridViewCheckBoxColumn()
         {
             base.ValueType = typeof(string);
         }
 
-        [Category("Data")]
+        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
             get
@@ -25,17 +25,10 @@ namespace TMTControls.TMTDataGrid
         }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
+        public bool DataPropertyMandatory { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyPrimaryKey { get; set; }
 
         public override object Clone()
         {
@@ -43,6 +36,7 @@ namespace TMTControls.TMTDataGrid
 
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
+            that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
 
             return that;
         }

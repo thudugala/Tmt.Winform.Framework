@@ -18,6 +18,18 @@ namespace TMTControls
             InitializeComponent();
         }
 
+        public string HeaderLabel
+        {
+            get
+            {
+                return labelHeader.Text;
+            }
+            set
+            {
+                labelHeader.Text = value;
+            }
+        }
+
         public void SetDataSourceTable(DataTable table)
         {
             tmtDataGridViewMain.SetTheme();
@@ -25,6 +37,8 @@ namespace TMTControls
             tmtDataGridViewMain.DataSourceTable = table;
             if (tmtDataGridViewMain.DataSourceTable != null)
             {
+                Dictionary<string, string> colType = this.GetColumnTypeDictionary();
+
                 this.SelectedRow = new Dictionary<string, object>();
 
                 tmtDataGridViewMain.Columns.Clear();
@@ -32,13 +46,20 @@ namespace TMTControls
                 searchDialog = new TMTSearchDialog();
                 searchDialog.EntityList.Clear();
 
-                TMTSearchDialog.SearchEntity searchEntity;
                 DataGridViewColumn vCol;
                 foreach (DataColumn dCol in tmtDataGridViewMain.DataSourceTable.Columns)
                 {
-                    if (typeof(byte[]).FullName == dCol.DataType.FullName)
+                    if (colType[dCol.ColumnName] == typeof(byte[]).FullName)
                     {
                         vCol = new DataGridViewImageColumn();
+                    }
+                    else if (colType[dCol.ColumnName] == "ENUM_BOOLEAN")
+                    {
+                        vCol = new DataGridViewCheckBoxColumn();
+                        var checkVCol = (vCol as DataGridViewCheckBoxColumn);
+                        checkVCol.FalseValue = "FALSE";
+                        checkVCol.TrueValue = "TRUE";
+                        checkVCol.IndeterminateValue = "FALSE";
                     }
                     else
                     {
@@ -55,18 +76,36 @@ namespace TMTControls
                     this.SelectedRow.Add(dCol.Caption, string.Empty);
 
                     tmtDataGridViewMain.Columns.Add(vCol);
-
-                    searchEntity = new TMTSearchDialog.SearchEntity();
-                    searchEntity.Caption = vCol.HeaderText;
-                    searchEntity.ColumnName = dCol.ColumnName;
-                    searchEntity.DataType = dCol.DataType;
-
-                    searchDialog.EntityList.Add(searchEntity);
                 }
                 tmtDataGridViewMain.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
 
                 buttonSearch.Enabled = (tmtDataGridViewMain.DataSourceTable.Rows.Count > 1);
             }
+        }
+
+        private Dictionary<string, string> GetColumnTypeDictionary()
+        {
+            Dictionary<string, string> colType = new Dictionary<string, string>();
+
+            DataTable sourceTable = tmtDataGridViewMain.DataSourceTable;
+
+            List<string> enumBoolean = new List<string> { "TRUE", "FALSE" };
+
+            foreach (DataColumn dCol in sourceTable.Columns)
+            {
+                colType.Add(dCol.ColumnName, dCol.DataType.FullName);
+
+                if (typeof(string).FullName == dCol.DataType.FullName)
+                {
+                    var distinctValueList = sourceTable.Rows.Cast<DataRow>().Select(r => r[dCol.ColumnName]).Where(i => i.GetType() != typeof(DBNull)).Cast<string>().Distinct().ToList();
+                    if (distinctValueList.Intersect(enumBoolean).Any())
+                    {
+                        colType[dCol.ColumnName] = "ENUM_BOOLEAN";
+                    }
+                }
+            }
+
+            return colType;
         }
 
         private static string GetHeaderText(string orginalText)
@@ -90,7 +129,7 @@ namespace TMTControls
                         this.SelectedRow[key] = row.Cells["col" + key].Value;
                     }
 
-                    this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                    this.DialogResult = DialogResult.OK;
                 }
             }
             catch
@@ -103,6 +142,28 @@ namespace TMTControls
         {
             try
             {
+                if (searchDialog.EntityList == null || searchDialog.EntityList.Count == 0)
+                {
+                    TMTSearchDialog.SearchEntity searchEntity;
+                    foreach (DataGridViewColumn vCol in tmtDataGridViewMain.Columns)
+                    {
+                        searchEntity = new TMTSearchDialog.SearchEntity()
+                        {
+                            Caption = vCol.HeaderText,
+                            ColumnName = vCol.DataPropertyName,
+                            DataType = tmtDataGridViewMain.DataSourceTable.Columns[vCol.DataPropertyName].DataType
+                        };
+                        if (vCol is DataGridViewCheckBoxColumn checkVCol)
+                        {
+                            searchEntity.IsCheckBox = true;
+                            searchEntity.FalseValue = checkVCol.FalseValue;
+                            searchEntity.TrueValue = checkVCol.TrueValue;
+                            searchEntity.IndeterminateValue = checkVCol.IndeterminateValue;
+                        }
+                        searchDialog.EntityList.Add(searchEntity);
+                    }
+                }
+
                 if (searchDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     string filter = string.Empty;
@@ -197,7 +258,7 @@ namespace TMTControls
         {
             try
             {
-                if (e.Button == System.Windows.Forms.MouseButtons.Left &&
+                if (e.Button == MouseButtons.Left &&
                     e.Clicks == 2)
                 {
                     buttonOK.PerformClick();
@@ -243,7 +304,7 @@ namespace TMTControls
 
         private void buttonCancel_Click(object sender, EventArgs e)
         {
-            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.DialogResult = DialogResult.Cancel;
         }
     }
 }

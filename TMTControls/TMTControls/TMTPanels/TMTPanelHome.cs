@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTPanels
@@ -16,9 +17,15 @@ namespace TMTControls.TMTPanels
             InitializeComponent();
         }
 
+        private void TMTPanelHome_Load(object sender, EventArgs e)
+        {
+            this.InitializeTileButtons();
+        }
+
         public class TileButtonClickedEventArgs : EventArgs
         {
-            public string PanelName { get; set; }
+            public string PanelFullName { get; set; }
+            public Assembly AssemblyOfType { get; set; }
         }
 
         public void InitializeTileButtons()
@@ -29,7 +36,6 @@ namespace TMTControls.TMTPanels
                 if (childControl is TMTTileButton)
                 {
                     tileButton = childControl as TMTTileButton;
-                    //tileButton.SetTheme();
                     if (string.IsNullOrWhiteSpace(tileButton.PanelName) == false)
                     {
                         tileButton.Click += tileButton_Click;
@@ -42,9 +48,13 @@ namespace TMTControls.TMTPanels
         {
             if (TileButtonClicked != null)
             {
-                TileButtonClickedEventArgs arg = new TileButtonClickedEventArgs();
-                arg.PanelName = (sender as TMTTileButton).PanelName;
+                TMTTileButton myButton = sender as TMTTileButton;
 
+                TileButtonClickedEventArgs arg = new TileButtonClickedEventArgs()
+                {
+                    AssemblyOfType = this.GetType().Assembly,
+                    PanelFullName = string.Format("{0}.{1}", this.GetType().Namespace, myButton.PanelName)
+                };
                 TileButtonClicked(this, arg);
             }
         }

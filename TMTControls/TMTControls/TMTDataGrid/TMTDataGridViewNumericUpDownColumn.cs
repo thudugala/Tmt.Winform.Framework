@@ -9,9 +9,9 @@ namespace TMTControls.TMTDataGrid
     /// <summary>
     /// Custom column type dedicated to the DataGridViewNumericUpDownCell cell type.
     /// </summary>
-    public class TMTDataGridViewNumericUpDownColumn : DataGridViewColumn
+    public class TMTDataGridViewNumericUpDownColumn : DataGridViewColumn, ITMTDataGridViewColumn
     {
-        [Category("Data"), RefreshProperties(RefreshProperties.All)]
+        [Category("Data"), DefaultValue(TypeCode.Int64), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
             get
@@ -24,51 +24,17 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("LOV Data"), RefreshProperties(RefreshProperties.All)]
-        public string LOVViewName
-        {
-            get
-            {
-                return this.GetDataSourceInformation().LovViewName;
-            }
-            set
-            {
-                this.GetDataSourceInformation().LovViewName = value;
-            }
-        }
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory
-        {
-            get
-            {
-                return this.GetDataSourceInformation().MandatoryColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().MandatoryColum = value;
-            }
-        }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool DataPropertyPrimaryKey { get; set; }
 
         public override object Clone()
         {
             TMTDataGridViewNumericUpDownColumn that = (TMTDataGridViewNumericUpDownColumn)base.Clone();
 
             that.DataPropertyType = this.DataPropertyType;
-            that.LOVViewName = this.LOVViewName;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
 
@@ -146,8 +112,7 @@ namespace TMTControls.TMTDataGrid
                         // Be careful not to unshare rows unnecessarily.
                         // This could have severe performance repercussions.
                         DataGridViewRow dataGridViewRow = dataGridViewRows.SharedRow(rowIndex);
-                        TMTDataGridViewNumericUpDownCell dataGridViewCell = dataGridViewRow.Cells[this.Index] as TMTDataGridViewNumericUpDownCell;
-                        if (dataGridViewCell != null)
+                        if (dataGridViewRow.Cells[this.Index] is TMTDataGridViewNumericUpDownCell dataGridViewCell)
                         {
                             // Call the internal SetDecimalPlaces method instead of the property to avoid invalidation
                             // of each cell. The whole column is invalidated later in a single operation for better performance.
@@ -191,8 +156,7 @@ namespace TMTControls.TMTDataGrid
                     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
                     {
                         DataGridViewRow dataGridViewRow = dataGridViewRows.SharedRow(rowIndex);
-                        TMTDataGridViewNumericUpDownCell dataGridViewCell = dataGridViewRow.Cells[this.Index] as TMTDataGridViewNumericUpDownCell;
-                        if (dataGridViewCell != null)
+                        if (dataGridViewRow.Cells[this.Index] is TMTDataGridViewNumericUpDownCell dataGridViewCell)
                         {
                             dataGridViewCell.SetIncrement(rowIndex, value);
                         }
@@ -213,7 +177,8 @@ namespace TMTControls.TMTDataGrid
         [
             Category("Data"),
             Description("Indicates the maximum value for the numeric up-down cells."),
-            RefreshProperties(RefreshProperties.All)
+            RefreshProperties(RefreshProperties.All),
+            DefaultValue(100000)
         ]
         public Decimal Maximum
         {
@@ -239,8 +204,7 @@ namespace TMTControls.TMTDataGrid
                     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
                     {
                         DataGridViewRow dataGridViewRow = dataGridViewRows.SharedRow(rowIndex);
-                        TMTDataGridViewNumericUpDownCell dataGridViewCell = dataGridViewRow.Cells[this.Index] as TMTDataGridViewNumericUpDownCell;
-                        if (dataGridViewCell != null)
+                        if (dataGridViewRow.Cells[this.Index] is TMTDataGridViewNumericUpDownCell dataGridViewCell)
                         {
                             dataGridViewCell.SetMaximum(rowIndex, value);
                         }
@@ -291,8 +255,7 @@ namespace TMTControls.TMTDataGrid
                     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
                     {
                         DataGridViewRow dataGridViewRow = dataGridViewRows.SharedRow(rowIndex);
-                        TMTDataGridViewNumericUpDownCell dataGridViewCell = dataGridViewRow.Cells[this.Index] as TMTDataGridViewNumericUpDownCell;
-                        if (dataGridViewCell != null)
+                        if (dataGridViewRow.Cells[this.Index] is TMTDataGridViewNumericUpDownCell dataGridViewCell)
                         {
                             dataGridViewCell.SetMinimum(rowIndex, value);
                         }
@@ -343,8 +306,7 @@ namespace TMTControls.TMTDataGrid
                     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
                     {
                         DataGridViewRow dataGridViewRow = dataGridViewRows.SharedRow(rowIndex);
-                        TMTDataGridViewNumericUpDownCell dataGridViewCell = dataGridViewRow.Cells[this.Index] as TMTDataGridViewNumericUpDownCell;
-                        if (dataGridViewCell != null)
+                        if (dataGridViewRow.Cells[this.Index] is TMTDataGridViewNumericUpDownCell dataGridViewCell)
                         {
                             dataGridViewCell.SetThousandsSeparator(rowIndex, value);
                         }

@@ -45,12 +45,15 @@
             // labelHeader
             // 
             this.labelHeader.Image = global::TMTControls.Properties.Resources.columns;
+            this.labelHeader.Size = new System.Drawing.Size(782, 60);
             this.labelHeader.Text = "Column Manager";
             // 
             // panelMain
             // 
             this.panelMain.Controls.Add(this.tmtButtonOK);
             this.panelMain.Controls.Add(this.tableLayoutPanelMain);
+            this.panelMain.Location = new System.Drawing.Point(0, 60);
+            this.panelMain.Size = new System.Drawing.Size(782, 293);
             // 
             // tableLayoutPanelMain
             // 
@@ -69,7 +72,7 @@
             this.tableLayoutPanelMain.Controls.Add(this.listViewHiddenColumns, 2, 1);
             this.tableLayoutPanelMain.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanelMain.Controls.Add(this.label2, 2, 0);
-            this.tableLayoutPanelMain.Location = new System.Drawing.Point(10, 10);
+            this.tableLayoutPanelMain.Location = new System.Drawing.Point(12, 9);
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
             this.tableLayoutPanelMain.RowCount = 7;
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -79,7 +82,7 @@
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanelMain.Size = new System.Drawing.Size(515, 332);
+            this.tableLayoutPanelMain.Size = new System.Drawing.Size(709, 272);
             this.tableLayoutPanelMain.TabIndex = 0;
             // 
             // tmtButtonHideAll
@@ -88,9 +91,10 @@
             this.tmtButtonHideAll.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonHideAll.FlatAppearance.BorderSize = 0;
             this.tmtButtonHideAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tmtButtonHideAll.Location = new System.Drawing.Point(237, 107);
+            this.tmtButtonHideAll.Location = new System.Drawing.Point(336, 86);
+            this.tmtButtonHideAll.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tmtButtonHideAll.Name = "tmtButtonHideAll";
-            this.tmtButtonHideAll.Size = new System.Drawing.Size(40, 30);
+            this.tmtButtonHideAll.Size = new System.Drawing.Size(36, 27);
             this.tmtButtonHideAll.TabIndex = 0;
             this.tmtButtonHideAll.Text = ">>";
             this.tmtButtonHideAll.UseVisualStyleBackColor = false;
@@ -102,9 +106,10 @@
             this.tmtButtonHideOne.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonHideOne.FlatAppearance.BorderSize = 0;
             this.tmtButtonHideOne.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tmtButtonHideOne.Location = new System.Drawing.Point(237, 143);
+            this.tmtButtonHideOne.Location = new System.Drawing.Point(336, 117);
+            this.tmtButtonHideOne.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tmtButtonHideOne.Name = "tmtButtonHideOne";
-            this.tmtButtonHideOne.Size = new System.Drawing.Size(40, 30);
+            this.tmtButtonHideOne.Size = new System.Drawing.Size(36, 27);
             this.tmtButtonHideOne.TabIndex = 1;
             this.tmtButtonHideOne.Text = ">";
             this.tmtButtonHideOne.UseVisualStyleBackColor = false;
@@ -116,9 +121,10 @@
             this.tmtButtonShowOne.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonShowOne.FlatAppearance.BorderSize = 0;
             this.tmtButtonShowOne.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tmtButtonShowOne.Location = new System.Drawing.Point(237, 179);
+            this.tmtButtonShowOne.Location = new System.Drawing.Point(336, 148);
+            this.tmtButtonShowOne.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tmtButtonShowOne.Name = "tmtButtonShowOne";
-            this.tmtButtonShowOne.Size = new System.Drawing.Size(40, 30);
+            this.tmtButtonShowOne.Size = new System.Drawing.Size(36, 27);
             this.tmtButtonShowOne.TabIndex = 2;
             this.tmtButtonShowOne.Text = "<";
             this.tmtButtonShowOne.UseVisualStyleBackColor = false;
@@ -130,9 +136,10 @@
             this.tmtButtonShowAll.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonShowAll.FlatAppearance.BorderSize = 0;
             this.tmtButtonShowAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tmtButtonShowAll.Location = new System.Drawing.Point(237, 215);
+            this.tmtButtonShowAll.Location = new System.Drawing.Point(336, 179);
+            this.tmtButtonShowAll.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.tmtButtonShowAll.Name = "tmtButtonShowAll";
-            this.tmtButtonShowAll.Size = new System.Drawing.Size(40, 30);
+            this.tmtButtonShowAll.Size = new System.Drawing.Size(36, 27);
             this.tmtButtonShowAll.TabIndex = 3;
             this.tmtButtonShowAll.Text = "<<";
             this.tmtButtonShowAll.UseVisualStyleBackColor = false;
@@ -141,10 +148,11 @@
             // listViewShownColumns
             // 
             this.listViewShownColumns.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewShownColumns.Location = new System.Drawing.Point(3, 23);
+            this.listViewShownColumns.Location = new System.Drawing.Point(3, 22);
+            this.listViewShownColumns.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listViewShownColumns.Name = "listViewShownColumns";
             this.tableLayoutPanelMain.SetRowSpan(this.listViewShownColumns, 6);
-            this.listViewShownColumns.Size = new System.Drawing.Size(228, 306);
+            this.listViewShownColumns.Size = new System.Drawing.Size(327, 248);
             this.listViewShownColumns.TabIndex = 4;
             this.listViewShownColumns.UseCompatibleStateImageBehavior = false;
             this.listViewShownColumns.View = System.Windows.Forms.View.List;
@@ -152,10 +160,11 @@
             // listViewHiddenColumns
             // 
             this.listViewHiddenColumns.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listViewHiddenColumns.Location = new System.Drawing.Point(283, 23);
+            this.listViewHiddenColumns.Location = new System.Drawing.Point(378, 22);
+            this.listViewHiddenColumns.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listViewHiddenColumns.Name = "listViewHiddenColumns";
             this.tableLayoutPanelMain.SetRowSpan(this.listViewHiddenColumns, 6);
-            this.listViewHiddenColumns.Size = new System.Drawing.Size(229, 306);
+            this.listViewHiddenColumns.Size = new System.Drawing.Size(328, 248);
             this.listViewHiddenColumns.TabIndex = 5;
             this.listViewHiddenColumns.UseCompatibleStateImageBehavior = false;
             this.listViewHiddenColumns.View = System.Windows.Forms.View.List;
@@ -165,16 +174,16 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 20);
+            this.label1.Size = new System.Drawing.Size(59, 20);
             this.label1.TabIndex = 6;
             this.label1.Text = "Shown";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(283, 0);
+            this.label2.Location = new System.Drawing.Point(378, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(60, 20);
+            this.label2.Size = new System.Drawing.Size(62, 20);
             this.label2.TabIndex = 7;
             this.label2.Text = "Hidden";
             // 
@@ -182,15 +191,14 @@
             // 
             this.tmtButtonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tmtButtonOK.AutoSize = true;
-            this.tmtButtonOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tmtButtonOK.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.tmtButtonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.tmtButtonOK.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.tmtButtonOK.FlatAppearance.BorderSize = 0;
             this.tmtButtonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.tmtButtonOK.Location = new System.Drawing.Point(531, 13);
+            this.tmtButtonOK.Location = new System.Drawing.Point(727, 9);
             this.tmtButtonOK.Name = "tmtButtonOK";
-            this.tmtButtonOK.Size = new System.Drawing.Size(41, 30);
+            this.tmtButtonOK.Size = new System.Drawing.Size(43, 30);
             this.tmtButtonOK.TabIndex = 1;
             this.tmtButtonOK.Text = "OK";
             this.tmtButtonOK.UseVisualStyleBackColor = false;
@@ -198,9 +206,9 @@
             // TMTColumnManagerDialog
             // 
             this.AcceptButton = this.tmtButtonOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 412);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.ClientSize = new System.Drawing.Size(782, 353);
+            this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "TMTColumnManagerDialog";
             this.Text = "Column Manager";
             this.panelMain.ResumeLayout(false);

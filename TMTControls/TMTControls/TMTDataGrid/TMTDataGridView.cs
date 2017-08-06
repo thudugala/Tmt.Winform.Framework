@@ -14,11 +14,6 @@ namespace TMTControls.TMTDataGrid
     [Designer(typeof(ControlDesigner)), DefaultEvent("LovLoading")]
     public class TMTDataGridView : DataGridView
     {
-        private List<DataGridViewColumn> _keyViewColumnList;
-        private Dictionary<string, string> _lovColumnDictionary;
-        private List<DataGridViewColumn> _mandatoryViewColumnList;
-        private TMTLOVDialog LovDialog;
-
         public TMTDataGridView()
         {
             InitializeComponent();
@@ -51,10 +46,10 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("TMT Data"), DefaultValue(true)]
+        [Category("TMT Data"), DefaultValue(false)]
         public bool AddDataAllowed { get; set; }
 
-        [Category("TMT Data"), DefaultValue(true)]
+        [Category("TMT Data"), DefaultValue(false)]
         public bool DeleteDataAllowed { get; set; }
 
         [Category("TMT Data"), DefaultValue(false)]
@@ -67,10 +62,10 @@ namespace TMTControls.TMTDataGrid
         public string ViewName { get; set; }
 
         [Category("TMT Data")]
-        public int? ViewRowCount { get; set; }
+        public string DefaultWhereStatment { get; set; }
 
         [Category("TMT Data")]
-        public string DefaultWhereStatment { get; set; }
+        public string DefaultOrderByStatment { get; set; }
 
         public DataTable GetDataSourceTableChanges()
         {
@@ -85,8 +80,8 @@ namespace TMTControls.TMTDataGrid
                 {
                     var readOnlyColumnNames = this.Columns.Cast<DataGridViewColumn>().Where(c => c.ReadOnly &&
                                                                                                  string.IsNullOrWhiteSpace(c.DataPropertyName) == false &&
-                                                                                                 c.GetDataSourceInformation().KeyColum == false &&
-                                                                                                 c.GetDataSourceInformation().MandatoryColum == false &&
+                                                                                                 c.GetDataSourceInformation().KeyColumn == false &&
+                                                                                                 c.GetDataSourceInformation().MandatoryColumn == false &&
                                                                                                  c.GetDataSourceInformation().EditAllowed == false).Select(c => c.DataPropertyName);
                     foreach (string readOnlyColumnName in readOnlyColumnNames)
                     {
@@ -100,12 +95,12 @@ namespace TMTControls.TMTDataGrid
 
         public List<DataGridViewColumn> GetKeyViewColumnList()
         {
-            return this._keyViewColumnList;
+            return this.Columns.Cast<DataGridViewColumn>().Where(c => c.GetDataSourceInformation().KeyColumn).ToList();
         }
 
         public List<DataGridViewColumn> GetMandatoryViewColumnList()
         {
-            return this._mandatoryViewColumnList;
+            return this.Columns.Cast<DataGridViewColumn>().Where(c => c.ReadOnly == false && c.GetDataSourceInformation().MandatoryColumn).ToList();
         }
 
         public Dictionary<string, bool> GetViewColumnDbNameDictionary()
@@ -123,66 +118,50 @@ namespace TMTControls.TMTDataGrid
         public List<TMTSearchDialog.SearchEntity> InitializeTableControls()
         {
             this.DataSourceTable = new DataTable(this.ViewName);
-            this._mandatoryViewColumnList = new List<DataGridViewColumn>();
-            this._keyViewColumnList = new List<DataGridViewColumn>();
 
             List<TMTSearchDialog.SearchEntity> searchEntityList = new List<TMTSearchDialog.SearchEntity>();
             TMTSearchDialog.SearchEntity searchEntity;
-            TMTDataGridViewDataSourceInformation dataSourceInfor;
             foreach (DataGridViewColumn viewCol in this.Columns)
             {
-                if ((viewCol is TMTDataGridViewButtonColumn) == false)
+                if (viewCol is ITMTDataGridViewColumn)
                 {
                     if (viewCol.ValueType == null)
                     {
-                        MessageBox.Show(this, "[" + viewCol.HeaderText + "] does not have a ValueType", "Design Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "[" + viewCol.HeaderText + "] does not have a ValueType", "TMT Design Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
                         if (viewCol.Visible && (viewCol is TMTDataGridViewImageColumn) == false)
                         {
-                            searchEntity = new TMTSearchDialog.SearchEntity();
-                            searchEntity.Caption = viewCol.HeaderText;
-                            searchEntity.ColumnName = viewCol.DataPropertyName;
-                            searchEntity.DataType = viewCol.ValueType;
+                            searchEntity = new TMTSearchDialog.SearchEntity()
+                            {
+                                Caption = viewCol.HeaderText,
+                                ColumnName = viewCol.DataPropertyName,
+                                DataType = viewCol.ValueType
+                            };
 
+                            if (viewCol is DataGridViewCheckBoxColumn viewCheckBoxCol)
+                            {
+                                searchEntity.IsCheckBox = true;
+                                searchEntity.FalseValue = viewCheckBoxCol.FalseValue;
+                                searchEntity.TrueValue = viewCheckBoxCol.TrueValue;
+                                searchEntity.IndeterminateValue = viewCheckBoxCol.IndeterminateValue;
+                            }
+                            else if (viewCol is TMTDataGridViewTextButtonBoxColumn viewTextButtonCol)
+                            {
+                                searchEntity.LovView = viewTextButtonCol.LovViewName;
+                            }
                             searchEntityList.Add(searchEntity);
                         }
 
                         this.DataSourceTable.Columns.Add(viewCol.DataPropertyName, viewCol.ValueType);
-
-                        dataSourceInfor = viewCol.GetDataSourceInformation();
-                        if (dataSourceInfor.MandatoryColum)
-                        {
-                            this._mandatoryViewColumnList.Add(viewCol);
-                        }
-                        if (dataSourceInfor.KeyColum)
-                        {
-                            this._keyViewColumnList.Add(viewCol);
-                        }
-
-                        if (viewCol is TMTDataGridViewTextButtonBoxColumn)
-                        {
-                            TMTDataGridViewTextButtonBoxColumn viewTextButtonCol = viewCol as TMTDataGridViewTextButtonBoxColumn;
-                            if (string.IsNullOrWhiteSpace(dataSourceInfor.LovViewName) == false)
-                            {
-                                viewTextButtonCol.ButtonClick += new System.EventHandler(viewTextButtonCol_ButtonClick);
-                            }
-                        }
                     }
                 }
             }
 
-            this.SetLovColumnDictionary();
-
             this.SetTheme();
 
             return searchEntityList;
-        }
-
-        private void viewTextButtonCol_ButtonClick(object sender, EventArgs e)
-        {
-            this.ShowLovDialog(this.CurrentCell.OwningColumn.Name, this.CurrentCell.ColumnIndex, this.CurrentCell.RowIndex);
         }
 
         public void SetTheme()
@@ -231,109 +210,14 @@ namespace TMTControls.TMTDataGrid
             return base.ProcessDialogKey(keyData);
         }
 
-        private void GetLovSelectedRow(LovLoadingEventArgs rowEvent)
+        public void GetLovSelectedRow(LovLoadingEventArgs rowEvent)
         {
-            try
-            {
-                if (LovLoading != null)
-                {
-                    LovLoading(this, rowEvent);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_LoadError);
-            }
+            LovLoading?.Invoke(this, rowEvent);
         }
 
-        private void SetLovColumnDictionary()
+        public void SetLovSelectedRow(LovLoadedEventArgs rowEvent)
         {
-            this._lovColumnDictionary = new Dictionary<string, string>();
-
-            TMTDataGridViewDataSourceInformation dataSourceInfor;
-            foreach (DataGridViewColumn viewCol in this.Columns)
-            {
-                dataSourceInfor = viewCol.GetDataSourceInformation();
-
-                if (string.IsNullOrWhiteSpace(dataSourceInfor.LovViewName) == false &&
-                    (viewCol is TMTDataGridViewButtonColumn) == false)
-                {
-                    this._lovColumnDictionary.Add(dataSourceInfor.LovViewName, viewCol.Name);
-                }
-            }
-        }
-
-        private void SetLovSelectedRow(LovLoadedEventArgs rowEvent)
-        {
-            try
-            {
-                if (LovLoaded != null)
-                {
-                    LovLoaded(this, rowEvent);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
-            }
-        }
-
-        private void TMTDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            try
-            {
-                if (e.ColumnIndex > -1 && e.RowIndex > -1)
-                {
-                    TMTDataGridViewDataSourceInformation dataSourceInfor = this.Columns[e.ColumnIndex].GetDataSourceInformation();
-                    if (string.IsNullOrWhiteSpace(dataSourceInfor.LovViewName) == false &&
-                        this.Columns[e.ColumnIndex] is TMTDataGridViewButtonColumn)
-                    {
-                        string primaryColumnName = this._lovColumnDictionary[dataSourceInfor.LovViewName];
-
-                        this.ShowLovDialog(primaryColumnName, e.ColumnIndex, e.RowIndex);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_CellClick);
-            }
-        }
-
-        private void ShowLovDialog(string primaryColumnName, int columnIndex, int rowIndex)
-        {
-            if (this.LovDialog == null)
-            {
-                this.LovDialog = new TMTLOVDialog();
-            }
-
-            LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
-            lovEvent.RowIndex = rowIndex;
-            lovEvent.IsValidate = false;
-            lovEvent.PrimaryColumnName = primaryColumnName;
-            lovEvent.Row = this.Rows[lovEvent.RowIndex];
-            lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
-            lovEvent.LovViewName = this.Columns[lovEvent.PrimaryColumnName].GetDataSourceInformation().LovViewName;
-
-            this.GetLovSelectedRow(lovEvent);
-
-            this.LovDialog.SetDataSourceTable(lovEvent.LovDataTable);
-
-            if (this.LovDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                DataGridViewRow currectRow = this.Rows[rowIndex];
-
-                LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs();
-                lovLoaded.RowIndex = rowIndex;
-                lovLoaded.PrimaryColumnName = primaryColumnName;
-                lovLoaded.SelectedRow = this.LovDialog.SelectedRow;
-                this.SetLovSelectedRow(lovLoaded);
-
-                currectRow.Cells[primaryColumnName].Selected = true;
-                this.CurrentCell.Tag = this.CurrentCell.Value;
-                this.CurrentCell.Style.BackColor = Color.Empty;
-                this.EndEdit();
-            }
+            LovLoaded?.Invoke(this, rowEvent);
         }
 
         private void TMTDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
@@ -343,80 +227,8 @@ namespace TMTControls.TMTDataGrid
                 if (e.ColumnIndex > -1 &&
                     e.RowIndex > -1)
                 {
-                    DataGridViewColumn validatingViewColumn = this.Columns[e.ColumnIndex];
-                    TMTDataGridViewDataSourceInformation dataSourceInfor = validatingViewColumn.GetDataSourceInformation();
-                    if (string.IsNullOrWhiteSpace(dataSourceInfor.LovViewName) == false &&
-                        (validatingViewColumn is TMTDataGridViewButtonColumn ||
-                         validatingViewColumn is TMTDataGridViewTextButtonBoxColumn))
+                    if (this.Columns[e.ColumnIndex] is TMTDataGridViewTextBoxColumn textBoxCol)
                     {
-                        DataGridViewRow currectRow = this.Rows[e.RowIndex];
-                        string primaryColumnName = string.Empty;
-                        if (validatingViewColumn is TMTDataGridViewButtonColumn)
-                        {
-                            primaryColumnName = this._lovColumnDictionary[dataSourceInfor.LovViewName];
-                        }
-                        else if (validatingViewColumn is TMTDataGridViewTextButtonBoxColumn)
-                        {
-                            primaryColumnName = validatingViewColumn.Name;
-                        }
-
-                        DataGridViewCell validatingPrimaryViewCell = currectRow.Cells[primaryColumnName];
-                        object oValue = validatingPrimaryViewCell.Value;
-                        string sValue = string.Empty;
-                        if (oValue != null)
-                        {
-                            sValue = oValue.ToString();
-
-                            object oldOValue = validatingPrimaryViewCell.Tag;
-                            if (oldOValue != null && sValue == oldOValue.ToString())
-                            {
-                                return;
-                            }
-                        }
-
-                        if (string.IsNullOrWhiteSpace(sValue) == false)
-                        {
-                            LovLoadingEventArgs lovEvent = new LovLoadingEventArgs();
-                            lovEvent.RowIndex = e.RowIndex;
-                            lovEvent.IsValidate = true;
-                            lovEvent.PrimaryColumnName = primaryColumnName;
-                            lovEvent.Row = this.Rows[lovEvent.RowIndex];
-                            lovEvent.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
-                            lovEvent.LovViewName = this.Columns[lovEvent.PrimaryColumnName].GetDataSourceInformation().LovViewName;
-
-                            this.GetLovSelectedRow(lovEvent);
-
-                            if (lovEvent.LovDataTable != null)
-                            {
-                                bool dataFound = (lovEvent.LovDataTable.Rows.Count == 1);
-
-                                if (dataFound)
-                                {
-                                    LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs();
-                                    lovLoaded.RowIndex = e.RowIndex;
-                                    lovLoaded.PrimaryColumnName = primaryColumnName;
-                                    lovLoaded.SelectedRow = new Dictionary<string, object>();
-
-                                    DataRow row = lovEvent.LovDataTable.Rows[0];
-                                    foreach (DataColumn col in lovEvent.LovDataTable.Columns)
-                                    {
-                                        lovLoaded.SelectedRow.Add(col.ColumnName, row[col]);
-                                    }
-                                    this.SetLovSelectedRow(lovLoaded);
-                                }
-
-                                validatingPrimaryViewCell.Style.BackColor = (dataFound) ? Color.Empty : Color.Red;
-                            }
-                            else
-                            {
-                                validatingPrimaryViewCell.Style.BackColor = Color.Empty;
-                            }
-                        }
-                    }
-
-                    if (this.Columns[e.ColumnIndex] is TMTDataGridViewTextBoxColumn)
-                    {
-                        TMTDataGridViewTextBoxColumn textBoxCol = this.Columns[e.ColumnIndex] as TMTDataGridViewTextBoxColumn;
                         DataGridViewCell myCell = this.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
                         if (myCell.Value != null && string.IsNullOrWhiteSpace(myCell.Value.ToString()) == false)
@@ -448,14 +260,11 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        public void FillSearchConditionTable(LovLoadingEventArgs e, string lovViewPrimaryColumnName, params KeyValuePair<string, string>[] filterColumns)
+        public void FillSearchConditionTable(LovLoadingEventArgs e, params KeyValuePair<string, string>[] filterColumns)
         {
             if (e.IsValidate)
             {
-                e.SearchConditionTable.Rows.Add(lovViewPrimaryColumnName,
-                                              e.Row.Cells[e.PrimaryColumnName].Value,
-                                              this.Columns[e.PrimaryColumnName].ValueType.FullName,
-                                              false);
+                e.SearchConditionTable.Rows.Add(e.PrimaryColumnName, e.PrimaryColumnValue, e.PrimaryColumnType, false);
             }
             else
             {
@@ -474,7 +283,6 @@ namespace TMTControls.TMTDataGrid
 
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();
             //
@@ -484,20 +292,51 @@ namespace TMTControls.TMTDataGrid
             this.AllowUserToDeleteRows = false;
             this.AllowUserToOrderColumns = true;
             this.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            this.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.EnableHeadersVisualStyles = false;
-            this.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TMTDataGridView_CellClick);
+            this.RowTemplate.Height = 24;
             this.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.TMTDataGridView_CellValidated);
+            this.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.TMTDataGridView_DataError);
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
             this.ResumeLayout(false);
+        }
+
+        private void TMTDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            e.ThrowException = false;
+            TMTErrorDialog.Show(this, e.Exception, string.Format(Properties.Resources.ERROR_CellDataError, e.ColumnIndex, e.RowIndex));
+        }
+
+        public void AddNewRow()
+        {
+            if (this.AddDataAllowed)
+            {
+                foreach (DataColumn aColumn in this.DataSourceTable.Columns)
+                {
+                    if (aColumn.AllowDBNull == false)
+                    {
+                        aColumn.AllowDBNull = true;
+                    }
+                }
+                int location = this.DataSourceTable.Rows.Count;
+                if (this.SelectedRowIndexList.Count > 0)
+                {
+                    location = this.SelectedRowIndexList.Last() + 1;
+                }
+                DataRow newRow = this.DataSourceTable.NewRow();
+                this.DataSourceTable.Rows.InsertAt(newRow, location);
+            }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IList<int> SelectedRowIndexList
+        {
+            get
+            {
+                var selectedCellsRowIndexes = this.SelectedCells.Cast<DataGridViewCell>().Select(c => c.RowIndex);
+                var selectedRowIndexes = selectedCellsRowIndexes.Distinct();
+                return selectedRowIndexes.ToList();
+            }
         }
     }
 }

@@ -7,8 +7,6 @@ namespace TMTControls
 {
     public class TMTComboBox : ComboBox
     {
-        private Label _connectedLabel;
-
         public TMTComboBox()
         {
             this.SuspendLayout();
@@ -20,73 +18,19 @@ namespace TMTControls
         }
 
         [Category("Design")]
-        public Label ConnectedLabel
-        {
-            get
-            {
-                return this._connectedLabel;
-            }
-            set
-            {
-                this._connectedLabel = value;
-                if (this._connectedLabel != null)
-                {
-                    this.GetDataSourceInformation().DbLabelText = this._connectedLabel.Text;
-                }
-            }
-        }
+        public Label ConnectedLabel { get; set; }
 
         [Category("Data"), DefaultValue("")]
-        public string DbColumnName
-        {
-            get
-            {
-                return this.GetDataSourceInformation().DbColumnName;
-            }
-            set
-            {
-                this.GetDataSourceInformation().DbColumnName = value;
-            }
-        }
+        public string DbColumnName { get; set; }
 
         [Category("Data"), DefaultValue(TypeCode.String)]
-        public TypeCode DbColumnType
-        {
-            get
-            {
-                return this.GetDataSourceInformation().DbColumnType;
-            }
-            set
-            {
-                this.GetDataSourceInformation().DbColumnType = value;
-            }
-        }
+        public TypeCode DbColumnType { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool KeyColum
-        {
-            get
-            {
-                return this.GetDataSourceInformation().KeyColum;
-            }
-            set
-            {
-                this.GetDataSourceInformation().KeyColum = value;
-            }
-        }
+        public bool KeyColum { get; set; }
 
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new object Tag
-        {
-            get
-            {
-                return base.Tag;
-            }
-            set
-            {
-                base.Tag = value;
-            }
-        }
+        [Category("Data"), DefaultValue(false)]
+        public bool MandatoryColum { get; set; }
 
         //private Color _borderColor = Color.Black;
         private Border3DStyle _borderStyle = Border3DStyle.Flat;

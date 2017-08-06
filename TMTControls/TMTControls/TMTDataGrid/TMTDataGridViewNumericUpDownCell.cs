@@ -521,6 +521,11 @@ namespace TMTControls.TMTDataGrid
                 return;
             }
 
+            if (paintingNumericUpDown.IsDisposed)
+            {
+                return;
+            }
+
             // First paint the borders and background of the cell.
             base.Paint(graphics, clipBounds, cellBounds, rowIndex, cellState, value, formattedValue, errorText, cellStyle, advancedBorderStyle,
                        paintParts & ~(DataGridViewPaintParts.ErrorIcon | DataGridViewPaintParts.ContentForeground));

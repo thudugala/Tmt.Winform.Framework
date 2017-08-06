@@ -28,12 +28,13 @@ namespace TMTControls
         public DataTable HeaderSearchConditionTable { get; set; }
         public string HeaderViewName { get; set; }
         public string DefaultWhereStatment { get; set; }
+        public string DefaultOrderByStatment { get; set; }
 
         public List<PanelBackgroundWorkeArg> ChildViewList { get; private set; }
 
         public List<int> SaveResults { get; private set; }
         public bool IsCaseSensitive { get; set; }
-        public int? ViewRowCount { get; set; }
+        public bool LimitLoad { get; set; }
 
         public HashSet<int> SelectedRowIndexList { get; set; }
     }

@@ -10,15 +10,15 @@ namespace TMTControls
 {
     public static class TMTExtendard
     {
-        public static List<TMTDataGrid.TMTDataGridView> GetChildDataGridViewList(this Control parentControl)
+        public static List<TMTDataGridView> GetChildDataGridViewList(this Control parentControl)
         {
-            List<TMTDataGrid.TMTDataGridView> childTableList = new List<TMTDataGrid.TMTDataGridView>();
+            List<TMTDataGridView> childTableList = new List<TMTDataGridView>();
 
             foreach (Control childControl in parentControl.Controls)
             {
-                if (childControl is TMTDataGrid.TMTDataGridView)
+                if (childControl is TMTDataGridView)
                 {
-                    childTableList.Add(childControl as TMTDataGrid.TMTDataGridView);
+                    childTableList.Add(childControl as TMTDataGridView);
                 }
                 childTableList.AddRange(GetChildDataGridViewList(childControl));
             }
@@ -28,24 +28,219 @@ namespace TMTControls
 
         public static TMTDataSourceInformation GetDataSourceInformation(this Control myControl)
         {
-            if (myControl.Tag == null)
+            try
             {
-                myControl.Tag = new TMTDataSourceInformation();
+                if (myControl is TMTTextBox)
+                {
+                    var myTextBox = myControl as TMTTextBox;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = (myTextBox.ConnectedLabel != null) ? myTextBox.ConnectedLabel.Text : string.Empty,
+                        DbColumnName = myTextBox.DbColumnName,
+                        DbColumnType = myTextBox.DbColumnType,
+                        MandatoryColumn = myTextBox.MandatoryColumn,
+                        KeyColumn = myTextBox.KeyColumn
+                    };
+                }
+                else if (myControl is TMTNumericUpDown)
+                {
+                    var myNumericUpDown = myControl as TMTNumericUpDown;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = (myNumericUpDown.ConnectedLabel != null) ? myNumericUpDown.ConnectedLabel.Text : string.Empty,
+                        DbColumnName = myNumericUpDown.DbColumnName,
+                        DbColumnType = myNumericUpDown.DbColumnType,
+                        MandatoryColumn = myNumericUpDown.MandatoryColum,
+                        KeyColumn = myNumericUpDown.KeyColum
+                    };
+                }
+                else if (myControl is TMTDateTimePicker)
+                {
+                    var myDateTimePicker = myControl as TMTDateTimePicker;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = (myDateTimePicker.ConnectedLabel != null) ? myDateTimePicker.ConnectedLabel.Text : string.Empty,
+                        DbColumnName = myDateTimePicker.DbColumnName,
+                        DbColumnType = myDateTimePicker.DbColumnType,
+                        MandatoryColumn = myDateTimePicker.MandatoryColum,
+                        KeyColumn = myDateTimePicker.KeyColum
+                    };
+                }
+                else if (myControl is TMTComboBox)
+                {
+                    var myComboBox = myControl as TMTComboBox;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = (myComboBox.ConnectedLabel != null) ? myComboBox.ConnectedLabel.Text : string.Empty,
+                        DbColumnName = myComboBox.DbColumnName,
+                        DbColumnType = myComboBox.DbColumnType,
+                        MandatoryColumn = myComboBox.MandatoryColum,
+                        KeyColumn = myComboBox.KeyColum
+                    };
+                }
+                else if (myControl is TMTCheckBox)
+                {
+                    var myCheckBox = myControl as TMTCheckBox;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myCheckBox.Text,
+                        DbValue = (myCheckBox.Checked) ? myCheckBox.TrueValue : myCheckBox.FalseValue,
+                        DbColumnName = myCheckBox.DbColumnName,
+                        DbColumnType = myCheckBox.DbColumnType,
+                        MandatoryColumn = myCheckBox.MandatoryColum,
+                        KeyColumn = myCheckBox.KeyColum,
+                        FalseValue = myCheckBox.FalseValue,
+                        IndeterminateValue = myCheckBox.IndeterminateValue,
+                        TrueValue = myCheckBox.TrueValue
+                    };
+                }
+                else if (myControl is TMTTextButtonBox)
+                {
+                    var myTextButtonBox = myControl as TMTTextButtonBox;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = (myTextButtonBox.ConnectedLabel != null) ? myTextButtonBox.ConnectedLabel.Text : string.Empty,
+                        DbColumnName = myTextButtonBox.DbColumnName,
+                        DbColumnType = myTextButtonBox.DbColumnType,
+                        MandatoryColumn = myTextButtonBox.MandatoryColum,
+                        KeyColumn = myTextButtonBox.KeyColum,
+                        LovText = myTextButtonBox.LovText,
+                        LovViewName = myTextButtonBox.LovViewName
+                    };
+                }
+                return new TMTDataSourceInformation();
             }
-            return (myControl.Tag as TMTDataSourceInformation);
+            catch
+            {
+                throw;
+            }
         }
 
-        public static TMTDataGridViewDataSourceInformation GetDataSourceInformation(this DataGridViewColumn myColumn)
+        public static TMTDataSourceInformation GetDataSourceInformation(this DataGridViewColumn myColumn)
         {
-            if (myColumn.Tag == null)
+            try
             {
-                myColumn.Tag = new TMTDataGridViewDataSourceInformation();
+                if (myColumn is TMTDataGridViewTextBoxColumn)
+                {
+                    var myTextBoxColumn = myColumn as TMTDataGridViewTextBoxColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myTextBoxColumn.HeaderText,
+                        DbColumnName = myTextBoxColumn.DataPropertyName,
+                        DbColumnType = myTextBoxColumn.DataPropertyType,
+                        MandatoryColumn = myTextBoxColumn.DataPropertyMandatory,
+                        KeyColumn = myTextBoxColumn.DataPropertyPrimaryKey
+                    };
+                }
+                else if (myColumn is TMTDataGridViewTextButtonBoxColumn)
+                {
+                    var myTextButtonBoxColumn = myColumn as TMTDataGridViewTextButtonBoxColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myTextButtonBoxColumn.HeaderText,
+                        DbColumnName = myTextButtonBoxColumn.DataPropertyName,
+                        DbColumnType = myTextButtonBoxColumn.DataPropertyType,
+                        MandatoryColumn = myTextButtonBoxColumn.DataPropertyMandatory,
+                        KeyColumn = myTextButtonBoxColumn.DataPropertyPrimaryKey,
+                        LovViewName = myTextButtonBoxColumn.LovViewName
+                    };
+                }
+                else if (myColumn is TMTDataGridViewNumericUpDownColumn)
+                {
+                    var myNumericUpDownColumn = myColumn as TMTDataGridViewNumericUpDownColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myNumericUpDownColumn.HeaderText,
+                        DbColumnName = myNumericUpDownColumn.DataPropertyName,
+                        DbColumnType = myNumericUpDownColumn.DataPropertyType,
+                        MandatoryColumn = myNumericUpDownColumn.DataPropertyMandatory,
+                        KeyColumn = myNumericUpDownColumn.DataPropertyPrimaryKey
+                    };
+                }
+                else if (myColumn is TMTDataGridViewCalendarColumn)
+                {
+                    var myCalendarColumn = myColumn as TMTDataGridViewCalendarColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myCalendarColumn.HeaderText,
+                        DbColumnName = myCalendarColumn.DataPropertyName,
+                        DbColumnType = myCalendarColumn.DataPropertyType,
+                        MandatoryColumn = myCalendarColumn.DataPropertyMandatory,
+                        KeyColumn = myCalendarColumn.DataPropertyPrimaryKey
+                    };
+                }
+                else if (myColumn is TMTDataGridViewComboBoxColumn)
+                {
+                    var myComboBoxColumn = myColumn as TMTDataGridViewComboBoxColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myComboBoxColumn.HeaderText,
+                        DbColumnName = myComboBoxColumn.DataPropertyName,
+                        DbColumnType = myComboBoxColumn.DataPropertyType,
+                        MandatoryColumn = myComboBoxColumn.DataPropertyMandatory,
+                        KeyColumn = myComboBoxColumn.DataPropertyPrimaryKey
+                    };
+                }
+                else if (myColumn is TMTDataGridViewCheckBoxColumn)
+                {
+                    var myCheckBoxColumn = myColumn as TMTDataGridViewCheckBoxColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myCheckBoxColumn.HeaderText,
+                        DbColumnName = myCheckBoxColumn.DataPropertyName,
+                        DbColumnType = myCheckBoxColumn.DataPropertyType,
+                        MandatoryColumn = myCheckBoxColumn.DataPropertyMandatory
+                    };
+                }
+                else if (myColumn is TMTDataGridViewImageColumn)
+                {
+                    var myImageColumn = myColumn as TMTDataGridViewImageColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myImageColumn.HeaderText,
+                        DbColumnName = myImageColumn.DataPropertyName,
+                        MandatoryColumn = myImageColumn.DataPropertyMandatory
+                    };
+                }
+                else if (myColumn is TMTDataGridViewLinkColumn)
+                {
+                    var myLinkColumn = myColumn as TMTDataGridViewLinkColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myLinkColumn.HeaderText,
+                        DbColumnName = myLinkColumn.DataPropertyName,
+                        DbColumnType = myLinkColumn.DataPropertyType,
+                        MandatoryColumn = myLinkColumn.DataPropertyMandatory,
+                        KeyColumn = myLinkColumn.DataPropertyPrimaryKey,
+                        EditAllowed = myLinkColumn.DataPropertyEditAllowed,
+                        IsFuntion = myLinkColumn.DataPropertyIsFuntion
+                    };
+                }
+                else if (myColumn is TMTDataGridViewReadOnlyTextBoxColumn)
+                {
+                    var myReadOnlyTextBoxColumn = myColumn as TMTDataGridViewReadOnlyTextBoxColumn;
+                    return new TMTDataSourceInformation()
+                    {
+                        DbLabelText = myReadOnlyTextBoxColumn.HeaderText,
+                        DbColumnName = myReadOnlyTextBoxColumn.DataPropertyName,
+                        DbColumnType = myReadOnlyTextBoxColumn.DataPropertyType,
+                        MandatoryColumn = myReadOnlyTextBoxColumn.DataPropertyMandatory,
+                        KeyColumn = myReadOnlyTextBoxColumn.DataPropertyPrimaryKey,
+                        EditAllowed = myReadOnlyTextBoxColumn.DataPropertyEditAllowed,
+                        IsFuntion = myReadOnlyTextBoxColumn.DataPropertyIsFuntion
+                    };
+                }
+                return new TMTDataSourceInformation();
             }
-            return (myColumn.Tag as TMTDataGridViewDataSourceInformation);
+            catch
+            {
+                throw;
+            }
         }
 
         public static DataTable GetDataSourceTableChanges(this DataTable table, string tableName)
         {
+            table.Constraints.Clear();
             DataTable changedData = table.GetChanges(DataRowState.Added | DataRowState.Modified | DataRowState.Deleted);
 
             if (changedData != null && changedData.Rows.Count > 0)

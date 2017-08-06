@@ -9,8 +9,13 @@ namespace TMTControls.TMTPanels
         {
             InitializeComponent();
 
+            this.SuspendLayout();
+
             this.SearchDialog = new TMTSearchDialog();
+            this.SearchDialog.SearchLovLoading += (sender, e) => this.SearchLovLoading?.Invoke(sender, e);
             this.ColumnManagerDialog = new TMTColumnManagerDialog();
+
+            this.ResumeLayout(false);
         }
 
         [Browsable(false)]
@@ -20,6 +25,9 @@ namespace TMTControls.TMTPanels
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public TMTSearchDialog SearchDialog { get; private set; }
+
+        [Category("TMT Data")]
+        public event LovLoadingEventHandler SearchLovLoading;
 
         private void tmtButtonAdd_Click(object sender, EventArgs e)
         {

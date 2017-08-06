@@ -19,10 +19,6 @@ namespace TMTControls.TMTPanels
         private void TMTPanelTable_Load(object sender, EventArgs e)
         {
             this.InitializeTableControls();
-
-            tmtButtonAdd.Enabled = tmtDataGridViewMain.AddDataAllowed;
-            tmtButtonDuplicate.Enabled = tmtDataGridViewMain.AddDataAllowed;
-            tmtButtonDelete.Enabled = tmtDataGridViewMain.DeleteDataAllowed;
         }
 
         public void LoadWindowWithDataWhenActive()
@@ -96,14 +92,17 @@ namespace TMTControls.TMTPanels
         {
             this.SearchDialog.EntityList.Clear();
             this.SearchDialog.EntityList.AddRange(tmtDataGridViewMain.InitializeTableControls());
+
+            tmtButtonAdd.Enabled = tmtDataGridViewMain.AddDataAllowed;
+            tmtButtonDuplicate.Enabled = tmtDataGridViewMain.AddDataAllowed;
+            tmtButtonDelete.Enabled = tmtDataGridViewMain.DeleteDataAllowed;
         }
 
         public override void AddData()
         {
             if (tmtDataGridViewMain.AddDataAllowed)
             {
-                DataRow newRow = tmtDataGridViewMain.DataSourceTable.NewRow();
-                tmtDataGridViewMain.DataSourceTable.Rows.Add(newRow);
+                tmtDataGridViewMain.AddNewRow();
                 base.AddData();
             }
         }
@@ -115,15 +114,17 @@ namespace TMTControls.TMTPanels
                 progressBarMain.Visible = true;
                 this.UseWaitCursor = true;
 
-                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
-                arg.Type = PanelBackgroundWorkeType.Load;
-                arg.HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition();
-                arg.IsCaseSensitive = this.SearchDialog.IsCaseSensitive;
-                arg.HeaderViewName = tmtDataGridViewMain.ViewName;
-                arg.HeaderViewColumnDbNameList = tmtDataGridViewMain.GetViewColumnDbNameDictionary().Keys.ToList();
-                arg.ViewRowCount = tmtDataGridViewMain.ViewRowCount;
-                arg.DefaultWhereStatment = tmtDataGridViewMain.DefaultWhereStatment;
-
+                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg()
+                {
+                    Type = PanelBackgroundWorkeType.Load,
+                    HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition(),
+                    IsCaseSensitive = this.SearchDialog.IsCaseSensitive,
+                    LimitLoad = this.SearchDialog.LimitLoad,
+                    HeaderViewName = tmtDataGridViewMain.ViewName,
+                    HeaderViewColumnDbNameList = tmtDataGridViewMain.GetViewColumnDbNameDictionary().Keys.ToList(),
+                    DefaultWhereStatment = tmtDataGridViewMain.DefaultWhereStatment,
+                    DefaultOrderByStatment = tmtDataGridViewMain.DefaultOrderByStatment
+                };
                 string dbColumnName;
                 foreach (DataRow searchRow in arg.HeaderSearchConditionTable.Rows)
                 {
@@ -196,9 +197,11 @@ namespace TMTControls.TMTPanels
 
                 if (changedData != null && changedData.Rows.Count > 0)
                 {
-                    PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
-                    arg.Type = PanelBackgroundWorkeType.Save;
-                    arg.HeaderViewName = tmtDataGridViewMain.TableName;
+                    PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg()
+                    {
+                        Type = PanelBackgroundWorkeType.Save,
+                        HeaderViewName = tmtDataGridViewMain.TableName
+                    };
                     arg.ChangedDataSet.Tables.Add(changedData);
 
                     DataValidatingEventArgs validateArg = new DataValidatingEventArgs();
@@ -218,7 +221,7 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void backgroundWorkerMain_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -251,7 +254,7 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void backgroundWorkerMain_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void backgroundWorkerMain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
             {
@@ -270,6 +273,7 @@ namespace TMTControls.TMTPanels
                             tmtDataGridViewMain.DataSourceTable = arg.ChangedDataSet.Tables[arg.HeaderViewName];
                             base.LoadData();
                             tmtDataGridViewMain.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
+                            tmtDataGridViewMain.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
 
                             if (arg.SelectedRowIndexList != null && arg.SelectedRowIndexList.Count > 0)
                             {
@@ -322,16 +326,18 @@ namespace TMTControls.TMTPanels
             {
                 progressBarMain.Visible = true;
                 this.UseWaitCursor = true;
-                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg();
-                arg.Type = PanelBackgroundWorkeType.Load;
-                var selectedCellsRowIndexes = this.tmtDataGridViewMain.SelectedCells.Cast<DataGridViewCell>().Select(c => c.RowIndex);
-                var selectedRowIndexes = selectedCellsRowIndexes.Distinct();
+                PanelBackgroundWorkeArg arg = new PanelBackgroundWorkeArg()
+                {
+                    Type = PanelBackgroundWorkeType.Load
+                };
+                var selectedRowIndexes = this.tmtDataGridViewMain.SelectedRowIndexList;
                 if (selectedRowIndexes.Count() > 0)
                 {
                     arg.SelectedRowIndexList = new HashSet<int>(selectedRowIndexes);
                 }
                 arg.HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition();
                 arg.IsCaseSensitive = this.SearchDialog.IsCaseSensitive;
+                arg.LimitLoad = this.SearchDialog.LimitLoad;
                 if (this.SearchDialog.DialogResult != DialogResult.OK &&
                     this.SearchDialog.DialogResult != DialogResult.Ignore)
                 {
@@ -341,7 +347,6 @@ namespace TMTControls.TMTPanels
 
                 arg.HeaderViewName = tmtDataGridViewMain.ViewName;
                 arg.HeaderViewColumnDbNameList = tmtDataGridViewMain.GetViewColumnDbNameDictionary().Keys.ToList();
-                arg.ViewRowCount = tmtDataGridViewMain.ViewRowCount;
                 arg.DefaultWhereStatment = tmtDataGridViewMain.DefaultWhereStatment;
 
                 backgroundWorkerMain.RunWorkerAsync(arg);
@@ -377,6 +382,16 @@ namespace TMTControls.TMTPanels
                     }
                 }
             }
+        }
+
+        protected virtual void GetLovDataTable(LovLoadingEventArgs e, params KeyValuePair<string, string>[] filterColumns)
+        {
+            this.tmtDataGridViewMain.FillSearchConditionTable(e, filterColumns);
+        }
+
+        protected virtual List<string> GetLovViewColumnDbNameList(string lovViewName)
+        {
+            return null;
         }
 
         private bool ShowEmptyExclamation(object oValue, string columnHeaderText)
@@ -420,6 +435,20 @@ namespace TMTControls.TMTPanels
                                           MessageBoxIcon.Question) == DialogResult.No)
                 {
                     e.Cancel = true;
+                }
+            }
+        }
+
+        private void TMTPanelTable_DataLoaded(object sender, EventArgs e)
+        {
+            if (tmtDataGridViewMain.DataSourceTable == null || tmtDataGridViewMain.DataSourceTable.Rows.Count == 0)
+            {
+                if (tmtDataGridViewMain.LoadDataWhenActive == false)
+                {
+                    MessageBox.Show(this, Properties.Resources.Exclamation_NoDataFoundText,
+                                          Properties.Resources.Exclamation_NoDataFound,
+                                          MessageBoxButtons.OK,
+                                          MessageBoxIcon.Asterisk);
                 }
             }
         }

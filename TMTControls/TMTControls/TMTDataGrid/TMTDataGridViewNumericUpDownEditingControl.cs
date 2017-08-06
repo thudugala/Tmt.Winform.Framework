@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
@@ -9,15 +10,6 @@ namespace TMTControls.TMTDataGrid
     /// </summary>
     internal class TMTDataGridViewNumericUpDownEditingControl : NumericUpDown, IDataGridViewEditingControl
     {
-        // The grid that owns this editing control
-        private DataGridView dataGridView;
-
-        // Stores whether the editing control's value has changed or not
-        private bool valueChanged;
-
-        // Stores the row index in which the editing control resides
-        private int rowIndex;
-
         /// <summary>
         /// Constructor of the editing control class
         /// </summary>
@@ -32,17 +24,7 @@ namespace TMTControls.TMTDataGrid
         /// <summary>
         /// Property which caches the grid that uses this editing control
         /// </summary>
-        public virtual DataGridView EditingControlDataGridView
-        {
-            get
-            {
-                return this.dataGridView;
-            }
-            set
-            {
-                this.dataGridView = value;
-            }
-        }
+        public virtual DataGridView EditingControlDataGridView { get; set; }
 
         /// <summary>
         /// Property which represents the current formatted value of the editing control
@@ -62,32 +44,12 @@ namespace TMTControls.TMTDataGrid
         /// <summary>
         /// Property which represents the row in which the editing control resides
         /// </summary>
-        public virtual int EditingControlRowIndex
-        {
-            get
-            {
-                return this.rowIndex;
-            }
-            set
-            {
-                this.rowIndex = value;
-            }
-        }
+        public virtual int EditingControlRowIndex { get; set; }
 
         /// <summary>
         /// Property which indicates whether the value of the editing control has changed or not
         /// </summary>
-        public virtual bool EditingControlValueChanged
-        {
-            get
-            {
-                return this.valueChanged;
-            }
-            set
-            {
-                this.valueChanged = value;
-            }
-        }
+        public virtual bool EditingControlValueChanged { get; set; }
 
         /// <summary>
         /// Property which determines which cursor must be used for the editing panel,
@@ -125,7 +87,7 @@ namespace TMTControls.TMTDataGrid
                 // The NumericUpDown control does not support transparent back colors
                 Color opaqueBackColor = Color.FromArgb(255, dataGridViewCellStyle.BackColor);
                 this.BackColor = opaqueBackColor;
-                this.dataGridView.EditingPanel.BackColor = opaqueBackColor;
+                this.EditingControlDataGridView.EditingPanel.BackColor = opaqueBackColor;
             }
             else
             {
@@ -145,8 +107,7 @@ namespace TMTControls.TMTDataGrid
             {
                 case Keys.Right:
                     {
-                        TextBox textBox = this.Controls[1] as TextBox;
-                        if (textBox != null)
+                        if (this.Controls[1] is TextBox textBox)
                         {
                             // If the end of the selection is at the end of the string,
                             // let the DataGridView treat the key message
@@ -161,8 +122,7 @@ namespace TMTControls.TMTDataGrid
 
                 case Keys.Left:
                     {
-                        TextBox textBox = this.Controls[1] as TextBox;
-                        if (textBox != null)
+                        if (this.Controls[1] is TextBox textBox)
                         {
                             // If the end of the selection is at the begining of the string
                             // or if the entire text is selected and we did not start editing,
@@ -198,8 +158,7 @@ namespace TMTControls.TMTDataGrid
                 case Keys.End:
                     {
                         // Let the grid handle the key if the entire text is selected.
-                        TextBox textBox = this.Controls[1] as TextBox;
-                        if (textBox != null)
+                        if (this.Controls[1] is TextBox textBox)
                         {
                             if (textBox.SelectionLength != textBox.Text.Length)
                             {
@@ -212,8 +171,7 @@ namespace TMTControls.TMTDataGrid
                 case Keys.Delete:
                     {
                         // Let the grid handle the key if the carret is at the end of the text.
-                        TextBox textBox = this.Controls[1] as TextBox;
-                        if (textBox != null)
+                        if (this.Controls[1] is TextBox textBox)
                         {
                             if (textBox.SelectionLength > 0 ||
                                 textBox.SelectionStart < textBox.Text.Length)
@@ -251,8 +209,7 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         public virtual void PrepareEditingControlForEdit(bool selectAll)
         {
-            TextBox textBox = this.Controls[1] as TextBox;
-            if (textBox != null)
+            if (this.Controls[1] is TextBox textBox)
             {
                 if (selectAll)
                 {
@@ -275,10 +232,10 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         private void NotifyDataGridViewOfValueChange()
         {
-            if (!this.valueChanged)
+            if (this.EditingControlValueChanged == false)
             {
-                this.valueChanged = true;
-                this.dataGridView.NotifyCurrentCellDirty(true);
+                this.EditingControlValueChanged = true;
+                this.EditingControlDataGridView.NotifyCurrentCellDirty(true);
             }
         }
 
@@ -293,27 +250,25 @@ namespace TMTControls.TMTDataGrid
             // The value changes when a digit, the decimal separator, the group separator or
             // the negative sign is pressed.
             bool notifyValueChange = false;
-            if (char.IsDigit(e.KeyChar))
+            if (char.IsDigit(e.KeyChar) || char.IsControl(e.KeyChar))
             {
                 notifyValueChange = true;
             }
             else
             {
-                System.Globalization.NumberFormatInfo numberFormatInfo = System.Globalization.CultureInfo.CurrentCulture.NumberFormat;
-                string decimalSeparatorStr = numberFormatInfo.NumberDecimalSeparator;
-                string groupSeparatorStr = numberFormatInfo.NumberGroupSeparator;
-                string negativeSignStr = numberFormatInfo.NegativeSign;
-                if (!string.IsNullOrEmpty(decimalSeparatorStr) && decimalSeparatorStr.Length == 1)
+                NumberFormatInfo numberFormatInfo = CultureInfo.CurrentCulture.NumberFormat;
+
+                if (string.IsNullOrEmpty(numberFormatInfo.NumberDecimalSeparator) == false)
                 {
-                    notifyValueChange = decimalSeparatorStr[0] == e.KeyChar;
+                    notifyValueChange = numberFormatInfo.NumberDecimalSeparator[0] == e.KeyChar;
                 }
-                if (!notifyValueChange && !string.IsNullOrEmpty(groupSeparatorStr) && groupSeparatorStr.Length == 1)
+                if (!notifyValueChange && !string.IsNullOrEmpty(numberFormatInfo.NumberGroupSeparator))
                 {
-                    notifyValueChange = groupSeparatorStr[0] == e.KeyChar;
+                    notifyValueChange = numberFormatInfo.NumberGroupSeparator[0] == e.KeyChar;
                 }
-                if (!notifyValueChange && !string.IsNullOrEmpty(negativeSignStr) && negativeSignStr.Length == 1)
+                if (!notifyValueChange && !string.IsNullOrEmpty(numberFormatInfo.NegativeSign))
                 {
-                    notifyValueChange = negativeSignStr[0] == e.KeyChar;
+                    notifyValueChange = numberFormatInfo.NegativeSign[0] == e.KeyChar;
                 }
             }
 
@@ -343,8 +298,7 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         protected override bool ProcessKeyEventArgs(ref Message m)
         {
-            TextBox textBox = this.Controls[1] as TextBox;
-            if (textBox != null)
+            if (this.Controls[1] is TextBox textBox)
             {
                 NativeMethods.SendMessage(textBox.Handle, m.Msg, m.WParam, m.LParam);
                 return true;

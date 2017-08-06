@@ -83,7 +83,10 @@ namespace TMTControls
         {
             if (comboBoxAuthSource.SelectedItem.ToString() == "LDAP")
             {
-                textBoxLdapServerUrl.Visible = true;
+                if (checkBoxShowDetails.Checked)
+                {
+                    textBoxLdapServerUrl.Visible = true;
+                }
 
                 textBoxUserId.Text = Environment.UserName;
             }
@@ -129,8 +132,14 @@ namespace TMTControls
             {
                 labelServer.Visible = true;
                 textBoxServerUrl.Visible = true;
-                comboBoxAuthSource.Visible = true;
-                textBoxLdapServerUrl.Visible = true;
+                if (this.OnlyDBAuth == false)
+                {
+                    comboBoxAuthSource.Visible = true;
+                    if (comboBoxAuthSource.SelectedItem.ToString() == "LDAP")
+                    {
+                        textBoxLdapServerUrl.Visible = true;
+                    }
+                }
             }
             else
             {
