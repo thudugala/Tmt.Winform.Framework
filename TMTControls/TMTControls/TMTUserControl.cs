@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -14,10 +13,6 @@ namespace TMTControls
         {
             InitializeComponent();
         }
-
-        public delegate void DataValidateEventHandler(object sender, DataValidatingEventArgs e);
-
-        public delegate void DataManagerEventHandler(object sender, PanelBackgroundWorkeArg e);
 
         [Category("TMT")]
         public event EventHandler BackButtonClicked;
@@ -41,10 +36,10 @@ namespace TMTControls
         public event EventHandler DataCleared;
 
         [Category("TMT Data")]
-        public event DataValidateEventHandler DataValidateBeforeSave;
+        public event EventHandler<DataValidatingEventArgs> DataValidateBeforeSave;
 
         [Category("TMT Data")]
-        public event DataManagerEventHandler DataManager;
+        public event EventHandler<PanelBackgroundWorkEventArgs> DataManager;
 
         public virtual void AddData()
         {
@@ -79,21 +74,14 @@ namespace TMTControls
             DataChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public virtual void OnDataManager(PanelBackgroundWorkeArg data)
+        public virtual void OnDataManager(PanelBackgroundWorkEventArgs data)
         {
             DataManager?.Invoke(this, data);
         }
 
         public virtual void OnValidateBeforeSave(DataValidatingEventArgs dataToBeSaved)
         {
-            try
-            {
-                DataValidateBeforeSave?.Invoke(this, dataToBeSaved);
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_SavingDataValidation);
-            }
+            DataValidateBeforeSave?.Invoke(this, dataToBeSaved);
         }
 
         public virtual void SaveData()
@@ -104,13 +92,6 @@ namespace TMTControls
         private void buttonBack_Click(object sender, EventArgs e)
         {
             BackButtonClicked?.Invoke(this, e);
-        }
-
-        public class DataValidatingEventArgs : EventArgs
-        {
-            public bool CancelSave { get; set; }
-
-            public DataSet DataToBeSaved { get; set; }
         }
     }
 }

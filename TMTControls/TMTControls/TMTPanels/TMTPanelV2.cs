@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using TMTControls.TMTDialogs;
 
 namespace TMTControls.TMTPanels
 {
@@ -12,7 +13,7 @@ namespace TMTControls.TMTPanels
             this.SuspendLayout();
 
             this.SearchDialog = new TMTSearchDialog();
-            this.SearchDialog.SearchLovLoading += (sender, e) => this.SearchLovLoading?.Invoke(sender, e);
+            this.SearchDialog.SearchListOfValueLoading += (sender, e) => this.SearchListOfValueLoading?.Invoke(sender, e);
             this.ColumnManagerDialog = new TMTColumnManagerDialog();
 
             this.ResumeLayout(false);
@@ -27,7 +28,7 @@ namespace TMTControls.TMTPanels
         public TMTSearchDialog SearchDialog { get; private set; }
 
         [Category("TMT Data")]
-        public event LovLoadingEventHandler SearchLovLoading;
+        public event EventHandler<ListOfValueLoadingEventArgs> SearchListOfValueLoading;
 
         private void tmtButtonAdd_Click(object sender, EventArgs e)
         {

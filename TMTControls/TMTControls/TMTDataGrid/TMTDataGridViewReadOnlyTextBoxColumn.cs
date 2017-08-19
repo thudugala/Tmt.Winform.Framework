@@ -31,7 +31,10 @@ namespace TMTControls.TMTDataGrid
             }
             set
             {
-                value.BackColor = System.Drawing.Color.FromArgb(224, 224, 224);
+                if (value != null)
+                {
+                    value.BackColor = System.Drawing.Color.FromArgb(224, 224, 224);
+                }
                 base.DefaultCellStyle = value;
             }
         }

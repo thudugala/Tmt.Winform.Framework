@@ -48,10 +48,7 @@ namespace TMTControls
         {
             try
             {
-                if (DateSelected != null)
-                {
-                    DateSelected(this, e);
-                }
+                DateSelected?.Invoke(this, e);
             }
             catch { }
         }

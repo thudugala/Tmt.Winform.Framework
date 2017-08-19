@@ -30,7 +30,7 @@ namespace TMTControls.TMTDataGrid
                 if (value != null &&
                     !value.GetType().IsAssignableFrom(typeof(TMTDataGridViewTextButtonBoxCell)))
                 {
-                    throw new InvalidCastException("Must be a TMTDataGridViewTextButtonBoxCell");
+                    throw new InvalidCastException($"Must be a {nameof(TMTDataGridViewTextButtonBoxCell)}");
                 }
                 base.CellTemplate = value;
             }
@@ -50,7 +50,7 @@ namespace TMTControls.TMTDataGrid
         }
 
         [Category("LOV Data"), DefaultValue("")]
-        public string LovViewName { get; set; }
+        public string ListOfValueViewName { get; set; }
 
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyMandatory { get; set; }
@@ -62,7 +62,7 @@ namespace TMTControls.TMTDataGrid
         {
             TMTDataGridViewTextButtonBoxColumn that = (TMTDataGridViewTextButtonBoxColumn)base.Clone();
 
-            that.LovViewName = this.LovViewName;
+            that.ListOfValueViewName = this.ListOfValueViewName;
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;

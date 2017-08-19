@@ -166,6 +166,16 @@ namespace TMTControls.TMTDataGrid
                                object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle,
                                DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
+            if (graphics == null)
+            {
+                throw new ArgumentNullException(nameof(graphics));
+            }
+
+            if (cellStyle == null)
+            {
+                throw new ArgumentNullException(nameof(cellStyle));
+            }
+
             if (this.DataGridView == null)
             {
                 return;

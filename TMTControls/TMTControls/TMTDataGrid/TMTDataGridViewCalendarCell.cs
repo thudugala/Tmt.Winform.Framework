@@ -79,7 +79,7 @@ namespace TMTControls.TMTDataGrid
             this.DataGridView.EditingControl.Size = new Size(editingControlBounds.Width, editingControlBounds.Height);
         }
 
-        private Rectangle GetAdjustedEditingControlBounds(Rectangle editingControlBounds, DataGridViewCellStyle cellStyle)
+        private static Rectangle GetAdjustedEditingControlBounds(Rectangle editingControlBounds, DataGridViewCellStyle cellStyle)
         {
             // Add a 1 pixel padding on the left and right of the editing control
             editingControlBounds.X += 1;

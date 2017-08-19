@@ -33,7 +33,7 @@ namespace TMTControls.TMTDataGrid
         internal const Decimal DATAGRIDVIEWNUMERICUPDOWNCELL_defaultIncrement = Decimal.One;
 
         // Default value of the Maximum property
-        internal const Decimal DATAGRIDVIEWNUMERICUPDOWNCELL_defaultMaximum = (Decimal)100.0;
+        internal const Decimal DATAGRIDVIEWNUMERICUPDOWNCELL_defaultMaximum = 100000.0M;
 
         // Default value of the Minimum property
         internal const Decimal DATAGRIDVIEWNUMERICUPDOWNCELL_defaultMinimum = Decimal.Zero;
@@ -75,11 +75,13 @@ namespace TMTControls.TMTDataGrid
             // Create a thread specific NumericUpDown control used for the painting of the non-edited cells
             if (paintingNumericUpDown == null)
             {
-                paintingNumericUpDown = new NumericUpDown();
-                // Some properties only need to be set once for the lifetime of the control:
-                paintingNumericUpDown.BorderStyle = BorderStyle.None;
-                paintingNumericUpDown.Maximum = Decimal.MaxValue / 10;
-                paintingNumericUpDown.Minimum = Decimal.MinValue / 10;
+                paintingNumericUpDown = new NumericUpDown
+                {
+                    // Some properties only need to be set once for the lifetime of the control:
+                    BorderStyle = BorderStyle.None,
+                    Maximum = Decimal.MaxValue / 10,
+                    Minimum = Decimal.MinValue / 10
+                };
             }
 
             // Set the default values of the properties:
@@ -107,7 +109,7 @@ namespace TMTControls.TMTDataGrid
             {
                 if (value < 0 || value > 99)
                 {
-                    throw new ArgumentOutOfRangeException("The DecimalPlaces property cannot be smaller than 0 or larger than 99.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "DecimalPlaces Cannot be smaller than 0 or larger than 99.");
                 }
                 if (this.decimalPlaces != value)
                 {
@@ -151,9 +153,9 @@ namespace TMTControls.TMTDataGrid
 
             set
             {
-                if (value < (Decimal)0.0)
+                if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("The Increment property cannot be smaller than 0.");
+                    throw new ArgumentOutOfRangeException(nameof(value), "Increment Cannot be smaller than 0.");
                 }
                 SetIncrement(this.RowIndex, value);
                 // No call to OnCommonChange is needed since the increment value does not affect the rendering of the cell.
@@ -163,6 +165,7 @@ namespace TMTControls.TMTDataGrid
         /// <summary>
         /// The Maximum property replicates the one from the NumericUpDown control
         /// </summary>
+        [DefaultValue(100000)]
         public Decimal Maximum
         {
             get
@@ -287,16 +290,14 @@ namespace TMTControls.TMTDataGrid
                 throw new InvalidOperationException("Cell is detached or its grid has no editing control.");
             }
 
-            NumericUpDown numericUpDown = dataGridView.EditingControl as NumericUpDown;
-            if (numericUpDown != null)
+            if (dataGridView.EditingControl is NumericUpDown numericUpDown)
             {
                 // Editing controls get recycled. Indeed, when a DataGridViewNumericUpDownCell cell gets edited
                 // after another DataGridViewNumericUpDownCell cell, the same editing control gets reused for
                 // performance reasons (to avoid an unnecessary control destruction and creation).
                 // Here the undo buffer of the TextBox inside the NumericUpDown control gets cleared to avoid
                 // interferences between the editing sessions.
-                TextBox textBox = numericUpDown.Controls[1] as TextBox;
-                if (textBox != null)
+                if (numericUpDown.Controls[1] is TextBox textBox)
                 {
                     textBox.ClearUndo();
                 }
@@ -308,7 +309,7 @@ namespace TMTControls.TMTDataGrid
         /// <summary>
         /// Adjusts the location and size of the editing control given the alignment characteristics of the cell
         /// </summary>
-        private Rectangle GetAdjustedEditingControlBounds(Rectangle editingControlBounds, DataGridViewCellStyle cellStyle)
+        private static Rectangle GetAdjustedEditingControlBounds(Rectangle editingControlBounds, DataGridViewCellStyle cellStyle)
         {
             // Add a 1 pixel padding on the left and right of the editing control
             editingControlBounds.X += 1;
@@ -371,16 +372,16 @@ namespace TMTControls.TMTDataGrid
             // By default, the base implementation converts the Decimal 1234.5 into the string "1234.5"
             object formattedValue = base.GetFormattedValue(value, rowIndex, ref cellStyle, valueTypeConverter, formattedValueTypeConverter, context);
             string formattedNumber = formattedValue as string;
-            if (!string.IsNullOrEmpty(formattedNumber) && value != null)
+            if (string.IsNullOrEmpty(formattedNumber) == false && value != null)
             {
-                Decimal unformattedDecimal = System.Convert.ToDecimal(value);
-                Decimal formattedDecimal = System.Convert.ToDecimal(formattedNumber);
+                Decimal unformattedDecimal = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                Decimal formattedDecimal = Convert.ToDecimal(formattedNumber, CultureInfo.InvariantCulture);
                 if (unformattedDecimal == formattedDecimal)
                 {
                     // The base implementation of GetFormattedValue (which triggers the CellFormatting event) did nothing else than
                     // the typical 1234.5 to "1234.5" conversion. But depending on the values of ThousandsSeparator and DecimalPlaces,
                     // this may not be the actual string displayed. The real formatted value may be "1,234.500"
-                    return formattedDecimal.ToString((this.ThousandsSeparator ? "N" : "F") + this.DecimalPlaces.ToString());
+                    return formattedDecimal.ToString((this.ThousandsSeparator ? "N" : "F") + this.DecimalPlaces.ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
                 }
             }
             return formattedValue;
@@ -415,8 +416,7 @@ namespace TMTControls.TMTDataGrid
         public override void InitializeEditingControl(int rowIndex, object initialFormattedValue, DataGridViewCellStyle dataGridViewCellStyle)
         {
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
-            NumericUpDown numericUpDown = this.DataGridView.EditingControl as NumericUpDown;
-            if (numericUpDown != null)
+            if (this.DataGridView.EditingControl is NumericUpDown numericUpDown)
             {
                 numericUpDown.BorderStyle = BorderStyle.None;
                 numericUpDown.DecimalPlaces = this.DecimalPlaces;
@@ -443,6 +443,11 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         public override bool KeyEntersEditMode(KeyEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             NumberFormatInfo numberFormatInfo = System.Globalization.CultureInfo.CurrentCulture.NumberFormat;
             Keys negativeSignKey = Keys.None;
             string negativeSignStr = numberFormatInfo.NegativeSign;
@@ -516,6 +521,16 @@ namespace TMTControls.TMTDataGrid
                                       object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle,
                                       DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
         {
+            if (graphics == null)
+            {
+                throw new ArgumentNullException(nameof(graphics));
+            }
+
+            if (cellStyle == null)
+            {
+                throw new ArgumentNullException(nameof(cellStyle));
+            }
+
             if (this.DataGridView == null)
             {
                 return;
@@ -703,14 +718,13 @@ namespace TMTControls.TMTDataGrid
             object cellValue = GetValue(rowIndex);
             if (cellValue != null)
             {
-                Decimal currentValue = System.Convert.ToDecimal(cellValue);
+                Decimal currentValue = Convert.ToDecimal(cellValue, CultureInfo.InvariantCulture);
                 Decimal constrainedValue = Constrain(currentValue);
                 if (constrainedValue != currentValue)
                 {
                     SetValue(rowIndex, constrainedValue);
                 }
             }
-            Debug.Assert(this.maximum == value);
             if (OwnsEditingNumericUpDown(rowIndex))
             {
                 this.EditingNumericUpDown.Maximum = value;
@@ -732,14 +746,13 @@ namespace TMTControls.TMTDataGrid
             object cellValue = GetValue(rowIndex);
             if (cellValue != null)
             {
-                Decimal currentValue = System.Convert.ToDecimal(cellValue);
+                Decimal currentValue = Convert.ToDecimal(cellValue, CultureInfo.InvariantCulture);
                 Decimal constrainedValue = Constrain(currentValue);
                 if (constrainedValue != currentValue)
                 {
                     SetValue(rowIndex, constrainedValue);
                 }
             }
-            Debug.Assert(this.minimum == value);
             if (OwnsEditingNumericUpDown(rowIndex))
             {
                 this.EditingNumericUpDown.Minimum = value;
@@ -765,7 +778,7 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         public override string ToString()
         {
-            return "DataGridViewNumericUpDownCell { ColumnIndex=" + ColumnIndex.ToString(CultureInfo.CurrentCulture) + ", RowIndex=" + RowIndex.ToString(CultureInfo.CurrentCulture) + " }";
+            return $"DataGridViewNumericUpDownCell [ ColumnIndex={ColumnIndex.ToString(CultureInfo.CurrentCulture)}, RowIndex={RowIndex.ToString(CultureInfo.CurrentCulture)}]";
         }
 
         /// <summary>

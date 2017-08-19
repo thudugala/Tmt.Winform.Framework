@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using TMTControls.TMTDialogs;
 using TMTControls.TMTPanels;
 
 namespace TMTControls
 {
     public partial class TMTFormMain : Form
     {
-        private Stack<Type> navigationOrder = new Stack<Type>();
+        private List<Type> navigationOrder = new List<Type>();
 
         public TMTFormMain()
         {
@@ -17,11 +20,21 @@ namespace TMTControls
 
         public UserControl LoadPanel(Type panelType)
         {
-            return this.LoadPanel(panelType.Assembly, string.Format("{0}.{1}", panelType.Namespace, panelType.Name));
+            if (panelType == null)
+            {
+                throw new ArgumentNullException(nameof(panelType));
+            }
+
+            return this.LoadPanel(panelType.Assembly, string.Format(CultureInfo.InvariantCulture, "{0}.{1}", panelType.Namespace, panelType.Name));
         }
 
         public virtual UserControl LoadPanel(Assembly assemblyOfType, string panelFullName)
         {
+            if (assemblyOfType == null)
+            {
+                throw new ArgumentNullException(nameof(assemblyOfType));
+            }
+
             UserControl panel = null;
             try
             {
@@ -66,7 +79,16 @@ namespace TMTControls
                     {
                         formPanel.LoadWindowWithDataWhenActive();
                     }
-                    this.navigationOrder.Push(panel.GetType());
+                    if (this.navigationOrder.Contains(panel.GetType()))
+                    {
+                        int itemIndex = this.navigationOrder.IndexOf(panel.GetType());
+                        while(itemIndex < this.navigationOrder.Count)
+                        {
+                            this.navigationOrder.RemoveAt(itemIndex);
+                        }                        
+                    }
+
+                    this.navigationOrder.Add(panel.GetType());
                 }
             }
             catch (Exception ex)
@@ -76,7 +98,7 @@ namespace TMTControls
             return panel;
         }
 
-        private void FormMain_TileButtonClicked(object sender, TMTPanelHome.TileButtonClickedEventArgs e)
+        private void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(e.PanelFullName) == false)
             {
@@ -98,14 +120,28 @@ namespace TMTControls
 
         public virtual UserControl LoadTopWindow(object sender)
         {
-            var topWindow = this.navigationOrder.Pop();
-            if (topWindow == sender.GetType())
+            if (sender == null)
             {
-                topWindow = this.navigationOrder.Pop();
+                throw new ArgumentNullException(nameof(sender));
             }
+
+            var topWindow = this.navigationOrder.Last();
             if (topWindow != null)
             {
-                return this.LoadPanel(topWindow);
+                this.navigationOrder.Remove(topWindow);
+
+                if (topWindow == sender.GetType())
+                {
+                    topWindow = this.navigationOrder.Last();
+                    if (topWindow != null)
+                    {
+                        this.navigationOrder.Remove(topWindow);
+                    }
+                }
+                if (topWindow != null)
+                {
+                    return this.LoadPanel(topWindow);
+                }
             }
             return null;
         }

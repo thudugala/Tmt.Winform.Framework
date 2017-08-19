@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using TMTControls.TMTDialogs;
 
 namespace TMTControls.TMTDataGrid
 {
@@ -22,15 +24,16 @@ namespace TMTControls.TMTDataGrid
 
             this.AutoGenerateColumns = false;
             this.SetTheme();
+            this.LoadSchema = true;
 
             this.ResumeLayout(false);
         }
 
         [Category("TMT Data")]
-        public event LovLoadedEventHandler LovLoaded;
+        public event EventHandler<ListOfValueLoadedEventArgs> ListOfValueLoaded;
 
         [Category("TMT Data")]
-        public event LovLoadingEventHandler LovLoading;
+        public event EventHandler<ListOfValueLoadingEventArgs> ListOfValueLoading;
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -55,6 +58,9 @@ namespace TMTControls.TMTDataGrid
         [Category("TMT Data"), DefaultValue(false)]
         public bool LoadDataWhenActive { get; set; }
 
+        [Category("TMT Data"), DefaultValue(true)]
+        public bool LoadSchema { get; set; }
+
         [Category("TMT Data")]
         public string TableName { get; set; }
 
@@ -62,10 +68,10 @@ namespace TMTControls.TMTDataGrid
         public string ViewName { get; set; }
 
         [Category("TMT Data")]
-        public string DefaultWhereStatment { get; set; }
+        public string DefaultWhereStatement { get; set; }
 
         [Category("TMT Data")]
-        public string DefaultOrderByStatment { get; set; }
+        public string DefaultOrderByStatement { get; set; }
 
         public DataTable GetDataSourceTableChanges()
         {
@@ -73,16 +79,35 @@ namespace TMTControls.TMTDataGrid
             {
                 this.EndEdit();
 
-                DataTable changedData = this.DataSourceTable.GetDataSourceTableChanges(this.TableName);
+                var changedData = this.DataSourceTable.GetDataSourceTableChanges(this.TableName);
 
                 if (changedData != null && changedData.Rows.Count > 0 &&
                     this.Columns != null && this.Columns.Count > 0)
                 {
-                    var readOnlyColumnNames = this.Columns.Cast<DataGridViewColumn>().Where(c => c.ReadOnly &&
-                                                                                                 string.IsNullOrWhiteSpace(c.DataPropertyName) == false &&
-                                                                                                 c.GetDataSourceInformation().KeyColumn == false &&
-                                                                                                 c.GetDataSourceInformation().MandatoryColumn == false &&
-                                                                                                 c.GetDataSourceInformation().EditAllowed == false).Select(c => c.DataPropertyName);
+                    var readOnlyColumns = this.Columns.Cast<DataGridViewColumn>().Where(c => c.ReadOnly &&
+                                                                                        string.IsNullOrWhiteSpace(c.DataPropertyName) == false &&
+                                                                                        (c is ITMTDataGridViewColumn myColumn &&
+                                                                                         myColumn.DataPropertyMandatory == false &&
+                                                                                         myColumn.DataPropertyPrimaryKey == false));
+                    var readOnlyColumnNames = readOnlyColumns.Select(c => c.DataPropertyName).ToList();
+                    foreach (var readOnlyColumn in readOnlyColumns)
+                    {
+                        if (readOnlyColumn is TMTDataGridViewReadOnlyTextBoxColumn myReadOnlyTextBoxColumn)
+                        {
+                            if (myReadOnlyTextBoxColumn.DataPropertyEditAllowed)
+                            {
+                                readOnlyColumnNames.Remove(myReadOnlyTextBoxColumn.DataPropertyName);
+                            }
+                        }
+                        else if (readOnlyColumn is TMTDataGridViewLinkColumn myLinkColumn)
+                        {
+                            if (myLinkColumn.DataPropertyEditAllowed)
+                            {
+                                readOnlyColumnNames.Remove(myLinkColumn.DataPropertyName);
+                            }
+                        }                        
+                    }
+
                     foreach (string readOnlyColumnName in readOnlyColumnNames)
                     {
                         changedData.Columns.Remove(readOnlyColumnName);
@@ -93,69 +118,87 @@ namespace TMTControls.TMTDataGrid
             return null;
         }
 
-        public List<DataGridViewColumn> GetKeyViewColumnList()
+        public IReadOnlyCollection<DataGridViewColumn> GetKeyViewColumnList()
         {
-            return this.Columns.Cast<DataGridViewColumn>().Where(c => c.GetDataSourceInformation().KeyColumn).ToList();
+            return this.Columns.Cast<DataGridViewColumn>()
+                               .Where(c => (c is ITMTDataGridViewColumn myCol && myCol.DataPropertyPrimaryKey)).ToList();
         }
 
-        public List<DataGridViewColumn> GetMandatoryViewColumnList()
+        public IReadOnlyCollection<DataGridViewColumn> GetMandatoryViewColumnList()
         {
-            return this.Columns.Cast<DataGridViewColumn>().Where(c => c.ReadOnly == false && c.GetDataSourceInformation().MandatoryColumn).ToList();
+            return this.Columns.Cast<DataGridViewColumn>()
+                               .Where(c => c.ReadOnly == false &&
+                                          (c is ITMTDataGridViewColumn myCol && myCol.DataPropertyMandatory)).ToList();
         }
 
         public Dictionary<string, bool> GetViewColumnDbNameDictionary()
         {
             var viewAllColumnList = this.Columns.Cast<DataGridViewColumn>().Where(c => string.IsNullOrWhiteSpace(c.DataPropertyName) == false);
-            if (viewAllColumnList != null && viewAllColumnList.Count() > 0)
+            if (viewAllColumnList.Count() > 0)
             {
-                var viewColumnList = viewAllColumnList.Select(c => new { DbColumnName = c.DataPropertyName, IsFuntion = c.GetDataSourceInformation().IsFuntion });
+                var isFuntionDictionary = new Dictionary<string, bool>();
+                foreach (var viewAllColumn in viewAllColumnList)
+                {
+                    if (viewAllColumn is TMTDataGridViewReadOnlyTextBoxColumn myReadOnlyTextBoxColumn)
+                    {
+                        isFuntionDictionary.Add(viewAllColumn.DataPropertyName, myReadOnlyTextBoxColumn.DataPropertyIsFuntion);
+                    }
+                    else if (viewAllColumn is TMTDataGridViewLinkColumn myLinkColumn)
+                    {
+                        isFuntionDictionary.Add(viewAllColumn.DataPropertyName, myLinkColumn.DataPropertyIsFuntion);
+                    }
+                    else
+                    {
+                        isFuntionDictionary.Add(viewAllColumn.DataPropertyName, false);
+                    }
+                }
 
-                return viewColumnList.ToDictionary(c => c.DbColumnName, c => c.IsFuntion);
+                return isFuntionDictionary;
             }
             return null;
         }
 
-        public List<TMTSearchDialog.SearchEntity> InitializeTableControls()
+        public IReadOnlyCollection<SearchEntity> InitializeTableControls()
         {
-            this.DataSourceTable = new DataTable(this.ViewName);
-
-            List<TMTSearchDialog.SearchEntity> searchEntityList = new List<TMTSearchDialog.SearchEntity>();
-            TMTSearchDialog.SearchEntity searchEntity;
-            foreach (DataGridViewColumn viewCol in this.Columns)
+            this.DataSourceTable = new DataTable(this.ViewName)
             {
-                if (viewCol is ITMTDataGridViewColumn)
+                Locale = CultureInfo.InvariantCulture
+            };
+
+            var searchEntityList = new List<SearchEntity>();
+            foreach (DataGridViewColumn viewCol in this.Columns.Cast<DataGridViewColumn>().Where(c => c is ITMTDataGridViewColumn))
+            {
+                if (viewCol.ValueType == null)
                 {
-                    if (viewCol.ValueType == null)
+                    MessageBox.Show(this, string.Format(CultureInfo.InvariantCulture, Properties.Resources.ERROR_ColumValueTypeMissing, viewCol.HeaderText),
+                        Properties.Resources.DESIN_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    if (viewCol.Visible && (viewCol is TMTDataGridViewImageColumn) == false)
                     {
-                        MessageBox.Show(this, "[" + viewCol.HeaderText + "] does not have a ValueType", "TMT Design Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        if (viewCol.Visible && (viewCol is TMTDataGridViewImageColumn) == false)
+                        var searchEntity = new SearchEntity()
                         {
-                            searchEntity = new TMTSearchDialog.SearchEntity()
-                            {
-                                Caption = viewCol.HeaderText,
-                                ColumnName = viewCol.DataPropertyName,
-                                DataType = viewCol.ValueType
-                            };
+                            Caption = viewCol.HeaderText,
+                            ColumnName = viewCol.DataPropertyName,
+                            DataType = viewCol.ValueType
+                        };
 
-                            if (viewCol is DataGridViewCheckBoxColumn viewCheckBoxCol)
-                            {
-                                searchEntity.IsCheckBox = true;
-                                searchEntity.FalseValue = viewCheckBoxCol.FalseValue;
-                                searchEntity.TrueValue = viewCheckBoxCol.TrueValue;
-                                searchEntity.IndeterminateValue = viewCheckBoxCol.IndeterminateValue;
-                            }
-                            else if (viewCol is TMTDataGridViewTextButtonBoxColumn viewTextButtonCol)
-                            {
-                                searchEntity.LovView = viewTextButtonCol.LovViewName;
-                            }
-                            searchEntityList.Add(searchEntity);
+                        if (viewCol is DataGridViewCheckBoxColumn viewCheckBoxCol)
+                        {
+                            searchEntity.IsCheckBox = true;
+                            searchEntity.FalseValue = viewCheckBoxCol.FalseValue;
+                            searchEntity.TrueValue = viewCheckBoxCol.TrueValue;
+                            searchEntity.IndeterminateValue = viewCheckBoxCol.IndeterminateValue;
                         }
-
-                        this.DataSourceTable.Columns.Add(viewCol.DataPropertyName, viewCol.ValueType);
+                        else if (viewCol is TMTDataGridViewTextButtonBoxColumn viewTextButtonCol)
+                        {
+                            searchEntity.ListOfValueView = viewTextButtonCol.ListOfValueViewName;
+                        }
+                        searchEntityList.Add(searchEntity);
                     }
+
+                    this.DataSourceTable.Columns.Add(viewCol.DataPropertyName, viewCol.ValueType);
                 }
             }
 
@@ -194,6 +237,11 @@ namespace TMTControls.TMTDataGrid
 
         protected override bool ProcessDataGridViewKey(KeyEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             if (e.KeyCode == Keys.Tab)
             {
                 return MyProcessTabKey();
@@ -210,14 +258,14 @@ namespace TMTControls.TMTDataGrid
             return base.ProcessDialogKey(keyData);
         }
 
-        public void GetLovSelectedRow(LovLoadingEventArgs rowEvent)
+        public void GetListOfValueSelectedRow(ListOfValueLoadingEventArgs rowEvent)
         {
-            LovLoading?.Invoke(this, rowEvent);
+            ListOfValueLoading?.Invoke(this, rowEvent);
         }
 
-        public void SetLovSelectedRow(LovLoadedEventArgs rowEvent)
+        public void SetListOfValueSelectedRow(ListOfValueLoadedEventArgs rowEvent)
         {
-            LovLoaded?.Invoke(this, rowEvent);
+            ListOfValueLoaded?.Invoke(this, rowEvent);
         }
 
         private void TMTDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
@@ -260,14 +308,24 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        public void FillSearchConditionTable(LovLoadingEventArgs e, params KeyValuePair<string, string>[] filterColumns)
+        public void FillSearchConditionTable(ListOfValueLoadingEventArgs e, params KeyValuePair<string, string>[] filterColumns)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             if (e.IsValidate)
             {
                 e.SearchConditionTable.Rows.Add(e.PrimaryColumnName, e.PrimaryColumnValue, e.PrimaryColumnType, false);
             }
             else
             {
+                if (filterColumns == null)
+                {
+                    return;
+                }
+
                 foreach (KeyValuePair<string, string> filterColumn in filterColumns)
                 {
                     if (e.Row.Cells[filterColumn.Value].Value != null)
@@ -303,7 +361,7 @@ namespace TMTControls.TMTDataGrid
         private void TMTDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             e.ThrowException = false;
-            TMTErrorDialog.Show(this, e.Exception, string.Format(Properties.Resources.ERROR_CellDataError, e.ColumnIndex, e.RowIndex));
+            TMTErrorDialog.Show(this, e.Exception, string.Format(CultureInfo.InvariantCulture, Properties.Resources.ERROR_CellDataError, e.ColumnIndex, e.RowIndex));
         }
 
         public void AddNewRow()

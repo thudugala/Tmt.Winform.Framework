@@ -29,23 +29,78 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TMTPanelForm));
             this.bindingSourceMain = new System.Windows.Forms.BindingSource(this.components);
             this.tmtNavigator = new TMTControls.TMTMultipleColumnComboBox();
+            this.errorProviderMain = new System.Windows.Forms.ErrorProvider(this.components);
             this.panelButtons.SuspendLayout();
             this.panelMain.SuspendLayout();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceMain)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderMain)).BeginInit();
             this.SuspendLayout();
             // 
             // backgroundWorkerMain
             // 
             this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMain_DoWork);
             this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMain_RunWorkerCompleted);
-            
+            // 
+            // tmtButtonSearch
+            // 
+            this.tmtButtonSearch.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonSearch.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonSearch, resources.GetString("tmtButtonSearch.ToolTip"));
+            // 
+            // tmtButtonReload
+            // 
+            this.tmtButtonReload.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonReload.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonReload, resources.GetString("tmtButtonReload.ToolTip"));
+            // 
+            // tmtButtonAdd
+            // 
+            this.tmtButtonAdd.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonAdd.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonAdd, resources.GetString("tmtButtonAdd.ToolTip"));
+            // 
+            // tmtButtonDelete
+            // 
+            this.tmtButtonDelete.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonDelete.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonDelete, resources.GetString("tmtButtonDelete.ToolTip"));
+            // 
+            // tmtButtonDuplicate
+            // 
+            this.tmtButtonDuplicate.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonDuplicate.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonDuplicate, resources.GetString("tmtButtonDuplicate.ToolTip"));
+            // 
+            // tmtButtonSave
+            // 
+            this.tmtButtonSave.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonSave.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonSave, resources.GetString("tmtButtonSave.ToolTip"));
+            // 
+            // tmtButtonColumnManager
+            // 
+            this.tmtButtonColumnManager.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonColumnManager.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonColumnManager, resources.GetString("tmtButtonColumnManager.ToolTip"));
             // 
             // panelControlContainer
             // 
-            this.panelControlContainer.Size = new System.Drawing.Size(746, 517);            
+            resources.ApplyResources(this.panelControlContainer, "panelControlContainer");
+            // 
+            // tmtButtonClear
+            // 
+            this.tmtButtonClear.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.tmtButtonClear.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.tmtButtonClear, resources.GetString("tmtButtonClear.ToolTip"));
+            // 
+            // buttonBack
+            // 
+            this.buttonBack.FlatAppearance.BorderSize = 0;
+            this.toolTipMain.SetToolTip(this.buttonBack, resources.GetString("buttonBack.ToolTip"));
             // 
             // panelTop
             // 
@@ -60,15 +115,15 @@
             this.tmtNavigator.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::TMTControls.Properties.Settings.Default, "PanelLabelBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.tmtNavigator.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::TMTControls.Properties.Settings.Default, "PanelLabelForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.tmtNavigator.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.tmtNavigator.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            resources.ApplyResources(this.tmtNavigator, "tmtNavigator");
             this.tmtNavigator.ForeColor = global::TMTControls.Properties.Settings.Default.PanelLabelForeColor;
-            this.tmtNavigator.Location = new System.Drawing.Point(330, 13);
-            this.tmtNavigator.Margin = new System.Windows.Forms.Padding(5);
             this.tmtNavigator.Name = "tmtNavigator";
-            this.tmtNavigator.Size = new System.Drawing.Size(250, 28);
-            this.tmtNavigator.TabIndex = 0;
             this.tmtNavigator.TabStop = false;
             this.tmtNavigator.SelectedIndexChanged += new System.EventHandler(this.tmtNavigator_SelectedIndexChanged);
+            // 
+            // errorProviderMain
+            // 
+            this.errorProviderMain.ContainerControl = this;
             // 
             // TMTPanelForm
             // 
@@ -82,6 +137,7 @@
             this.panelMain.PerformLayout();
             this.panelTop.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bindingSourceMain)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProviderMain)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -90,6 +146,6 @@
 
         public System.Windows.Forms.BindingSource bindingSourceMain;
         public TMTMultipleColumnComboBox tmtNavigator;
-
+        public System.Windows.Forms.ErrorProvider errorProviderMain;
     }
 }

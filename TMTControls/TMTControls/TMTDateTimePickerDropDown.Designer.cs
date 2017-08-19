@@ -28,24 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TMTDateTimePickerDropDown));
             this.monthCalendarMain = new System.Windows.Forms.MonthCalendar();
             this.SuspendLayout();
             // 
             // monthCalendarMain
             // 
-            this.monthCalendarMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.monthCalendarMain.Location = new System.Drawing.Point(0, 0);
-            this.monthCalendarMain.Margin = new System.Windows.Forms.Padding(0);
+            resources.ApplyResources(this.monthCalendarMain, "monthCalendarMain");
             this.monthCalendarMain.Name = "monthCalendarMain";
-            this.monthCalendarMain.TabIndex = 1;
             this.monthCalendarMain.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendarMain_DateSelected);
             // 
             // TMTDateTimePickerDropDown
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(265, 210);
             this.Controls.Add(this.monthCalendarMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "TMTDateTimePickerDropDown";

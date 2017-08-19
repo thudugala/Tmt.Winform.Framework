@@ -21,7 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,13 +31,14 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.4.11\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PhoneNumberFormatter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PhoneNumberFormatter.1.0.4\lib\net45\PhoneNumberFormatter.dll</HintPath>
@@ -57,10 +59,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LovEvent.cs" />
+    <Compile Include="ColumnData.cs" />
+    <Compile Include="DataValidatingEventArgs.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ListOfValueLoadedEventArgs.cs" />
+    <Compile Include="ListOfValueLoadingEventArgs.cs" />
+    <Compile Include="LogOnDataEntity.cs" />
     <Compile Include="MaskValidateType.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="PanelBackgroundWorke.cs" />
+    <Compile Include="PanelBackgroundWorkEventArgs.cs" />
+    <Compile Include="PanelBackgroundWorkType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -72,6 +80,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="SearchEntity.cs" />
     <Compile Include="TMTButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -81,26 +90,27 @@
     <Compile Include="TMTChart.Designer.cs">
       <DependentUpon>TMTChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTCheckBox.cs">
+    <Compile Include="TMTChartBackgroundWorkEventArgs.cs" />
+    <Compile Include="TMTDatabaseUI\TMTCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTColumnManagerDialog.cs">
+    <Compile Include="TMTDialogs\TMTColumnManagerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TMTColumnManagerDialog.Designer.cs">
+    <Compile Include="TMTDialogs\TMTColumnManagerDialog.Designer.cs">
       <DependentUpon>TMTColumnManagerDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTComboBox.cs">
+    <Compile Include="TMTDatabaseUI\TMTComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTCurrencyBox.cs">
+    <Compile Include="TMTDatabaseUI\TMTCurrencyBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTDatabaseLoginDialog.cs">
+    <Compile Include="TMTDialogs\TMTDatabaseLogOnDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TMTDatabaseLoginDialog.Designer.cs">
-      <DependentUpon>TMTDatabaseLoginDialog.cs</DependentUpon>
+    <Compile Include="TMTDialogs\TMTDatabaseLogOnDialog.Designer.cs">
+      <DependentUpon>TMTDatabaseLogOnDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TMTDataGrid\ITMTDataGridViewColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridView.cs">
@@ -127,8 +137,7 @@
     <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxEditingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TMTDataSourceInformation.cs" />
-    <Compile Include="TMTDateTimePicker.cs">
+    <Compile Include="TMTDatabaseUI\TMTDateTimePicker.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TMTDateTimePickerForSearch.cs">
@@ -149,24 +158,24 @@
     <Compile Include="TMTDialog.Designer.cs">
       <DependentUpon>TMTDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTErrorDialog.cs">
+    <Compile Include="TMTDialogs\TMTErrorDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TMTErrorDialog.Designer.cs">
+    <Compile Include="TMTDialogs\TMTErrorDialog.Designer.cs">
       <DependentUpon>TMTErrorDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTExtendard.cs" />
+    <Compile Include="TMTExtend.cs" />
     <Compile Include="TMTFormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TMTFormMain.Designer.cs">
       <DependentUpon>TMTFormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTLOVDialog.cs">
+    <Compile Include="TMTDialogs\TMTListOfValueDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TMTLOVDialog.Designer.cs">
-      <DependentUpon>TMTLOVDialog.cs</DependentUpon>
+    <Compile Include="TMTDialogs\TMTListOfValueDialog.Designer.cs">
+      <DependentUpon>TMTListOfValueDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TMTMultipleColumnComboBox.cs">
       <SubType>Component</SubType>
@@ -174,9 +183,10 @@
     <Compile Include="TMTNumberTextBoxForSearch.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTNumericUpDown.cs">
+    <Compile Include="TMTDatabaseUI\TMTNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TMTPanels\TileButtonClickedEventArgs.cs" />
     <Compile Include="TMTPanels\TMTPanelForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -201,16 +211,17 @@
     <Compile Include="TMTPanels\TMTPanelV2.Designer.cs">
       <DependentUpon>TMTPanelV2.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTSearchDialog.cs">
+    <Compile Include="TMTDialogs\TMTSearchDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TMTSearchDialog.Designer.cs">
+    <Compile Include="TMTDialogs\TMTSearchDialog.Designer.cs">
       <DependentUpon>TMTSearchDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTTextBox.cs">
+    <Compile Include="TMTDatabaseUI\ITMTDatabaseUIControl.cs" />
+    <Compile Include="TMTDatabaseUI\TMTTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTTextButtonBox.cs">
+    <Compile Include="TMTDatabaseUI\TMTTextButtonBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TMTTextButtonBoxBase.cs">
@@ -228,11 +239,11 @@
     <Compile Include="TMTUserControl.Designer.cs">
       <DependentUpon>TMTUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTWebAPILoginDialog.cs">
+    <Compile Include="TMTDialogs\TmtWebApiLogOnDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TMTWebAPILoginDialog.Designer.cs">
-      <DependentUpon>TMTWebAPILoginDialog.cs</DependentUpon>
+    <Compile Include="TMTDialogs\TmtWebApiLogOnDialog.Designer.cs">
+      <DependentUpon>TmtWebApiLogOnDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -244,11 +255,11 @@
     <EmbeddedResource Include="TMTChart.resx">
       <DependentUpon>TMTChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTColumnManagerDialog.resx">
+    <EmbeddedResource Include="TMTDialogs\TMTColumnManagerDialog.resx">
       <DependentUpon>TMTColumnManagerDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTDatabaseLoginDialog.resx">
-      <DependentUpon>TMTDatabaseLoginDialog.cs</DependentUpon>
+    <EmbeddedResource Include="TMTDialogs\TMTDatabaseLogOnDialog.resx">
+      <DependentUpon>TMTDatabaseLogOnDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTDataGrid\TMTDataGridView.resx">
       <DependentUpon>TMTDataGridView.cs</DependentUpon>
@@ -268,14 +279,14 @@
     <EmbeddedResource Include="TMTDialog.resx">
       <DependentUpon>TMTDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTErrorDialog.resx">
+    <EmbeddedResource Include="TMTDialogs\TMTErrorDialog.resx">
       <DependentUpon>TMTErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTFormMain.resx">
       <DependentUpon>TMTFormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTLOVDialog.resx">
-      <DependentUpon>TMTLOVDialog.cs</DependentUpon>
+    <EmbeddedResource Include="TMTDialogs\TMTListOfValueDialog.resx">
+      <DependentUpon>TMTListOfValueDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTNumberTextBoxForSearch.resx">
       <DependentUpon>TMTNumberTextBoxForSearch.cs</DependentUpon>
@@ -292,10 +303,10 @@
     <EmbeddedResource Include="TMTPanels\TMTPanelV2.resx">
       <DependentUpon>TMTPanelV2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTSearchDialog.resx">
+    <EmbeddedResource Include="TMTDialogs\TMTSearchDialog.resx">
       <DependentUpon>TMTSearchDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTTextButtonBox.resx">
+    <EmbeddedResource Include="TMTDatabaseUI\TMTTextButtonBox.resx">
       <DependentUpon>TMTTextButtonBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTTextButtonBoxBase.resx">
@@ -307,8 +318,8 @@
     <EmbeddedResource Include="TMTUserControl.resx">
       <DependentUpon>TMTUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTWebAPILoginDialog.resx">
-      <DependentUpon>TMTWebAPILoginDialog.cs</DependentUpon>
+    <EmbeddedResource Include="TMTDialogs\TmtWebApiLogOnDialog.resx">
+      <DependentUpon>TmtWebApiLogOnDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

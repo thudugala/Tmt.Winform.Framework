@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using TMTControls.TMTDialogs;
 
 namespace TMTControls
 {
     [ToolboxBitmap(typeof(DateTimePicker))]
     public partial class TMTDateTimePickerForSearch : UserControl
     {
+        private static string SEMICOLON = ";";
+        private static string WHITE_SPACE = " ";
+
         private TMTDateTimePickerDropDown dialog;
 
         public TMTDateTimePickerForSearch()
@@ -65,18 +69,18 @@ namespace TMTControls
                     {
                         textBoxMain.Text = textBoxMain.Text.Trim();
 
-                        if (textBoxMain.Text.EndsWith("!=") ||
-                            textBoxMain.Text.EndsWith("<=") ||
-                            textBoxMain.Text.EndsWith(">=") ||
-                            textBoxMain.Text.EndsWith("<") ||
-                            textBoxMain.Text.EndsWith(">") ||
-                            textBoxMain.Text.EndsWith(";"))
+                        if (textBoxMain.Text.EndsWith("!=", StringComparison.Ordinal) ||
+                            textBoxMain.Text.EndsWith("<=", StringComparison.Ordinal) ||
+                            textBoxMain.Text.EndsWith(">=", StringComparison.Ordinal) ||
+                            textBoxMain.Text.EndsWith("<", StringComparison.Ordinal) ||
+                            textBoxMain.Text.EndsWith(">", StringComparison.Ordinal) ||
+                            textBoxMain.Text.EndsWith(SEMICOLON, StringComparison.Ordinal))
                         {
-                            textBoxMain.Text += " " + e.Start.ToShortDateString();
+                            textBoxMain.Text += WHITE_SPACE + e.Start.ToShortDateString();
                         }
                         else
                         {
-                            textBoxMain.Text += "; " + e.Start.ToShortDateString();
+                            textBoxMain.Text += SEMICOLON + WHITE_SPACE + e.Start.ToShortDateString();
                         }
                     }
                     else

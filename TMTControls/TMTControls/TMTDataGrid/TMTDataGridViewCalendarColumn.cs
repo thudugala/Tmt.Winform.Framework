@@ -29,7 +29,7 @@ namespace TMTControls.TMTDataGrid
                 if (value != null &&
                     !value.GetType().IsAssignableFrom(typeof(TMTDataGridViewCalendarCell)))
                 {
-                    throw new InvalidCastException("Must be a TMTDataGridViewCalendarCell");
+                    throw new InvalidCastException($"Must be a {nameof(TMTDataGridViewCalendarCell)}");
                 }
                 base.CellTemplate = value;
             }

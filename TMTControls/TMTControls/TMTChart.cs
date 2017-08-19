@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Data;
 using System.Windows.Forms;
+using TMTControls.TMTDialogs;
 
 namespace TMTControls
 {
@@ -16,15 +16,13 @@ namespace TMTControls
             chartMain.Legends["LegendMain"].BackColor = chartMain.BackColor;
         }
 
-        public delegate void DataManagerEventHandler(object sender, TMTChartBackgroundWorkeArg e);
-
         [Category("TMT Data")]
-        public event DataManagerEventHandler DataManager;
+        public event EventHandler<TMTChartBackgroundWorkEventArgs> DataManager;
 
         [Category("TMT Data")]
         public string ViewName { get; set; }
 
-        public virtual void AfterLoad()
+        public virtual void AfterDataLoad()
         {
         }
 
@@ -34,24 +32,9 @@ namespace TMTControls
             chartMain.Legends["LegendMain"].BackColor = chartMain.BackColor;
         }
 
-        public virtual void OnDataManager(TMTChartBackgroundWorkeArg data)
+        public virtual void OnDataManager(TMTChartBackgroundWorkEventArgs data)
         {
-            if (DataManager != null)
-            {
-                DataManager(this, data);
-            }
-        }
-
-        public class TMTChartBackgroundWorkeArg : EventArgs
-        {
-            public TMTChartBackgroundWorkeArg()
-            {
-                this.SearchConditionTable = TMTExtendard.GetSearchConditionTable();
-            }
-
-            public DataTable SearchConditionTable { get; set; }
-            public DataTable ViewData { get; set; }
-            public string ViewName { get; set; }
+            DataManager?.Invoke(this, data);
         }
 
         private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
@@ -60,11 +43,11 @@ namespace TMTControls
             {
                 // Do not access the form's BackgroundWorker reference directly.
                 // Instead, use the reference provided by the sender parameter.
-                BackgroundWorker worker = sender as BackgroundWorker;
+                var worker = sender as BackgroundWorker;
 
                 if (worker.CancellationPending == false)
                 {
-                    TMTChartBackgroundWorkeArg arg = e.Argument as TMTChartBackgroundWorkeArg;
+                    var arg = e.Argument as TMTChartBackgroundWorkEventArgs;
 
                     this.OnDataManager(arg);
 
@@ -95,11 +78,11 @@ namespace TMTControls
                 }
                 else
                 {
-                    if (e.Result is TMTChartBackgroundWorkeArg)
+                    if (e.Result is TMTChartBackgroundWorkEventArgs arg)
                     {
-                        chartMain.DataSource = (e.Result as TMTChartBackgroundWorkeArg).ViewData;
+                        chartMain.DataSource = arg.ViewData;
                         chartMain.DataBind();
-                        this.AfterLoad();
+                        this.AfterDataLoad();
                     }
                 }
             }

@@ -81,6 +81,11 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         public virtual void ApplyCellStyleToEditingControl(DataGridViewCellStyle dataGridViewCellStyle)
         {
+            if (dataGridViewCellStyle == null)
+            {
+                throw new ArgumentNullException(nameof(dataGridViewCellStyle));
+            }
+
             this.Font = dataGridViewCellStyle.Font;
             if (dataGridViewCellStyle.BackColor.A < 255)
             {
@@ -103,84 +108,65 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         public virtual bool EditingControlWantsInputKey(Keys keyData, bool dataGridViewWantsInputKey)
         {
-            switch (keyData & Keys.KeyCode)
+            if (this.Controls[1] is TextBox textBox)
             {
-                case Keys.Right:
-                    {
-                        if (this.Controls[1] is TextBox textBox)
+                switch (keyData & Keys.KeyCode)
+                {
+                    case Keys.Right:
+                        // If the end of the selection is at the end of the string,
+                        // let the DataGridView treat the key message
+                        if ((this.RightToLeft == RightToLeft.No && (textBox.SelectionLength != 0 || textBox.SelectionStart != textBox.Text.Length)) ||
+                            (this.RightToLeft == RightToLeft.Yes && (textBox.SelectionLength != 0 || textBox.SelectionStart != 0)))
                         {
-                            // If the end of the selection is at the end of the string,
-                            // let the DataGridView treat the key message
-                            if ((this.RightToLeft == RightToLeft.No && !(textBox.SelectionLength == 0 && textBox.SelectionStart == textBox.Text.Length)) ||
-                                (this.RightToLeft == RightToLeft.Yes && !(textBox.SelectionLength == 0 && textBox.SelectionStart == 0)))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         break;
-                    }
 
-                case Keys.Left:
-                    {
-                        if (this.Controls[1] is TextBox textBox)
+                    case Keys.Left:
+                        // If the end of the selection is at the begining of the string
+                        // or if the entire text is selected and we did not start editing,
+                        // send this character to the dataGridView, else process the key message
+                        if ((this.RightToLeft == RightToLeft.No && (textBox.SelectionLength != 0 || textBox.SelectionStart != 0)) ||
+                            (this.RightToLeft == RightToLeft.Yes && (textBox.SelectionLength != 0 || textBox.SelectionStart != textBox.Text.Length)))
                         {
-                            // If the end of the selection is at the begining of the string
-                            // or if the entire text is selected and we did not start editing,
-                            // send this character to the dataGridView, else process the key message
-                            if ((this.RightToLeft == RightToLeft.No && !(textBox.SelectionLength == 0 && textBox.SelectionStart == 0)) ||
-                                (this.RightToLeft == RightToLeft.Yes && !(textBox.SelectionLength == 0 && textBox.SelectionStart == textBox.Text.Length)))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         break;
-                    }
 
-                case Keys.Down:
-                    // If the current value hasn't reached its minimum yet, handle the key. Otherwise let
-                    // the grid handle it.
-                    if (this.Value > this.Minimum)
-                    {
-                        return true;
-                    }
-                    break;
-
-                case Keys.Up:
-                    // If the current value hasn't reached its maximum yet, handle the key. Otherwise let
-                    // the grid handle it.
-                    if (this.Value < this.Maximum)
-                    {
-                        return true;
-                    }
-                    break;
-
-                case Keys.Home:
-                case Keys.End:
-                    {
-                        // Let the grid handle the key if the entire text is selected.
-                        if (this.Controls[1] is TextBox textBox)
+                    case Keys.Down:
+                        // If the current value hasn't reached its minimum yet, handle the key. Otherwise let
+                        // the grid handle it.
+                        if (this.Value > this.Minimum)
                         {
-                            if (textBox.SelectionLength != textBox.Text.Length)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         break;
-                    }
 
-                case Keys.Delete:
-                    {
-                        // Let the grid handle the key if the carret is at the end of the text.
-                        if (this.Controls[1] is TextBox textBox)
+                    case Keys.Up:
+                        // If the current value hasn't reached its maximum yet, handle the key. Otherwise let
+                        // the grid handle it.
+                        if (this.Value < this.Maximum)
                         {
-                            if (textBox.SelectionLength > 0 ||
-                                textBox.SelectionStart < textBox.Text.Length)
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                         break;
-                    }
+
+                    case Keys.Home:
+                    case Keys.End:
+                        if (textBox.SelectionLength != textBox.Text.Length)
+                        {
+                            return true;
+                        }
+                        break;
+
+                    case Keys.Delete:
+                        if (textBox.SelectionLength > 0 ||
+                            textBox.SelectionStart < textBox.Text.Length)
+                        {
+                            return true;
+                        }
+                        break;
+                }
             }
             return !dataGridViewWantsInputKey;
         }
@@ -195,7 +181,7 @@ namespace TMTControls.TMTDataGrid
             {
                 // Prevent the Value from being set to Maximum or Minimum when the cell is being painted.
                 this.UserEdit = (context & DataGridViewDataErrorContexts.Display) == 0;
-                return this.Value.ToString((this.ThousandsSeparator ? "N" : "F") + this.DecimalPlaces.ToString());
+                return this.Value.ToString((this.ThousandsSeparator ? "N" : "F") + this.DecimalPlaces.ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture);
             }
             finally
             {
@@ -245,6 +231,11 @@ namespace TMTControls.TMTDataGrid
         /// </summary>
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             base.OnKeyPress(e);
 
             // The value changes when a digit, the decimal separator, the group separator or

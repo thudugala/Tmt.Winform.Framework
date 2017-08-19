@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TMTChart));
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.chartMain = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.backgroundWorkerMain = new System.ComponentModel.BackgroundWorker();
@@ -43,18 +44,14 @@
             chartArea1.BackColor = System.Drawing.Color.Transparent;
             chartArea1.Name = "ChartAreaMain";
             this.chartMain.ChartAreas.Add(chartArea1);
-            this.chartMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            resources.ApplyResources(this.chartMain, "chartMain");
             legend1.BackColor = System.Drawing.Color.Transparent;
             legend1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             legend1.IsTextAutoFit = false;
             legend1.Name = "LegendMain";
             this.chartMain.Legends.Add(legend1);
-            this.chartMain.Location = new System.Drawing.Point(0, 0);
             this.chartMain.Name = "chartMain";
             this.chartMain.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SemiTransparent;
-            this.chartMain.Size = new System.Drawing.Size(484, 379);
-            this.chartMain.TabIndex = 0;
-            this.chartMain.Text = "TMT Chart";
             // 
             // backgroundWorkerMain
             // 
@@ -63,25 +60,18 @@
             // 
             // progressBarMain
             // 
-            this.progressBarMain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarMain.Location = new System.Drawing.Point(3, 361);
+            resources.ApplyResources(this.progressBarMain, "progressBarMain");
             this.progressBarMain.Name = "progressBarMain";
-            this.progressBarMain.Size = new System.Drawing.Size(478, 15);
             this.progressBarMain.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBarMain.TabIndex = 1;
-            this.progressBarMain.Visible = false;
             // 
             // TMTChart
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.progressBarMain);
             this.Controls.Add(this.chartMain);
-            this.Margin = new System.Windows.Forms.Padding(13);
             this.Name = "TMTChart";
-            this.Size = new System.Drawing.Size(484, 379);
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).EndInit();
             this.ResumeLayout(false);
 

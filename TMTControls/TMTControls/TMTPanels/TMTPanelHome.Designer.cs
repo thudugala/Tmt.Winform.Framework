@@ -28,15 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TMTPanelHome));
             this.SuspendLayout();
             // 
             // TMTPanelHome
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "TMTPanelHome";
-            this.Size = new System.Drawing.Size(600, 400);
             this.Load += new System.EventHandler(this.TMTPanelHome_Load);
             this.ResumeLayout(false);
 

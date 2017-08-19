@@ -47,8 +47,7 @@ namespace TMTControls.TMTDataGrid
         public TMTDataGridViewNumericUpDownColumn()
             : base(new TMTDataGridViewNumericUpDownCell())
         {
-            base.ValueType = typeof(Int64);
-            this.Maximum = 100000;
+            base.ValueType = typeof(Int64);           
             base.SortMode = DataGridViewColumnSortMode.Automatic;
         }
 
@@ -67,12 +66,14 @@ namespace TMTControls.TMTDataGrid
             }
             set
             {
-                TMTDataGridViewNumericUpDownCell dataGridViewNumericUpDownCell = value as TMTDataGridViewNumericUpDownCell;
-                if (value != null && dataGridViewNumericUpDownCell == null)
+                if (value is TMTDataGridViewNumericUpDownCell)
                 {
-                    throw new InvalidCastException("Value provided for CellTemplate must be of type TMTDataGridViewNumericUpDownColumn.TMTDataGridViewNumericUpDownCell or derive from it.");
+                    base.CellTemplate = value;
                 }
-                base.CellTemplate = value;
+                else
+                {
+                    throw new InvalidCastException($"Value provided for CellTemplate must be of type {nameof(TMTDataGridViewNumericUpDownColumn)}.{nameof(TMTDataGridViewNumericUpDownCell)} or derive from it.");
+                }                
             }
         }
 
@@ -326,7 +327,7 @@ namespace TMTControls.TMTDataGrid
         {
             get
             {
-                return (TMTDataGridViewNumericUpDownCell)this.CellTemplate;
+                return this.CellTemplate as TMTDataGridViewNumericUpDownCell;
             }
         }
 

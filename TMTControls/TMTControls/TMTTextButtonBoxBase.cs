@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Design;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TMTControls.TMTDataGrid;
+using TMTControls.TMTDatabaseUI;
+using TMTControls.TMTDialogs;
 
 namespace TMTControls
 {
@@ -12,7 +17,7 @@ namespace TMTControls
     [DefaultEvent("TextChanged")]
     public partial class TMTTextButtonBoxBase : UserControl
     {
-        private TMTLOVDialog _lovDialog;
+        private TMTListOfValueDialog _lovDialog;
         private HashSet<char> allowedKeySetForSearch = new HashSet<char>() { '.', '<', '=', '>', '!', ';' };
         private HashSet<char> allowedKeySet = new HashSet<char>() { '.' };
 
@@ -22,17 +27,18 @@ namespace TMTControls
 
             this.SuspendLayout();
 
-            InnerTextBox.GotFocus += InnerTextBox_GotFocus;
+            InnerTextBox.GotFocus += (sender, e) => this.OnGotFocus(e);
             this.KeyInputType = TextInputType.Text;
 
             this.ResumeLayout(false);
         }
 
-        public void InnerTextBox_GotFocus(object sender, EventArgs e)
-        {
-            this.OnGotFocus(e);
-        }
-
+        [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        [Localizable(true)]
+        [Bindable(true)]
+        [Browsable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        [EditorBrowsable(EditorBrowsableState.Always)]
         public override string Text
         {
             get
@@ -81,6 +87,8 @@ namespace TMTControls
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ButtonWidth
         {
             get
@@ -93,6 +101,8 @@ namespace TMTControls
             }
         }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ButtonHeight
         {
             get
@@ -107,6 +117,9 @@ namespace TMTControls
 
         [Category("Design"), DefaultValue(TextInputType.Text)]
         public TextInputType KeyInputType { get; set; }
+
+        [Category("Design")]
+        public ProgressBar ControlProgressBar { get; set; }
 
         public void ClearUndo()
         {
@@ -143,52 +156,63 @@ namespace TMTControls
             }
         }
 
-        private void FieldLov(TMTTextButtonBox tmtTextButton)
+        private async void FieldLov(TMTTextButtonBox tmtTextButton)
         {
             try
             {
                 if (this._lovDialog == null)
                 {
-                    this._lovDialog = new TMTLOVDialog();
+                    this._lovDialog = new TMTListOfValueDialog();
+                }
+                if (ControlProgressBar != null)
+                {
+                    ControlProgressBar.Visible = true;
                 }
 
-                LovLoadingEventArgs lovEvent = new LovLoadingEventArgs()
+                var lovEvent = new ListOfValueLoadingEventArgs()
                 {
                     IsValidate = false,
                     PrimaryColumnName = tmtTextButton.DbColumnName,
-                    PrimaryColumnType = tmtTextButton.GetDataSourceInformation().GetDbColumnType().FullName,
+                    PrimaryColumnType = tmtTextButton.GetDbColumnSystemType().FullName,
                     PrimaryColumnValue = tmtTextButton.Text,
-                    LovHeaderText = tmtTextButton.ConnectedLabel.Text,
-                    SearchConditionTable = TMTExtendard.GetSearchConditionTable(),
-                    LovViewName = tmtTextButton.LovViewName
+                    ListOfValueHeaderText = tmtTextButton.ConnectedLabel.Text,
+                    SearchConditionTable = TMTExtend.GetSearchConditionTable(),
+                    ListOfValueViewName = tmtTextButton.ListOfValueViewName
                 };
 
-                tmtTextButton.GetLovSelectedRow(lovEvent);
+                await Task.Run(() => tmtTextButton.GetListOfValueSelectedRow(lovEvent));
 
-                this._lovDialog.HeaderLabel = lovEvent.LovHeaderText;
-                this._lovDialog.SetDataSourceTable(lovEvent.LovDataTable);
+                this._lovDialog.HeaderLabel = lovEvent.ListOfValueHeaderText;
+                this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
 
                 if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs()
+                    ListOfValueLoadedEventArgs lovLoaded = new ListOfValueLoadedEventArgs(this._lovDialog.SelectedRow)
                     {
                         IsValidate = lovEvent.IsValidate,
-                        SelectedRow = this._lovDialog.SelectedRow,
                         PrimaryColumnName = lovEvent.PrimaryColumnName,
-                        LovViewName = lovEvent.LovViewName
+                        ListOfValueViewName = lovEvent.ListOfValueViewName
                     };
+
                     tmtTextButton.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
-                    tmtTextButton.LovText = tmtTextButton.Text;
+                    tmtTextButton.ListOfValueText = tmtTextButton.Text;
 
                     tmtTextButton.CausesValidation = true;
                     tmtTextButton.Focus();
 
-                    tmtTextButton.SetLovSelectedRow(lovLoaded);
+                    tmtTextButton.SetListOfValueSelectedRow(lovLoaded);
                 }
             }
             catch (Exception ex)
             {
                 TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
+            }
+            finally
+            {
+                if (ControlProgressBar != null)
+                {
+                    ControlProgressBar.Visible = false;
+                }
             }
         }
 
@@ -196,41 +220,40 @@ namespace TMTControls
         {
             try
             {
-                if (tmtTextButton.LovText != tmtTextButton.Text)
+                if (tmtTextButton.ListOfValueText != tmtTextButton.Text)
                 {
-                    LovLoadingEventArgs lovEvent = new LovLoadingEventArgs()
+                    ListOfValueLoadingEventArgs lovEvent = new ListOfValueLoadingEventArgs()
                     {
                         IsValidate = true,
                         PrimaryColumnName = tmtTextButton.DbColumnName,
-                        PrimaryColumnType = tmtTextButton.GetDataSourceInformation().GetDbColumnType().FullName,
+                        PrimaryColumnType = tmtTextButton.GetDbColumnSystemType().FullName,
                         PrimaryColumnValue = tmtTextButton.Text,
-                        SearchConditionTable = TMTExtendard.GetSearchConditionTable(),
-                        LovViewName = tmtTextButton.LovViewName
+                        SearchConditionTable = TMTExtend.GetSearchConditionTable(),
+                        ListOfValueViewName = tmtTextButton.ListOfValueViewName
                     };
 
-                    tmtTextButton.GetLovSelectedRow(lovEvent);
+                    tmtTextButton.GetListOfValueSelectedRow(lovEvent);
 
-                    bool dataFound = (lovEvent.LovDataTable != null && lovEvent.LovDataTable.Rows.Count == 1);
+                    bool dataFound = (lovEvent.ListOfValueDataTable != null && lovEvent.ListOfValueDataTable.Rows.Count == 1);
                     if (dataFound)
                     {
-                        tmtTextButton.LovText = tmtTextButton.Text;
+                        tmtTextButton.ListOfValueText = tmtTextButton.Text;
 
-                        LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs()
-                        {
-                            IsValidate = lovEvent.IsValidate,
-                            PrimaryColumnName = lovEvent.PrimaryColumnName,
-                            LovViewName = lovEvent.LovViewName
-                        };
-
-                        DataRow selectedDataRow = lovEvent.LovDataTable.Rows[0];
-                        Dictionary<string, Object> selectedRow = new Dictionary<string, object>();
-                        foreach (DataColumn col in lovEvent.LovDataTable.Columns)
+                        DataRow selectedDataRow = lovEvent.ListOfValueDataTable.Rows[0];
+                        Dictionary<string, object> selectedRow = new Dictionary<string, object>();
+                        foreach (DataColumn col in lovEvent.ListOfValueDataTable.Columns)
                         {
                             selectedRow.Add(col.ColumnName, selectedDataRow[col]);
                         }
-                        lovLoaded.SelectedRow = selectedRow;
 
-                        tmtTextButton.SetLovSelectedRow(lovLoaded);
+                        ListOfValueLoadedEventArgs lovLoaded = new ListOfValueLoadedEventArgs(selectedRow)
+                        {
+                            IsValidate = lovEvent.IsValidate,
+                            PrimaryColumnName = lovEvent.PrimaryColumnName,
+                            ListOfValueViewName = lovEvent.ListOfValueViewName
+                        };
+
+                        tmtTextButton.SetListOfValueSelectedRow(lovLoaded);
                     }
 
                     this.BackColor = (dataFound) ? Color.Empty : Color.Red;
@@ -254,20 +277,20 @@ namespace TMTControls
 
                 if (this._lovDialog == null)
                 {
-                    this._lovDialog = new TMTLOVDialog();
+                    this._lovDialog = new TMTListOfValueDialog();
                 }
 
                 var currentColumn = gridview.CurrentCell.OwningColumn as TMTDataGridViewTextButtonBoxColumn;
 
-                LovLoadingEventArgs lovEvent = new LovLoadingEventArgs()
+                ListOfValueLoadingEventArgs lovEvent = new ListOfValueLoadingEventArgs()
                 {
                     RowIndex = gridview.CurrentCell.RowIndex,
                     IsValidate = false,
                     PrimaryColumnName = currentColumn.DataPropertyName,
-                    PrimaryColumnType = currentColumn.GetDataSourceInformation().GetDbColumnType().FullName,
-                    LovHeaderText = currentColumn.HeaderText,
-                    SearchConditionTable = TMTExtendard.GetSearchConditionTable(),
-                    LovViewName = currentColumn.LovViewName
+                    PrimaryColumnType = currentColumn.ValueType.FullName,
+                    ListOfValueHeaderText = currentColumn.HeaderText,
+                    SearchConditionTable = TMTExtend.GetSearchConditionTable(),
+                    ListOfValueViewName = currentColumn.ListOfValueViewName
                 };
                 if (gridview.CurrentCell.Value != null)
                 {
@@ -275,28 +298,25 @@ namespace TMTControls
                 }
                 lovEvent.Row = gridview.Rows[lovEvent.RowIndex];
 
-                gridview.GetLovSelectedRow(lovEvent);
+                gridview.GetListOfValueSelectedRow(lovEvent);
 
-                this._lovDialog.HeaderLabel = lovEvent.LovHeaderText;
-                this._lovDialog.SetDataSourceTable(lovEvent.LovDataTable);
+                this._lovDialog.HeaderLabel = lovEvent.ListOfValueHeaderText;
+                this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
 
                 if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    DataGridViewRow currectRow = gridview.Rows[lovEvent.RowIndex];
-
-                    LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs()
+                {                    
+                    ListOfValueLoadedEventArgs lovLoaded = new ListOfValueLoadedEventArgs(this._lovDialog.SelectedRow)
                     {
                         IsValidate = lovEvent.IsValidate,
                         RowIndex = lovEvent.RowIndex,
                         PrimaryColumnName = lovEvent.PrimaryColumnName,
-                        SelectedRow = this._lovDialog.SelectedRow,
-                        LovViewName = lovEvent.LovViewName
+                        ListOfValueViewName = lovEvent.ListOfValueViewName
                     };
 
                     gridview.CurrentCell.Value = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
                     gridview.CurrentCell.Tag = gridview.CurrentCell.Value;
 
-                    gridview.SetLovSelectedRow(lovLoaded);
+                    gridview.SetListOfValueSelectedRow(lovLoaded);
 
                     gridview.CurrentCell.Selected = true;
                     gridview.CurrentCell.Style.BackColor = Color.Empty;
@@ -334,14 +354,14 @@ namespace TMTControls
 
                 if (string.IsNullOrWhiteSpace(sValue) == false)
                 {
-                    LovLoadingEventArgs lovEvent = new LovLoadingEventArgs()
+                    ListOfValueLoadingEventArgs lovEvent = new ListOfValueLoadingEventArgs()
                     {
                         RowIndex = gridview.CurrentCell.RowIndex,
                         IsValidate = true,
                         PrimaryColumnName = currentColumn.DataPropertyName,
-                        PrimaryColumnType = currentColumn.GetDataSourceInformation().GetDbColumnType().FullName,
-                        SearchConditionTable = TMTExtendard.GetSearchConditionTable(),
-                        LovViewName = currentColumn.LovViewName
+                        PrimaryColumnType = currentColumn.ValueType.FullName,
+                        SearchConditionTable = TMTExtend.GetSearchConditionTable(),
+                        ListOfValueViewName = currentColumn.ListOfValueViewName
                     };
                     if (gridview.CurrentCell.Value != null)
                     {
@@ -349,30 +369,29 @@ namespace TMTControls
                     }
                     lovEvent.Row = gridview.Rows[lovEvent.RowIndex];
 
-                    gridview.GetLovSelectedRow(lovEvent);
+                    gridview.GetListOfValueSelectedRow(lovEvent);
 
-                    if (lovEvent.LovDataTable != null)
+                    if (lovEvent.ListOfValueDataTable != null)
                     {
-                        bool dataFound = (lovEvent.LovDataTable.Rows.Count == 1);
+                        bool dataFound = (lovEvent.ListOfValueDataTable.Rows.Count == 1);
 
                         if (dataFound)
                         {
-                            LovLoadedEventArgs lovLoaded = new LovLoadedEventArgs()
+                            ListOfValueLoadedEventArgs lovLoaded = new ListOfValueLoadedEventArgs()
                             {
                                 IsValidate = lovEvent.IsValidate,
                                 RowIndex = lovEvent.RowIndex,
                                 PrimaryColumnName = lovEvent.PrimaryColumnName,
-                                SelectedRow = new Dictionary<string, object>(),
-                                LovViewName = lovEvent.LovViewName
+                                ListOfValueViewName = lovEvent.ListOfValueViewName
                             };
-                            DataRow row = lovEvent.LovDataTable.Rows[0];
-                            foreach (DataColumn col in lovEvent.LovDataTable.Columns)
+                            DataRow row = lovEvent.ListOfValueDataTable.Rows[0];
+                            foreach (DataColumn col in lovEvent.ListOfValueDataTable.Columns)
                             {
                                 lovLoaded.SelectedRow.Add(col.ColumnName, row[col]);
                             }
                             gridview.CurrentCell.Tag = gridview.CurrentCell.Value;
 
-                            gridview.SetLovSelectedRow(lovLoaded);
+                            gridview.SetListOfValueSelectedRow(lovLoaded);
                         }
 
                         gridview.CurrentCell.Style.BackColor = (dataFound) ? Color.Empty : Color.Red;

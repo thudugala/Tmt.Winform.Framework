@@ -20,21 +20,20 @@ namespace TMTControls.TMTDataGrid
             }
             set
             {
-                if (value is String)
+                if (value != null)
                 {
-                    try
+                    if (DateTime.TryParse(value.ToString(), out DateTime date))
                     {
-                        // This will throw an exception of the string is
-                        // null, empty, or not in the format of a date.
-                        this.Value = DateTime.Parse((String)value);
+                        this.Value = date;
                     }
-                    catch
+                    else
                     {
-                        // In the case of an exception, just use the
-                        // default value so we're not left with a null
-                        // value.
                         this.Value = DateTime.Now;
                     }
+                }
+                else
+                {
+                    this.Value = DateTime.Now;
                 }
             }
         }
@@ -49,9 +48,13 @@ namespace TMTControls.TMTDataGrid
 
         // Implements the
         // IDataGridViewEditingControl.ApplyCellStyleToEditingControl method.
-        public void ApplyCellStyleToEditingControl(
-            DataGridViewCellStyle dataGridViewCellStyle)
+        public void ApplyCellStyleToEditingControl(DataGridViewCellStyle dataGridViewCellStyle)
         {
+            if (dataGridViewCellStyle == null)
+            {
+                throw new ArgumentNullException(nameof(dataGridViewCellStyle));
+            }
+
             this.Font = dataGridViewCellStyle.Font;
             this.CalendarForeColor = dataGridViewCellStyle.ForeColor;
             this.CalendarMonthBackground = dataGridViewCellStyle.BackColor;
@@ -64,10 +67,10 @@ namespace TMTControls.TMTDataGrid
         // Implements the IDataGridViewEditingControl.EditingControlWantsInputKey
         // method.
         public bool EditingControlWantsInputKey(
-            Keys key, bool dataGridViewWantsInputKey)
+            Keys keyData, bool dataGridViewWantsInputKey)
         {
             // Let the DateTimePicker handle the keys listed.
-            switch (key & Keys.KeyCode)
+            switch (keyData & Keys.KeyCode)
             {
                 case Keys.Left:
                 case Keys.Up:
@@ -119,9 +122,9 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        protected override void OnValueChanged(EventArgs e)
+        protected override void OnValueChanged(EventArgs eventArgs)
         {
-            base.OnValueChanged(e);
+            base.OnValueChanged(eventArgs);
             if (this.Focused)
             {
                 // Let the DataGridView know about the value change

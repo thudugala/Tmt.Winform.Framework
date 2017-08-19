@@ -13,6 +13,11 @@ namespace TMTControls.TMTDataGrid
 
         public void ApplyCellStyleToEditingControl(DataGridViewCellStyle dataGridViewCellStyle)
         {
+            if (dataGridViewCellStyle == null)
+            {
+                throw new ArgumentNullException(nameof(dataGridViewCellStyle));
+            }
+
             this.Font = dataGridViewCellStyle.Font;
             this.ForeColor = dataGridViewCellStyle.ForeColor;
             if (dataGridViewCellStyle.BackColor.A < 255)
@@ -38,22 +43,7 @@ namespace TMTControls.TMTDataGrid
             }
             set
             {
-                if (value is string)
-                {
-                    try
-                    {
-                        // This will throw an exception of the string is
-                        // null, empty, or not in the format of a date.
-                        this.Text = value.ToString();
-                    }
-                    catch
-                    {
-                        // In the case of an exception, just use the
-                        // default value so we're not left with a null
-                        // value.
-                        this.Text = string.Empty;
-                    }
-                }
+                this.Text = (value != null) ? value.ToString() : string.Empty;
             }
         }
 

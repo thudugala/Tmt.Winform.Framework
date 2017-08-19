@@ -239,7 +239,7 @@
     <value>Port must have value</value>
   </data>
   <data name="DESIN_ERROR" xml:space="preserve">
-    <value>Design Issue</value>
+    <value>TMT Design Issue</value>
   </data>
   <data name="QUESTION_DeleteConfirm" xml:space="preserve">
     <value>"{0}" will be removed. Are you sure ?</value>
@@ -285,5 +285,8 @@
   </data>
   <data name="ERROR_PanelLoadIssue" xml:space="preserve">
     <value>Error Loading Panel</value>
+  </data>
+  <data name="ERROR_ColumValueTypeMissing" xml:space="preserve">
+    <value>Column [{0}] does not have a ValueType</value>
   </data>
 </root>
