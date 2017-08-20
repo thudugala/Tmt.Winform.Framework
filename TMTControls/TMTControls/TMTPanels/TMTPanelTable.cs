@@ -40,7 +40,7 @@ namespace TMTControls.TMTPanels
 
         public override void ColumnManager()
         {
-            List<ColumnData> colList = new List<ColumnData>();
+            var colList = new List<ColumnData>();
             foreach (DataGridViewColumn viewCol in tmtDataGridViewMain.Columns)
             {
                 if ((viewCol is DataGridViewButtonColumn) == false)
@@ -52,7 +52,7 @@ namespace TMTControls.TMTPanels
             ColumnManagerDialog.SetColumnList(colList);
             if (ColumnManagerDialog.ShowDialog(this) == DialogResult.OK)
             {
-                Dictionary<string, ColumnData> colDictionary = ColumnManagerDialog.GetColumnList().ToDictionary(c => c.Name);
+                var colDictionary = ColumnManagerDialog.GetColumnList().ToDictionary(c => c.Name);
 
                 foreach (DataGridViewColumn viewCol in tmtDataGridViewMain.Columns)
                 {
@@ -69,10 +69,9 @@ namespace TMTControls.TMTPanels
         {
             if (tmtDataGridViewMain.GetCellCount(DataGridViewElementStates.Selected) > 0)
             {
-                DataRow newRow;
                 foreach (DataGridViewRow selectedViewRow in tmtDataGridViewMain.SelectedRows)
                 {
-                    newRow = tmtDataGridViewMain.DataSourceTable.NewRow();
+                    var newRow = tmtDataGridViewMain.DataSourceTable.NewRow();
                     foreach (DataGridViewColumn col in tmtDataGridViewMain.Columns)
                     {
                         if (col.Visible && col.ReadOnly == false && string.IsNullOrWhiteSpace(col.DataPropertyName) == false)
@@ -116,7 +115,7 @@ namespace TMTControls.TMTPanels
                 progressBarMain.Visible = true;
                 this.UseWaitCursor = true;
 
-                PanelBackgroundWorkEventArgs arg = new PanelBackgroundWorkEventArgs()
+                var arg = new PanelBackgroundWorkEventArgs()
                 {
                     WorkType = PanelBackgroundWorkType.Load,
                     HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition(),
@@ -128,10 +127,10 @@ namespace TMTControls.TMTPanels
                     LoadSchema = tmtDataGridViewMain.LoadSchema
                 };
                 arg.HeaderViewColumnDbNameListAddRange(tmtDataGridViewMain.GetViewColumnDbNameDictionary().Keys.ToList());
-                string dbColumnName;
+
                 foreach (DataRow searchRow in arg.HeaderSearchConditionTable.Rows)
                 {
-                    dbColumnName = searchRow["COLUMN"].ToString();
+                    var dbColumnName = searchRow["COLUMN"].ToString();
                     if (tmtDataGridViewMain.GetViewColumnDbNameDictionary().ContainsKey(dbColumnName))
                     {
                         searchRow["IS_FUNCTION"] = tmtDataGridViewMain.GetViewColumnDbNameDictionary()[dbColumnName];
@@ -160,12 +159,12 @@ namespace TMTControls.TMTPanels
                     if (mandatoryViewColumnList != null &&
                         mandatoryViewColumnList.Count > 0)
                     {
-                        DataRowCollection rowCollection = dataToBeSaved.DataToBeSaved.Tables[tmtDataGridViewMain.TableName].Rows;
+                        var rowCollection = dataToBeSaved.DataToBeSaved.Tables[tmtDataGridViewMain.TableName].Rows;
                         foreach (DataRow row in rowCollection)
                         {
                             if (row.RowState != DataRowState.Deleted)
                             {
-                                foreach (DataGridViewColumn mandatoryViewColumn in mandatoryViewColumnList)
+                                foreach (var mandatoryViewColumn in mandatoryViewColumnList)
                                 {
                                     dataToBeSaved.CancelSave = this.ShowEmptyExclamation(row[mandatoryViewColumn.DataPropertyName], mandatoryViewColumn.HeaderText);
                                     if (dataToBeSaved.CancelSave)
@@ -186,7 +185,9 @@ namespace TMTControls.TMTPanels
 
         public override void RemoveData()
         {
-            if (tmtDataGridViewMain.DeleteDataAllowed && tmtDataGridViewMain.SelectedRows != null && tmtDataGridViewMain.SelectedRows.Count > 0)
+            if (tmtDataGridViewMain.DeleteDataAllowed &&
+                tmtDataGridViewMain.SelectedRows != null &&
+                tmtDataGridViewMain.SelectedRows.Count > 0)
             {
                 if (MessageBox.Show(this, Properties.Resources.QUESTION_DeleteConfirmAll,
                                           Properties.Resources.QUESTION_Delete,
@@ -214,16 +215,18 @@ namespace TMTControls.TMTPanels
 
                     if (changedData != null && changedData.Rows.Count > 0)
                     {
-                        PanelBackgroundWorkEventArgs arg = new PanelBackgroundWorkEventArgs()
+                        var arg = new PanelBackgroundWorkEventArgs()
                         {
                             WorkType = PanelBackgroundWorkType.Save,
                             HeaderViewName = tmtDataGridViewMain.TableName
                         };
                         arg.ChangedDataSet.Tables.Add(changedData);
 
-                        DataValidatingEventArgs validateArg = new DataValidatingEventArgs();
-                        validateArg.DataToBeSaved = arg.ChangedDataSet;
-                        validateArg.CancelSave = false;
+                        var validateArg = new DataValidatingEventArgs
+                        {
+                            DataToBeSaved = arg.ChangedDataSet,
+                            CancelSave = false
+                        };
                         this.OnValidateBeforeSave(validateArg);
 
                         if (validateArg.CancelSave == false)
@@ -243,19 +246,18 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void backgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
+        private void BackgroundWorkerMain_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
                 // Do not access the form's BackgroundWorker reference directly.
                 // Instead, use the reference provided by the sender parameter.
-                BackgroundWorker worker = sender as BackgroundWorker;
+                var worker = sender as BackgroundWorker;
 
                 if (worker.CancellationPending == false)
                 {
-                    if (e.Argument is PanelBackgroundWorkEventArgs)
+                    if (e.Argument is PanelBackgroundWorkEventArgs arg)
                     {
-                        PanelBackgroundWorkEventArgs arg = e.Argument as PanelBackgroundWorkEventArgs;
                         e.Result = arg;
 
                         this.OnDataManager(arg);
@@ -276,7 +278,7 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void backgroundWorkerMain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void BackgroundWorkerMain_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
             {
@@ -286,10 +288,8 @@ namespace TMTControls.TMTPanels
                 }
                 else
                 {
-                    if (e.Result != null && e.Result is PanelBackgroundWorkEventArgs)
+                    if (e.Result != null && e.Result is PanelBackgroundWorkEventArgs arg)
                     {
-                        PanelBackgroundWorkEventArgs arg = e.Result as PanelBackgroundWorkEventArgs;
-
                         if (arg.WorkType == PanelBackgroundWorkType.Load)
                         {
                             tmtDataGridViewMain.DataSourceTable = arg.ChangedDataSet.Tables[arg.HeaderViewName];
@@ -348,7 +348,7 @@ namespace TMTControls.TMTPanels
             {
                 progressBarMain.Visible = true;
                 this.UseWaitCursor = true;
-                PanelBackgroundWorkEventArgs arg = new PanelBackgroundWorkEventArgs()
+                var arg = new PanelBackgroundWorkEventArgs()
                 {
                     WorkType = PanelBackgroundWorkType.Load,
                     HeaderSearchConditionTable = this.SearchDialog.GetSearchCondition(),
@@ -377,7 +377,7 @@ namespace TMTControls.TMTPanels
         private static void SetSearchConditionTable(DataTable searchConditionTable, DataTable dataTable, IReadOnlyCollection<DataGridViewColumn> keyViewColumnList)
         {
             string idConcatList;
-            foreach (DataGridViewColumn keyViewColumn in keyViewColumnList)
+            foreach (var keyViewColumn in keyViewColumnList)
             {
                 var keyDbColumnValueList = dataTable.Rows.Cast<DataRow>().Where(r => r.RowState != DataRowState.Deleted).Select(r => r[keyViewColumn.DataPropertyName].ToString());
                 if (keyDbColumnValueList.Count() > 0)
@@ -430,7 +430,7 @@ namespace TMTControls.TMTPanels
             return cancelSave;
         }
 
-        private void tmtDataGridViewMain_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void TmtDataGridViewMain_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex > -1 && e.RowIndex > -1)
             {
@@ -438,7 +438,7 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void tmtDataGridViewMain_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        private void TmtDataGridViewMain_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
         {
             if (e.Row != null)
             {
@@ -446,7 +446,7 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void tmtDataGridViewMain_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        private void TmtDataGridViewMain_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             if (e.Row != null)
             {

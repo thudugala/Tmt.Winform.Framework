@@ -64,7 +64,7 @@
             this.buttonOK.FlatAppearance.BorderSize = 0;
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.UseVisualStyleBackColor = false;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // buttonCancel
             // 
@@ -75,7 +75,7 @@
             this.buttonCancel.FlatAppearance.BorderSize = 0;
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.UseVisualStyleBackColor = false;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // checkBoxCaseSensitive
             // 

@@ -39,8 +39,8 @@
             // 
             // backgroundWorkerMain
             // 
-            this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMain_DoWork);
-            this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMain_RunWorkerCompleted);
+            this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorkerMain_DoWork);
+            this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorkerMain_RunWorkerCompleted);
             // 
             // tmtButtonSearch
             // 
@@ -127,9 +127,9 @@
             this.tmtDataGridViewMain.Name = "tmtDataGridViewMain";
             this.tmtDataGridViewMain.TableName = null;
             this.tmtDataGridViewMain.ViewName = null;
-            this.tmtDataGridViewMain.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.tmtDataGridViewMain_CellValueChanged);
-            this.tmtDataGridViewMain.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.tmtDataGridViewMain_UserDeletedRow);
-            this.tmtDataGridViewMain.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.tmtDataGridViewMain_UserDeletingRow);
+            this.tmtDataGridViewMain.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.TmtDataGridViewMain_CellValueChanged);
+            this.tmtDataGridViewMain.UserDeletedRow += new System.Windows.Forms.DataGridViewRowEventHandler(this.TmtDataGridViewMain_UserDeletedRow);
+            this.tmtDataGridViewMain.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.TmtDataGridViewMain_UserDeletingRow);
             // 
             // TMTPanelTable
             // 

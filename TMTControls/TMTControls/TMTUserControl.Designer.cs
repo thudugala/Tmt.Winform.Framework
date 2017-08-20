@@ -66,7 +66,7 @@
             this.buttonBack.TabStop = false;
             this.toolTipMain.SetToolTip(this.buttonBack, resources.GetString("buttonBack.ToolTip"));
             this.buttonBack.UseVisualStyleBackColor = false;
-            this.buttonBack.Click += new System.EventHandler(this.buttonBack_Click);
+            this.buttonBack.Click += new System.EventHandler(this.ButtonBack_Click);
             // 
             // panelTop
             // 
@@ -81,6 +81,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.panelTop);
+            this.DoubleBuffered = true;
             this.Name = "TMTUserControl";
             this.panelTop.ResumeLayout(false);
             this.ResumeLayout(false);

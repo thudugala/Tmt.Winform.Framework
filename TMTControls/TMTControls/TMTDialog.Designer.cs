@@ -54,6 +54,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.Controls.Add(this.panelMain);
             this.Controls.Add(this.labelHeader);
+            this.DoubleBuffered = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "TMTDialog";

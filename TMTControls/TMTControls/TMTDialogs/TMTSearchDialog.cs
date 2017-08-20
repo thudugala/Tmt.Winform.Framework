@@ -61,12 +61,12 @@ namespace TMTControls.TMTDialogs
             return searchConditionTable;
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
+        private void ButtonOK_Click(object sender, EventArgs e)
         {
             foreach (Control dbControl in tableLayoutPanelMain.Controls)
             {
@@ -129,14 +129,16 @@ namespace TMTControls.TMTDialogs
             {
                 propertyTextButtonBox.Text = value.ToString();
             }
-            propertyTextButtonBox.ListOfValueLoading += (lovSender, lovArg) =>
-            {
-                SearchListOfValueLoading?.Invoke(lovSender, lovArg);
-            };
+            propertyTextButtonBox.ListOfValueLoading += PropertyTextButtonBox_ListOfValueLoading;
 
             tableLayoutPanelMain.SetColumn(propertyTextButtonBox, 1);
             tableLayoutPanelMain.SetRow(propertyTextButtonBox, rowIndex);
             tableLayoutPanelMain.Controls.Add(propertyTextButtonBox);
+        }
+
+        private void PropertyTextButtonBox_ListOfValueLoading(object sender, ListOfValueLoadingEventArgs e)
+        {
+            SearchListOfValueLoading?.Invoke(sender, e);
         }
 
         private void AddCheckBox(SearchEntity searchEntity, int rowIndex)

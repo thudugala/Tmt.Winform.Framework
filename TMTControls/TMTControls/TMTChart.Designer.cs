@@ -71,6 +71,7 @@
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.progressBarMain);
             this.Controls.Add(this.chartMain);
+            this.DoubleBuffered = true;
             this.Name = "TMTChart";
             ((System.ComponentModel.ISupportInitialize)(this.chartMain)).EndInit();
             this.ResumeLayout(false);

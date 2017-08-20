@@ -58,7 +58,7 @@
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabStop = false;
             this.buttonOK.UseVisualStyleBackColor = true;
-            this.buttonOK.Click += new System.EventHandler(this.button_Click);
+            this.buttonOK.Click += new System.EventHandler(this.Button_Click);
             // 
             // TMTTextButtonBoxBase
             // 

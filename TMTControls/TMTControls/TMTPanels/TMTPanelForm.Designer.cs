@@ -42,8 +42,8 @@
             // 
             // backgroundWorkerMain
             // 
-            this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerMain_DoWork);
-            this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerMain_RunWorkerCompleted);
+            this.backgroundWorkerMain.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorkerMain_DoWork);
+            this.backgroundWorkerMain.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorkerMain_RunWorkerCompleted);
             // 
             // tmtButtonSearch
             // 
@@ -119,7 +119,7 @@
             this.tmtNavigator.ForeColor = global::TMTControls.Properties.Settings.Default.PanelLabelForeColor;
             this.tmtNavigator.Name = "tmtNavigator";
             this.tmtNavigator.TabStop = false;
-            this.tmtNavigator.SelectedIndexChanged += new System.EventHandler(this.tmtNavigator_SelectedIndexChanged);
+            this.tmtNavigator.SelectedIndexChanged += new System.EventHandler(this.TmtNavigator_SelectedIndexChanged);
             // 
             // errorProviderMain
             // 

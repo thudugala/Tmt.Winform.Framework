@@ -38,13 +38,16 @@ namespace TMTControls.TMTDialogs
             tmtDataGridViewMain.DataSourceTable = table;
             if (tmtDataGridViewMain.DataSourceTable != null)
             {
-                Dictionary<string, string> colType = this.GetColumnTypeDictionary();
+                var colType = this.GetColumnTypeDictionary();
 
                 this.SelectedRow = new Dictionary<string, object>();
 
                 tmtDataGridViewMain.Columns.Clear();
 
-                searchDialog = new TMTSearchDialog();
+                if (searchDialog == null)
+                {
+                    searchDialog = new TMTSearchDialog();
+                }
                 searchDialog.EntityList.Clear();
 
                 DataGridViewColumn vCol;
@@ -86,11 +89,11 @@ namespace TMTControls.TMTDialogs
 
         private Dictionary<string, string> GetColumnTypeDictionary()
         {
-            Dictionary<string, string> colType = new Dictionary<string, string>();
+            var colType = new Dictionary<string, string>();
 
-            DataTable sourceTable = tmtDataGridViewMain.DataSourceTable;
+            var sourceTable = tmtDataGridViewMain.DataSourceTable;
 
-            List<string> enumBoolean = new List<string> { "TRUE", "FALSE" };
+            var enumBoolean = new List<string> { "TRUE", "FALSE" };
 
             foreach (DataColumn dCol in sourceTable.Columns)
             {
@@ -115,15 +118,15 @@ namespace TMTControls.TMTDialogs
             return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(orginalText);
         }
 
-        private void buttonOK_Click(object sender, EventArgs e)
+        private void ButtonOK_Click(object sender, EventArgs e)
         {
             try
             {
                 if (tmtDataGridViewMain.SelectedRows.Count == 1)
                 {
-                    DataGridViewRow row = tmtDataGridViewMain.SelectedRows[0];
+                    var row = tmtDataGridViewMain.SelectedRows[0];
 
-                    List<string> keyList = this.SelectedRow.Keys.ToList();
+                    var keyList = this.SelectedRow.Keys.ToList();
 
                     foreach (string key in keyList)
                     {
@@ -139,16 +142,15 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void buttonSearch_Click(object sender, EventArgs e)
+        private void ButtonSearch_Click(object sender, EventArgs e)
         {
             try
             {
                 if (searchDialog.EntityList == null || searchDialog.EntityList.Count == 0)
                 {
-                    SearchEntity searchEntity;
                     foreach (DataGridViewColumn vCol in tmtDataGridViewMain.Columns)
                     {
-                        searchEntity = new SearchEntity()
+                        var searchEntity = new SearchEntity()
                         {
                             Caption = vCol.HeaderText,
                             ColumnName = vCol.DataPropertyName,
@@ -169,14 +171,11 @@ namespace TMTControls.TMTDialogs
                 {
                     string filter = string.Empty;
 
-                    string operatorSymbol = string.Empty;
-                    string sValue = string.Empty;
-                    string[] sValueArray;
-                    foreach (SearchEntity sEntity in searchDialog.EntityList)
+                    foreach (var sEntity in searchDialog.EntityList)
                     {
                         if (string.IsNullOrWhiteSpace(sEntity.Value) == false)
                         {
-                            sValueArray = sEntity.Value.ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                            var sValueArray = sEntity.Value.ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                             if (sValueArray.Length > 0)
                             {
                                 for (int i = 0; i < sValueArray.Length; i++)
@@ -186,11 +185,11 @@ namespace TMTControls.TMTDialogs
                                         filter += " AND ";
                                     }
 
-                                    sValue = sValueArray[i].Trim();
-                                    operatorSymbol = GetOperator(sValue);
+                                    var sValue = sValueArray[i].Trim();
+                                    var operatorSymbol = GetOperator(sValue);
                                     sValue = sValue.Replace(operatorSymbol, string.Empty).Trim();
 
-                                    filter += string.Format(CultureInfo.InvariantCulture, " `{0}` {1} '{2}' ", sEntity.ColumnName, operatorSymbol, sValue);
+                                    filter += $" `{sEntity.ColumnName}` {operatorSymbol} '{sValue}' ";
                                 }
                             }
                         }
@@ -239,7 +238,7 @@ namespace TMTControls.TMTDialogs
             return operatorSymbol;
         }
 
-        private void tmtDataGridViewMain_KeyDown(object sender, KeyEventArgs e)
+        private void TmtDataGridViewMain_KeyDown(object sender, KeyEventArgs e)
         {
             try
             {
@@ -255,7 +254,7 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void tmtDataGridViewMain_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void TmtDataGridViewMain_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             try
             {
@@ -270,7 +269,7 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void tmtDataGridViewMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void TmtDataGridViewMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
@@ -281,19 +280,18 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void tmtDataGridViewMain_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        private void TmtDataGridViewMain_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
             try
             {
                 if (tmtDataGridViewMain.DataSourceTable.Columns.Contains("HIGHLIGHT_COLOR"))
                 {
-                    object oColor;
                     foreach (DataGridViewRow vRow in tmtDataGridViewMain.Rows)
                     {
-                        oColor = vRow.Cells["colHIGHLIGHT_COLOR"].Value;
-                        if (oColor != null && string.IsNullOrWhiteSpace(oColor.ToString()) == false)
+                        var oColor = vRow.Cells["colHIGHLIGHT_COLOR"].ValueString();
+                        if (string.IsNullOrWhiteSpace(oColor) == false)
                         {
-                            vRow.DefaultCellStyle.BackColor = Color.FromName(oColor.ToString());
+                            vRow.DefaultCellStyle.BackColor = Color.FromName(oColor);
                         }
                     }
                 }
@@ -303,7 +301,7 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
         }

@@ -25,6 +25,7 @@ namespace TMTControls.TMTDataGrid
             this.AutoGenerateColumns = false;
             this.SetTheme();
             this.LoadSchema = true;
+            this.DoubleBuffered = true;
 
             this.ResumeLayout(false);
         }

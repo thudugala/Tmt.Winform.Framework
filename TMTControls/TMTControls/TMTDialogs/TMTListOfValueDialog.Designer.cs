@@ -61,7 +61,7 @@
             this.buttonOK.FlatAppearance.BorderSize = 0;
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.UseVisualStyleBackColor = false;
-            this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+            this.buttonOK.Click += new System.EventHandler(this.ButtonOK_Click);
             // 
             // tmtDataGridViewMain
             // 
@@ -101,10 +101,10 @@
             this.tmtDataGridViewMain.StandardTab = true;
             this.tmtDataGridViewMain.TableName = null;
             this.tmtDataGridViewMain.ViewName = null;
-            this.tmtDataGridViewMain.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.tmtDataGridViewMain_CellDoubleClick);
-            this.tmtDataGridViewMain.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.tmtDataGridViewMain_DataBindingComplete);
-            this.tmtDataGridViewMain.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.tmtDataGridViewMain_RowHeaderMouseDoubleClick);
-            this.tmtDataGridViewMain.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tmtDataGridViewMain_KeyDown);
+            this.tmtDataGridViewMain.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.TmtDataGridViewMain_CellDoubleClick);
+            this.tmtDataGridViewMain.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.TmtDataGridViewMain_DataBindingComplete);
+            this.tmtDataGridViewMain.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.TmtDataGridViewMain_RowHeaderMouseDoubleClick);
+            this.tmtDataGridViewMain.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TmtDataGridViewMain_KeyDown);
             // 
             // buttonSearch
             // 
@@ -114,7 +114,7 @@
             this.buttonSearch.FlatAppearance.BorderSize = 0;
             this.buttonSearch.Name = "buttonSearch";
             this.buttonSearch.UseVisualStyleBackColor = false;
-            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            this.buttonSearch.Click += new System.EventHandler(this.ButtonSearch_Click);
             // 
             // buttonCancel
             // 
@@ -125,7 +125,7 @@
             this.buttonCancel.FlatAppearance.BorderSize = 0;
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.UseVisualStyleBackColor = false;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
             // TMTLOVDialog
             // 

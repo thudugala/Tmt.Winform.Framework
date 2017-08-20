@@ -89,7 +89,7 @@ namespace TMTControls
             DataSaved?.Invoke(this, EventArgs.Empty);
         }
 
-        private void buttonBack_Click(object sender, EventArgs e)
+        private void ButtonBack_Click(object sender, EventArgs e)
         {
             BackButtonClicked?.Invoke(this, e);
         }
