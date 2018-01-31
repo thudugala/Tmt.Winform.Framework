@@ -16,7 +16,7 @@ namespace TMTControls.TMTDatabaseUI
 
         [Category("Data"), DefaultValue(false)]
         bool MandatoryColumn { get; set; }
-        
+
         string GetLableText();
 
         Type GetDbColumnSystemType();

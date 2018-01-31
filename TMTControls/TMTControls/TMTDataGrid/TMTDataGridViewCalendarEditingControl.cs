@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewCalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
+    [ToolboxItem(false)]
+    internal class TMTDataGridViewCalendarEditingControl : DateTimePicker, IDataGridViewEditingControl
     {
         public TMTDataGridViewCalendarEditingControl()
         {

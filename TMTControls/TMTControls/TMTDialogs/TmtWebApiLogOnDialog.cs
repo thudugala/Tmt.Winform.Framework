@@ -42,24 +42,32 @@ namespace TMTControls.TMTDialogs
         {
             if (string.IsNullOrWhiteSpace(textBoxUserId.Text))
             {
-                MessageBox.Show(this, Properties.Resources.ERROR_LoginDialog_UserIdEmpty, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageDialog.Show(this, Properties.Resources.ERROR_LoginDialog_UserIdEmpty,
+                    Properties.Resources.ERROR_LoginDialog_Header,
+                    MessageDialogIcon.Error);
                 return;
             }
             if (string.IsNullOrWhiteSpace(textBoxPassword.Text))
             {
-                MessageBox.Show(this, Properties.Resources.ERROR_LoginDialog_PasswordEmpty, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageDialog.Show(this, Properties.Resources.ERROR_LoginDialog_PasswordEmpty,
+                    Properties.Resources.ERROR_LoginDialog_Header,
+                    MessageDialogIcon.Error);
                 return;
             }
             if (string.IsNullOrWhiteSpace(textBoxServerUrl.Text))
             {
-                MessageBox.Show(this, Properties.Resources.ERROR_LoginDialog_ServerUrlEmpty, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageDialog.Show(this, Properties.Resources.ERROR_LoginDialog_ServerUrlEmpty,
+                    Properties.Resources.ERROR_LoginDialog_Header,
+                    MessageDialogIcon.Error);
                 return;
             }
             if (comboBoxAuthSource.SelectedItem.ToString() == LDAP)
             {
                 if (string.IsNullOrWhiteSpace(textBoxLdapServerUrl.Text))
                 {
-                    MessageBox.Show(this, Properties.Resources.ERROR_LoginDialog_LDAPServerUrlEmpty, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageDialog.Show(this, Properties.Resources.ERROR_LoginDialog_LDAPServerUrlEmpty,
+                        Properties.Resources.ERROR_LoginDialog_Header,
+                        MessageDialogIcon.Error);
                     return;
                 }
                 PrincipalContext context = null;
@@ -69,7 +77,9 @@ namespace TMTControls.TMTDialogs
 
                     if (context.ValidateCredentials(textBoxUserId.Text, textBoxPassword.Text) == false)
                     {
-                        MessageBox.Show(this, Properties.Resources.ERROR_LoginDialog_LDAPUserNotFound, Properties.Resources.ERROR_LoginDialog_Header, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageDialog.Show(this, Properties.Resources.ERROR_LoginDialog_LDAPUserNotFound,
+                            Properties.Resources.ERROR_LoginDialog_Header,
+                            MessageDialogIcon.Error);
                         return;
                     }
                 }
@@ -90,7 +100,7 @@ namespace TMTControls.TMTDialogs
             this.DialogResult = DialogResult.OK;
         }
 
-        private void comboBoxAuthSource_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxAuthSource_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBoxAuthSource.SelectedItem.ToString() == LDAP)
             {
@@ -128,7 +138,7 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void checkBoxShowDetails_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxShowDetails_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxShowDetails.Checked)
             {

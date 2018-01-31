@@ -117,15 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="MSG_LOV_SetError" xml:space="preserve">
-    <value>Error Setting LOV data</value>
+  <data name="QUESTION_DeleteConfirmAll" xml:space="preserve">
+    <value>Selected rows will be delete. Are you sure?</value>
   </data>
   <data name="ERROR_ApplicationLogin" xml:space="preserve">
     <value>Error Logging In</value>
   </data>
+  <data name="Exclamation_NoDataFoundText" xml:space="preserve">
+    <value>No Data found, Try changing search condition. </value>
+  </data>
+  <data name="ERROR_DuplicatingNew" xml:space="preserve">
+    <value>Error duplicating</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="columnsV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\columnsV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="removeV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\removeV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ERROR_ClearingData" xml:space="preserve">
     <value>Error Clearing data</value>
@@ -133,11 +139,11 @@
   <data name="Exclamation_MandatoryEmpty" xml:space="preserve">
     <value>Mandatory Value Missing</value>
   </data>
-  <data name="searchV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\searchV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="columnsV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\columnsV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="QUESTION_DeleteConfirmAll" xml:space="preserve">
-    <value>Selected rows will be delete. Are you sure?</value>
+  <data name="ERROR_CellDataError" xml:space="preserve">
+    <value>Data Error at Column: {0}, Row: {1}</value>
   </data>
   <data name="MSG_SAVE_Saved" xml:space="preserve">
     <value>Saved</value>
@@ -148,17 +154,11 @@
   <data name="list" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\list.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="addV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\addV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ERROR_ColumValueTypeMissing" xml:space="preserve">
+    <value>Column [{0}] does not have a ValueType</value>
   </data>
   <data name="ERROR_LoginDialog_ServerUrlEmpty" xml:space="preserve">
     <value>Server must have a value</value>
-  </data>
-  <data name="clean48" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\clean48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="saveV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\saveV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ERROR_LoginDialog_PasswordEmpty" xml:space="preserve">
     <value>Password must have a value</value>
@@ -166,26 +166,44 @@
   <data name="DESIN_ERROR_NoConnectedControl" xml:space="preserve">
     <value>No Connected Control</value>
   </data>
+  <data name="ERROR_SetSelectedDate" xml:space="preserve">
+    <value>Error setting selected date</value>
+  </data>
+  <data name="ERROR_Removing" xml:space="preserve">
+    <value>Error Removing</value>
+  </data>
   <data name="MSG_SAVE_Null" xml:space="preserve">
     <value>No Changes Found</value>
-  </data>
-  <data name="back" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\back.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="login" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\login.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ERROR_ColumnManager" xml:space="preserve">
-    <value>Error Showing column manager</value>
-  </data>
-  <data name="ERROR_LoginDialog_DatabaseNameEmpty" xml:space="preserve">
-    <value>Database must have a value</value>
   </data>
   <data name="reloadV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\reloadV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="back" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\back.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ERROR_ShowCalendar" xml:space="preserve">
+    <value>Error Showing Calendar</value>
+  </data>
+  <data name="login" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\login.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ERROR_LoginDialog_DatabaseNameEmpty" xml:space="preserve">
+    <value>Database must have a value</value>
+  </data>
+  <data name="ERROR_NavigationBack" xml:space="preserve">
+    <value>Error Going Back</value>
+  </data>
+  <data name="columns" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\columns.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ERROR_PanelLoadIssue" xml:space="preserve">
+    <value>Error Loading Panel</value>
+  </data>
   <data name="QUESTION_Delete" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="ERROR_LoginDialog_UserIdEmpty" xml:space="preserve">
+    <value>User Id must have a value</value>
   </data>
   <data name="Exclamation_MandatoryValueEmpty" xml:space="preserve">
     <value>"{0}" value missing</value>
@@ -193,17 +211,23 @@
   <data name="MSG_SAVE_SaveIssue" xml:space="preserve">
     <value>No Changes Found</value>
   </data>
+  <data name="Exclamation_NoDataFound" xml:space="preserve">
+    <value>No Data found</value>
+  </data>
   <data name="ERROR_BW_Issue" xml:space="preserve">
     <value>Error</value>
   </data>
   <data name="ERROR_CellValidation" xml:space="preserve">
     <value>Error Cell Validation</value>
   </data>
+  <data name="ERROR_CloseCalendar" xml:space="preserve">
+    <value>Error Closing Calendar</value>
+  </data>
   <data name="ERROR_SavingDataValidation" xml:space="preserve">
     <value>Error Validating data before Save</value>
   </data>
-  <data name="removeV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\removeV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="saveV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\saveV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ERROR_AddingNew" xml:space="preserve">
     <value>Error adding new</value>
@@ -214,11 +238,14 @@
   <data name="ERROR_SavingData" xml:space="preserve">
     <value>Error saving data</value>
   </data>
-  <data name="columns" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\columns.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="clean48" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\clean48.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ERROR_LoginDialog_LDAPUserNotFound" xml:space="preserve">
     <value>LDAP User Not Found.</value>
+  </data>
+  <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="MSG_LOV_LoadError" xml:space="preserve">
     <value>Error Loading LOV data</value>
@@ -226,11 +253,20 @@
   <data name="ERROR_LoadingData" xml:space="preserve">
     <value>Error loading data to the window</value>
   </data>
+  <data name="addV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\addV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ERROR_LoginDialog_LDAPServerUrlEmpty" xml:space="preserve">
     <value>LDAP URL must have a value</value>
   </data>
-  <data name="ERROR_DuplicatingNew" xml:space="preserve">
-    <value>Error duplicating</value>
+  <data name="MSG_LOV_SetError" xml:space="preserve">
+    <value>Error Setting LOV data</value>
+  </data>
+  <data name="searchV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\searchV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ERROR_ColumnManager" xml:space="preserve">
+    <value>Error Showing column manager</value>
   </data>
   <data name="ERROR_CellClick" xml:space="preserve">
     <value>Error Cell Click</value>
@@ -244,6 +280,9 @@
   <data name="QUESTION_DeleteConfirm" xml:space="preserve">
     <value>"{0}" will be removed. Are you sure ?</value>
   </data>
+  <data name="ERROR_SearchDialogListOfValueLoading" xml:space="preserve">
+    <value>Error Loading List of Values</value>
+  </data>
   <data name="ERROR_LoginDialog_Header" xml:space="preserve">
     <value>Incomplete Information</value>
   </data>
@@ -256,37 +295,22 @@
   <data name="duplicateV2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\duplicateV2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ERROR_LoginDialog_UserIdEmpty" xml:space="preserve">
-    <value>User Id must have a value</value>
+  <data name="formSettings" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\formSettings.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\error.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="asterisk" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\asterisk.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ERROR_CloseCalendar" xml:space="preserve">
-    <value>Error Closing Calendar</value>
+  <data name="Information" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ERROR_Removing" xml:space="preserve">
-    <value>Error Removing</value>
+  <data name="warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\warning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ERROR_SetSelectedDate" xml:space="preserve">
-    <value>Error setting selected date</value>
+  <data name="exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ERROR_ShowCalendar" xml:space="preserve">
-    <value>Error Showing Calendar</value>
-  </data>
-  <data name="Exclamation_NoDataFound" xml:space="preserve">
-    <value>No Data found</value>
-  </data>
-  <data name="Exclamation_NoDataFoundText" xml:space="preserve">
-    <value>No Data found, Try changing search condition. </value>
-  </data>
-  <data name="ERROR_CellDataError" xml:space="preserve">
-    <value>Data Error at Column: {0}, Row: {1}</value>
-  </data>
-  <data name="ERROR_PanelLoadIssue" xml:space="preserve">
-    <value>Error Loading Panel</value>
-  </data>
-  <data name="ERROR_ColumValueTypeMissing" xml:space="preserve">
-    <value>Column [{0}] does not have a ValueType</value>
+  <data name="question" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\question.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

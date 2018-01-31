@@ -11,6 +11,7 @@ namespace TMTControls.TMTDataGrid
         {
             base.ValueType = typeof(DateTime);
             base.SortMode = DataGridViewColumnSortMode.Automatic;
+            this.TabStop = true;
         }
 
         [
@@ -54,12 +55,16 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
         public override object Clone()
         {
             TMTDataGridViewCalendarColumn that = (TMTDataGridViewCalendarColumn)base.Clone();
 
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+            that.TabStop = this.TabStop;
 
             return that;
         }

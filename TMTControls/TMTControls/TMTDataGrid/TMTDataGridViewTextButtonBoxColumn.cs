@@ -11,13 +11,15 @@ namespace TMTControls.TMTDataGrid
         {
             base.ValueType = typeof(string);
             base.SortMode = DataGridViewColumnSortMode.Automatic;
-            base.DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.MiddleLeft, WrapMode = DataGridViewTriState.True };
+            base.DefaultCellStyle = new DataGridViewCellStyle()
+            {
+                Alignment = DataGridViewContentAlignment.MiddleLeft,
+                WrapMode = DataGridViewTriState.True
+            };
+            this.TabStop = true;
         }
 
-        [
-            Browsable(false),
-            DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)
-        ]
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public override DataGridViewCell CellTemplate
         {
             get
@@ -58,14 +60,22 @@ namespace TMTControls.TMTDataGrid
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyPrimaryKey { get; set; }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
+        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
+        public CharacterCasing CharacterCasing { get; set; }
+
         public override object Clone()
         {
-            TMTDataGridViewTextButtonBoxColumn that = (TMTDataGridViewTextButtonBoxColumn)base.Clone();
+            var that = (TMTDataGridViewTextButtonBoxColumn)base.Clone();
 
             that.ListOfValueViewName = this.ListOfValueViewName;
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+            that.TabStop = this.TabStop;
+            that.CharacterCasing = this.CharacterCasing;
 
             return that;
         }

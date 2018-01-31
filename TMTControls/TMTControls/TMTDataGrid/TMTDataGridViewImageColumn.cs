@@ -9,6 +9,7 @@ namespace TMTControls.TMTDataGrid
         public TMTDataGridViewImageColumn()
         {
             base.ValueType = typeof(byte[]);
+            this.TabStop = true;
         }
 
         [Category("Data"), DefaultValue(TypeCode.Byte)]
@@ -30,6 +31,9 @@ namespace TMTControls.TMTDataGrid
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyPrimaryKey { get; set; }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
         public override object Clone()
         {
             TMTDataGridViewImageColumn that = (TMTDataGridViewImageColumn)base.Clone();
@@ -37,6 +41,7 @@ namespace TMTControls.TMTDataGrid
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+            that.TabStop = this.TabStop;
 
             return that;
         }

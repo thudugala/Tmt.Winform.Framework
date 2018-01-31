@@ -33,12 +33,7 @@
             this.textBoxMessage = new System.Windows.Forms.TextBox();
             this.linkLabelCopyToClipboard = new System.Windows.Forms.LinkLabel();
             this.panelMain.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // labelHeader
-            // 
-            this.labelHeader.Image = global::TMTControls.Properties.Resources.error;
-            resources.ApplyResources(this.labelHeader, "labelHeader");
+            this.SuspendLayout();           
             // 
             // panelMain
             // 
@@ -67,10 +62,11 @@
             resources.ApplyResources(this.linkLabelCopyToClipboard, "linkLabelCopyToClipboard");
             this.linkLabelCopyToClipboard.Name = "linkLabelCopyToClipboard";
             this.linkLabelCopyToClipboard.TabStop = true;
-            this.linkLabelCopyToClipboard.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelCopyToClipboard_LinkClicked);
+            this.linkLabelCopyToClipboard.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabelCopyToClipboard_LinkClicked);
             // 
             // TMTErrorDialog
             // 
+            this.Image = global::TMTControls.Properties.Resources.error;
             this.AcceptButton = this.tmtButtonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             resources.ApplyResources(this, "$this");

@@ -53,20 +53,21 @@
             // buttonOK
             // 
             resources.ApplyResources(this.buttonOK, "buttonOK");
-            this.buttonOK.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.buttonOK.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.buttonOK.FlatAppearance.BorderColor = System.Drawing.SystemColors.WindowFrame;
+            this.buttonOK.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonOK.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.TabStop = false;
-            this.buttonOK.UseVisualStyleBackColor = true;
+            this.buttonOK.UseVisualStyleBackColor = false;
             this.buttonOK.Click += new System.EventHandler(this.Button_Click);
             // 
             // TMTTextButtonBoxBase
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.BackColor = System.Drawing.SystemColors.Window;
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.InnerTextBox);
             this.Controls.Add(this.buttonOK);
-            resources.ApplyResources(this, "$this");
             this.Name = "TMTTextButtonBoxBase";
             this.ResumeLayout(false);
             this.PerformLayout();

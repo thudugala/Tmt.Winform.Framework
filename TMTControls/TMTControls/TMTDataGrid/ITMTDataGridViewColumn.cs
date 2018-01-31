@@ -13,5 +13,8 @@ namespace TMTControls.TMTDataGrid
 
         [Category("Data"), DefaultValue(false)]
         bool DataPropertyPrimaryKey { get; set; }
+
+        [Category("Behavior"), DefaultValue(true)]
+        bool TabStop { get; set; }
     }
 }

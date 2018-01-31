@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace TMTControls
 {
+    [ToolboxItem(false)]
     public class TMTNumberTextBoxForSearch : TextBox
     {
         private HashSet<char> allowedKeySet = new HashSet<char>() { '.', '<', '=', '>', '!', ';' };

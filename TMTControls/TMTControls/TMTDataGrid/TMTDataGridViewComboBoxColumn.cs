@@ -10,6 +10,7 @@ namespace TMTControls.TMTDataGrid
         {
             this.FlatStyle = FlatStyle.Flat;
             base.ValueType = typeof(string);
+            this.TabStop = true;
         }
 
         [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
@@ -31,6 +32,9 @@ namespace TMTControls.TMTDataGrid
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyPrimaryKey { get; set; }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
         public override object Clone()
         {
             TMTDataGridViewComboBoxColumn that = (TMTDataGridViewComboBoxColumn)base.Clone();
@@ -40,6 +44,7 @@ namespace TMTControls.TMTDataGrid
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
             that.DisplayMember = this.DisplayMember;
             that.ValueMember = this.ValueMember;
+            that.TabStop = this.TabStop;
 
             return that;
         }

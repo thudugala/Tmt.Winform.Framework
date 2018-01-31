@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TMTControls
 {
@@ -18,5 +19,17 @@ namespace TMTControls
         public object IndeterminateValue { get; set; }
 
         public string ListOfValueView { get; set; }
+
+        public bool IsFuntion { get; set; }
+
+        public IList<string> GetSearchValueList()
+        {
+            return Value?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public override string ToString()
+        {
+            return $"[{Value}], {DataType}, {ColumnName}, {IsFuntion}";
+        }
     }
 }

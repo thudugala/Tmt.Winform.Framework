@@ -81,7 +81,7 @@
             this.tmtButtonLogin.FlatAppearance.BorderSize = 0;
             this.tmtButtonLogin.Name = "tmtButtonLogin";
             this.tmtButtonLogin.UseVisualStyleBackColor = false;
-            this.tmtButtonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
+            this.tmtButtonLogin.Click += new System.EventHandler(this.ButtonLogin_Click);
             // 
             // label3
             // 

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
 {
+    [ToolboxBitmap(typeof(ComboBox))]
     public class TMTComboBox : ComboBox, ITMTDatabaseUIControl
     {
         public TMTComboBox()
@@ -50,7 +51,7 @@ namespace TMTControls.TMTDatabaseUI
         }
 
         public string GetLableText()
-        {            
+        {
             return this.ConnectedLabel?.Text;
         }
 

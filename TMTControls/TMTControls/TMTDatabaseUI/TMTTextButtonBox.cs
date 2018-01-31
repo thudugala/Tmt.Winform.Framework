@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
 {
+    [ToolboxBitmap(typeof(TextBox))]
     public class TMTTextButtonBox : TMTTextButtonBoxBase, ITMTDatabaseUIControl
     {
         public TMTTextButtonBox()
@@ -52,28 +53,45 @@ namespace TMTControls.TMTDatabaseUI
         [Category("Design"), DefaultValue(MaskValidateType.None)]
         public MaskValidateType ValidateType { get; set; }
 
-        public void GetListOfValueSelectedRow(ListOfValueLoadingEventArgs rowEvent)
+        public void GetListOfValueSelectedRow(ListOfValueLoadingEventArgs e)
         {
-            ListOfValueLoading?.Invoke(this, rowEvent);
+            if (e == null)
+            {
+                return;
+            }
+
+            ListOfValueLoading?.Invoke(this, e);
+            if (e.Handled == false)
+            {
+                var basewindow = this.FindParentBaseWindow();
+                if (basewindow != null)
+                {
+                    basewindow.FillSearchConditionTable(e);
+                    basewindow.DataPopulateAllListOfValueRecords(e);
+                }
+            }
         }
 
-        public void SetListOfValueSelectedRow(ListOfValueLoadedEventArgs rowEvent)
+        public void SetListOfValueSelectedRow(ListOfValueLoadedEventArgs e)
         {
-            ListOfValueLoaded?.Invoke(this, rowEvent);
+            ListOfValueLoaded?.Invoke(this, e);
         }
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TMTTextButtonBox));
             this.SuspendLayout();
             //
             // InnerTextBox
             //
             this.InnerTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.InnerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            resources.ApplyResources(this.InnerTextBox, "InnerTextBox");
             this.InnerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.InnerTextBox_Validating);
             //
             // TMTTextButtonBox
             //
+            resources.ApplyResources(this, "$this");
             this.Name = "TMTTextButtonBox";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -98,7 +116,7 @@ namespace TMTControls.TMTDatabaseUI
         }
 
         public string GetLableText()
-        {            
+        {
             return this.ConnectedLabel?.Text;
         }
 

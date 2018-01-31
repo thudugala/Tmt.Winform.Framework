@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDataGrid
 {
-    public class TMTDataGridViewTextButtonBoxEditingControl : TMTTextButtonBoxBase, IDataGridViewEditingControl
+    internal class TMTDataGridViewTextButtonBoxEditingControl : TMTTextButtonBoxBase, IDataGridViewEditingControl
     {
         public TMTDataGridViewTextButtonBoxEditingControl()
         {
@@ -22,7 +22,7 @@ namespace TMTControls.TMTDataGrid
             this.ForeColor = dataGridViewCellStyle.ForeColor;
             if (dataGridViewCellStyle.BackColor.A < 255)
             {
-                Color opaqueBackColor = Color.FromArgb(255, dataGridViewCellStyle.BackColor);
+                var opaqueBackColor = Color.FromArgb(255, dataGridViewCellStyle.BackColor);
                 BackColor = opaqueBackColor;
                 EditingControlDataGridView.EditingPanel.BackColor = opaqueBackColor;
             }

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTPanels
 {
-    public partial class TMTPanelHome : UserControl
+    [ToolboxItem(false)]
+    public partial class BaseHomeWindow : UserControl
     {
-        [Category("TMT")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public event EventHandler<TileButtonClickedEventArgs> TileButtonClicked;
 
-        public TMTPanelHome()
+        public BaseHomeWindow()
         {
             InitializeComponent();
         }
@@ -20,17 +21,22 @@ namespace TMTControls.TMTPanels
             this.InitializeTileButtons();
         }
 
-        public void InitializeTileButtons()
+        private void InitializeTileButtons()
         {
-            foreach (Control childControl in this.Controls)
+            foreach (var tileButton in this.Controls.OfType<TMTTileButton>())
             {
-                if (childControl is TMTTileButton tileButton)
+                if (tileButton.NavigatePanel != null)
                 {
-                    if (string.IsNullOrWhiteSpace(tileButton.PanelName) == false)
-                    {
-                        tileButton.Click += TileButton_Click;
-                    }
+                    tileButton.Click += TileButton_Click;
                 }
+            }
+        }
+
+        public void ShowCharts()
+        {
+            foreach (var chart in this.Controls.OfType<TMTChart>())
+            {
+                chart.ShowChart();
             }
         }
 
@@ -38,12 +44,12 @@ namespace TMTControls.TMTPanels
         {
             if (TileButtonClicked != null)
             {
-                TMTTileButton myButton = sender as TMTTileButton;
+                var myButton = sender as TMTTileButton;
 
                 var arg = new TileButtonClickedEventArgs()
                 {
                     AssemblyOfType = this.GetType().Assembly,
-                    PanelFullName = string.Format(CultureInfo.InvariantCulture, "{0}.{1}", this.GetType().Namespace, myButton.PanelName)
+                    NavigatePanel = myButton.NavigatePanel
                 };
                 TileButtonClicked(this, arg);
             }

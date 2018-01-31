@@ -35,12 +35,7 @@
             this.checkBoxCaseSensitive = new System.Windows.Forms.CheckBox();
             this.checkBoxTop100 = new System.Windows.Forms.CheckBox();
             this.panelMain.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // labelHeader
-            // 
-            this.labelHeader.Image = global::TMTControls.Properties.Resources.searchTitle;
-            resources.ApplyResources(this.labelHeader, "labelHeader");
+            this.SuspendLayout();           
             // 
             // panelMain
             // 
@@ -60,6 +55,7 @@
             // 
             resources.ApplyResources(this.buttonOK, "buttonOK");
             this.buttonOK.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.buttonOK.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.buttonOK.FlatAppearance.BorderSize = 0;
             this.buttonOK.Name = "buttonOK";
@@ -93,9 +89,11 @@
             // 
             // TMTSearchDialog
             // 
+            this.Image = global::TMTControls.Properties.Resources.searchTitle;
             this.AcceptButton = this.buttonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.BackColor = System.Drawing.Color.White;
+            this.CancelButton = this.buttonCancel;
             resources.ApplyResources(this, "$this");
             this.Name = "TMTSearchDialog";
             this.ShowInTaskbar = false;

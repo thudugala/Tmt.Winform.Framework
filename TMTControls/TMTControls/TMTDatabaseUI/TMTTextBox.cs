@@ -6,6 +6,7 @@ using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
 {
+    [ToolboxBitmap(typeof(TextBox))]
     public class TMTTextBox : TextBox, ITMTDatabaseUIControl
     {
         public TMTTextBox()
@@ -39,7 +40,7 @@ namespace TMTControls.TMTDatabaseUI
         public MaskValidateType ValidateType { get; set; }
 
         public string GetLableText()
-        {            
+        {
             return this.ConnectedLabel?.Text;
         }
 

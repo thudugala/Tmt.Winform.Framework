@@ -41,12 +41,7 @@
             this.tmtButtonOK = new TMTControls.TMTButton();
             this.panelMain.SuspendLayout();
             this.tableLayoutPanelMain.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // labelHeader
-            // 
-            this.labelHeader.Image = global::TMTControls.Properties.Resources.columns;
-            resources.ApplyResources(this.labelHeader, "labelHeader");
+            this.SuspendLayout();           
             // 
             // panelMain
             // 
@@ -145,6 +140,7 @@
             // 
             // TMTColumnManagerDialog
             // 
+            this.Image = global::TMTControls.Properties.Resources.columns;
             this.AcceptButton = this.tmtButtonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             resources.ApplyResources(this, "$this");

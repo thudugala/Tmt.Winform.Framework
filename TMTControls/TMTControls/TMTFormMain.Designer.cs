@@ -46,6 +46,7 @@
             this.Name = "TMTFormMain";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TMTFormMain_FormClosing);
+            this.Load += new System.EventHandler(this.TMTFormMain_Load);
             this.ResumeLayout(false);
 
         }

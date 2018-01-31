@@ -148,13 +148,13 @@
     <value>9, 258</value>
   </data>
   <data name="linkLabelCopyToClipboard.Size" type="System.Drawing.Size, System.Drawing">
-    <value>142, 20</value>
+    <value>175, 17</value>
   </data>
   <data name="linkLabelCopyToClipboard.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
   </data>
   <data name="linkLabelCopyToClipboard.Text" xml:space="preserve">
-    <value>Copy to Clipboard</value>
+    <value>Copy to Clipboard in Detail</value>
   </data>
   <data name="&gt;&gt;linkLabelCopyToClipboard.Name" xml:space="preserve">
     <value>linkLabelCopyToClipboard</value>

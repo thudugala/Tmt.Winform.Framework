@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
 {
+    [ToolboxBitmap(typeof(NumericUpDown))]
     public class TMTCurrencyBox : TMTNumericUpDown
     {
         public TMTCurrencyBox()

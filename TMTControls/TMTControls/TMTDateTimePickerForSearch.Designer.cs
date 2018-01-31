@@ -60,12 +60,11 @@
             // 
             // TMTDateTimePickerForSearch
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-            this.BackColor = System.Drawing.SystemColors.Window;
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.textBoxMain);
             this.Controls.Add(this.buttonDorpDown);
-            resources.ApplyResources(this, "$this");
             this.Name = "TMTDateTimePickerForSearch";
             this.ResumeLayout(false);
             this.PerformLayout();

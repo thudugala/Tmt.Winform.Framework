@@ -73,6 +73,16 @@ namespace TMTControls.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap asterisk {
+            get {
+                object obj = ResourceManager.GetObject("asterisk", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap back {
             get {
                 object obj = ResourceManager.GetObject("back", resourceCulture);
@@ -338,6 +348,15 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Going Back.
+        /// </summary>
+        public static string ERROR_NavigationBack {
+            get {
+                return ResourceManager.GetString("ERROR_NavigationBack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error Loading Panel.
         /// </summary>
         public static string ERROR_PanelLoadIssue {
@@ -383,6 +402,15 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error Loading List of Values.
+        /// </summary>
+        public static string ERROR_SearchDialogListOfValueLoading {
+            get {
+                return ResourceManager.GetString("ERROR_SearchDialogListOfValueLoading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error setting selected date.
         /// </summary>
         public static string ERROR_SetSelectedDate {
@@ -397,6 +425,16 @@ namespace TMTControls.Properties {
         public static string ERROR_ShowCalendar {
             get {
                 return ResourceManager.GetString("ERROR_ShowCalendar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap exclamation {
+            get {
+                object obj = ResourceManager.GetObject("exclamation", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -433,6 +471,26 @@ namespace TMTControls.Properties {
         public static string Exclamation_NoDataFoundText {
             get {
                 return ResourceManager.GetString("Exclamation_NoDataFoundText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap formSettings {
+            get {
+                object obj = ResourceManager.GetObject("formSettings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Information {
+            get {
+                object obj = ResourceManager.GetObject("Information", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -511,6 +569,16 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap question {
+            get {
+                object obj = ResourceManager.GetObject("question", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove.
         /// </summary>
         public static string QUESTION_Delete {
@@ -583,6 +651,16 @@ namespace TMTControls.Properties {
         public static System.Drawing.Bitmap searchV2 {
             get {
                 object obj = ResourceManager.GetObject("searchV2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap warning {
+            get {
+                object obj = ResourceManager.GetObject("warning", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

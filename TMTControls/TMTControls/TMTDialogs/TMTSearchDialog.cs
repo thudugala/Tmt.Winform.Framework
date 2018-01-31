@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -44,21 +43,6 @@ namespace TMTControls.TMTDialogs
         public void EntityListAddRange(IReadOnlyCollection<SearchEntity> searchEntityList)
         {
             (this.EntityList as List<SearchEntity>).AddRange(searchEntityList);
-        }
-
-        public DataTable GetSearchCondition()
-        {
-            DataTable searchConditionTable = TMTExtend.GetSearchConditionTable();
-
-            foreach (SearchEntity sEntity in this.EntityList)
-            {
-                if (string.IsNullOrWhiteSpace(sEntity.Value) == false)
-                {
-                    searchConditionTable.Rows.Add(sEntity.ColumnName, sEntity.Value, sEntity.DataType.FullName, false);
-                }
-            }
-
-            return searchConditionTable;
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)
@@ -232,6 +216,11 @@ namespace TMTControls.TMTDialogs
 
                 foreach (SearchEntity pi in EntityList)
                 {
+                    if (string.IsNullOrWhiteSpace(pi.Caption))
+                    {
+                        continue;
+                    }
+
                     var propertyLabel = this.AddLabel(pi, rowIndex);
 
                     if (string.IsNullOrWhiteSpace(pi.ListOfValueView) == false)

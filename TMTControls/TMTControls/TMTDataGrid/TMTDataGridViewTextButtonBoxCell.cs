@@ -7,12 +7,6 @@ namespace TMTControls.TMTDataGrid
 {
     public class TMTDataGridViewTextButtonBoxCell : DataGridViewTextBoxCell
     {
-        //private const byte DATAGRIDVIEWTEXTBOXCELL_horizontalTextMarginLeft = 0;
-        //private const byte DATAGRIDVIEWTEXTBOXCELL_horizontalTextMarginRight = 0;
-        //private const byte DATAGRIDVIEWTEXTBOXCELL_verticalTextMarginTopWithWrapping = 1;
-        //private const byte DATAGRIDVIEWTEXTBOXCELL_verticalTextMarginTopWithoutWrapping = 2;
-        //private const byte DATAGRIDVIEWTEXTBOXCELL_verticalTextMarginBottom = 1;
-
         // Used in TranslateAlignment function
         private static readonly DataGridViewContentAlignment AnyRight = DataGridViewContentAlignment.TopRight |
                                                                         DataGridViewContentAlignment.MiddleRight |
@@ -53,27 +47,18 @@ namespace TMTControls.TMTDataGrid
             // Create a thread specific NumericUpDown control used for the painting of the non-edited cells
             if (paintingTMTTextButtonBoxBase == null)
             {
-                paintingTMTTextButtonBoxBase = new TMTTextButtonBoxBase();
-                // Some properties only need to be set once for the lifetime of the control:
-                paintingTMTTextButtonBoxBase.BorderStyle = BorderStyle.None;
+                paintingTMTTextButtonBoxBase = new TMTTextButtonBoxBase
+                {
+                    // Some properties only need to be set once for the lifetime of the control:
+                    BorderStyle = BorderStyle.None
+                };
             }
-        }
-
-        public override object Clone()
-        {
-            TMTDataGridViewTextButtonBoxCell cell = base.Clone() as TMTDataGridViewTextButtonBoxCell;
-            if (cell != null)
-            {
-                //cell.ButtonClickHandler = ButtonClickHandler;
-            }
-            return cell;
         }
 
         public override void InitializeEditingControl(int rowIndex, object initialFormattedValue, System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle)
         {
             base.InitializeEditingControl(rowIndex, initialFormattedValue, dataGridViewCellStyle);
-            TMTTextButtonBoxBase textButtonBox = DataGridView.EditingControl as TMTTextButtonBoxBase;
-            if (textButtonBox != null)
+            if (DataGridView.EditingControl is TMTTextButtonBoxBase textButtonBox)
             {
                 string initialFormattedValueStr = initialFormattedValue as string;
                 textButtonBox.Text = initialFormattedValueStr;
@@ -84,16 +69,10 @@ namespace TMTControls.TMTDataGrid
         public override void DetachEditingControl()
         {
             base.DetachEditingControl();
-            TMTTextButtonBoxBase textButton = DataGridView.EditingControl as TMTTextButtonBoxBase;
-            if (textButton != null)
+            if (DataGridView.EditingControl is TMTTextButtonBoxBase textButton)
             {
                 textButton.ClearUndo();
             }
-        }
-
-        public TMTDataGridViewTextButtonBoxEditingControl EditingControl
-        {
-            get { return DataGridView == null ? null : DataGridView.EditingControl as TMTDataGridViewTextButtonBoxEditingControl; }
         }
 
         public override Type EditType
@@ -110,57 +89,6 @@ namespace TMTControls.TMTDataGrid
         {
             get { return defaultValueType; }
         }
-
-        //public override void PositionEditingControl(bool setLocation,
-        //                                    bool setSize,
-        //                                    Rectangle cellBounds,
-        //                                    Rectangle cellClip,
-        //                                    DataGridViewCellStyle cellStyle,
-        //                                    bool singleVerticalBorderAdded,
-        //                                    bool singleHorizontalBorderAdded,
-        //                                    bool isFirstDisplayedColumn,
-        //                                    bool isFirstDisplayedRow)
-        //{
-        //    Rectangle editingControlBounds = PositionEditingPanel(cellBounds,
-        //                                                cellClip,
-        //                                                cellStyle,
-        //                                                singleVerticalBorderAdded,
-        //                                                singleHorizontalBorderAdded,
-        //                                                isFirstDisplayedColumn,
-        //                                                isFirstDisplayedRow);
-        //    //editingControlBounds = GetAdjustedEditingControlBounds(editingControlBounds, cellStyle);
-        //    this.DataGridView.EditingControl.Location = new Point(editingControlBounds.X, editingControlBounds.Y);
-        //    this.DataGridView.EditingControl.Size = new Size(editingControlBounds.Width, editingControlBounds.Height);
-        //}
-
-        //private Rectangle GetAdjustedEditingControlBounds(Rectangle editingControlBounds, DataGridViewCellStyle cellStyle)
-        //{
-        //    // Add a 1 pixel padding on the left and right of the editing control
-        //    editingControlBounds.X += 1;
-        //    editingControlBounds.Width = Math.Max(0, editingControlBounds.Width - 2);
-
-        //    // Adjust the vertical location of the editing control:
-        //    int preferredHeight = cellStyle.Font.Height + 3;
-        //    if (preferredHeight < editingControlBounds.Height)
-        //    {
-        //        switch (cellStyle.Alignment)
-        //        {
-        //            case DataGridViewContentAlignment.MiddleLeft:
-        //            case DataGridViewContentAlignment.MiddleCenter:
-        //            case DataGridViewContentAlignment.MiddleRight:
-        //                editingControlBounds.Y += (editingControlBounds.Height - preferredHeight) / 2;
-        //                break;
-
-        //            case DataGridViewContentAlignment.BottomLeft:
-        //            case DataGridViewContentAlignment.BottomCenter:
-        //            case DataGridViewContentAlignment.BottomRight:
-        //                editingControlBounds.Y += editingControlBounds.Height - preferredHeight;
-        //                break;
-        //        }
-        //    }
-
-        //    return editingControlBounds;
-        //}
 
         protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates cellState,
                                object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle,

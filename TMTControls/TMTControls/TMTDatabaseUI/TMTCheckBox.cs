@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
 {
+    [ToolboxBitmap(typeof(CheckBox))]
     public class TMTCheckBox : CheckBox, ITMTDatabaseUIControl
     {
         private bool _DbValueUpdateLooked = false;
@@ -31,7 +33,7 @@ namespace TMTControls.TMTDatabaseUI
                 this.DbValue = (this.Checked) ? this.TrueValue : this.FalseValue;
             }
         }
-        
+
         public string GetLableText()
         {
             return this.Text;

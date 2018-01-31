@@ -1,10 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Windows.Forms;
 
 namespace TMTControls
 {
-    [DefaultProperty("PanelName")]
+    [DefaultProperty("NavigatePanelName")]
     public class TMTTileButton : Button
     {
         public TMTTileButton()
@@ -92,8 +94,9 @@ namespace TMTControls
             }
         }
 
-        [Category("TMT")]
-        public string PanelName { get; set; }
+        [Category("Design")]
+        [Editor(typeof(UserControlEditor), typeof(UITypeEditor))]
+        public Type NavigatePanel { get; set; }
 
         private void InitializeComponent()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using TMTControls.TMTDialogs;
@@ -6,6 +7,7 @@ using TMTControls.TMTDialogs;
 namespace TMTControls
 {
     [ToolboxBitmap(typeof(DateTimePicker))]
+    [ToolboxItem(false)]
     public partial class TMTDateTimePickerForSearch : UserControl
     {
         private static string SEMICOLON = ";";
@@ -18,7 +20,7 @@ namespace TMTControls
             InitializeComponent();
         }
 
-        public new string Text
+        public override string Text
         {
             get
             {

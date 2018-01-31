@@ -5,12 +5,64 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using TMTControls.TMTDataGrid;
+using TMTControls.TMTPanels;
 
 namespace TMTControls
 {
     public static class TMTExtend
     {
-        public static IReadOnlyList<TMTDataGridView> GetChildDataGridViewList(this Control parentControl)
+        public static BaseUserControl FindParentBaseUserControl(this Control target)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+            if (target.Parent == null)
+            {
+                return null;
+            }
+            if (target.Parent is Form)
+            {
+                return null;
+            }
+            if (target.Parent is BaseUserControl parent)
+            {
+                return parent;
+            }
+            return target.Parent.FindParentBaseUserControl();
+        }
+
+        public static BaseWindow FindParentBaseWindow(this Control target)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+            if (target.Parent == null)
+            {
+                return null;
+            }
+            if (target.Parent is Form)
+            {
+                return null;
+            }
+            if (target.Parent is BaseWindow parent)
+            {
+                return parent;
+            }
+            return target.Parent.FindParentBaseWindow();
+        }
+
+        public static IReadOnlyList<TMTDataGridView> GetChildDataGridViewList(this Panel parentPanel)
+        {
+            if (parentPanel == null)
+            {
+                throw new ArgumentNullException(nameof(parentPanel));
+            }
+            return GetChildDataGridViews(parentPanel);
+        }
+
+        private static IReadOnlyList<TMTDataGridView> GetChildDataGridViews(Control parentControl)
         {
             if (parentControl == null)
             {
@@ -25,7 +77,7 @@ namespace TMTControls
                 {
                     childTableList.Add(tmtDataGridView);
                 }
-                childTableList.AddRange(GetChildDataGridViewList(childControl));
+                childTableList.AddRange(GetChildDataGridViews(childControl));
             }
 
             return childTableList;
@@ -99,21 +151,6 @@ namespace TMTControls
             }
 
             return changedData;
-        }
-
-        public static DataTable GetSearchConditionTable()
-        {
-            var searchConditionTable = new DataTable
-            {
-                TableName = "search_condition",
-                Locale = CultureInfo.InvariantCulture
-            };
-            searchConditionTable.Columns.Add("COLUMN");
-            searchConditionTable.Columns.Add("VALUE");
-            searchConditionTable.Columns.Add("TYPE");
-            searchConditionTable.Columns.Add("IS_FUNCTION");
-
-            return searchConditionTable;
         }
 
         public static System.ServiceModel.EndpointAddress GetUrl()
@@ -209,6 +246,45 @@ namespace TMTControls
             }
 
             return selectedType;
+        }
+
+        public static string GetDatabaseOperator(string value)
+        {
+            string operatorSymbol = "=";
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return operatorSymbol;
+            }
+
+            if (value.StartsWith("<>", StringComparison.Ordinal))
+            {
+                operatorSymbol = "!=";
+            }
+            else if (value.StartsWith("!=", StringComparison.Ordinal))
+            {
+                operatorSymbol = "!=";
+            }
+            else if (value.StartsWith("<=", StringComparison.Ordinal))
+            {
+                operatorSymbol = "<=";
+            }
+            else if (value.StartsWith(">=", StringComparison.Ordinal))
+            {
+                operatorSymbol = ">=";
+            }
+            else if (value.StartsWith("<", StringComparison.Ordinal))
+            {
+                operatorSymbol = "<";
+            }
+            else if (value.StartsWith(">", StringComparison.Ordinal))
+            {
+                operatorSymbol = ">";
+            }
+            else if (value.Contains("%"))
+            {
+                operatorSymbol = "LIKE";
+            }
+            return operatorSymbol;
         }
     }
 }

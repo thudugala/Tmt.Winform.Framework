@@ -1,27 +1,67 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace TMTControls
 {
+    [ToolboxBitmap(typeof(ComboBox))]
     public class TMTMultipleColumnComboBox : ComboBox
     {
         public TMTMultipleColumnComboBox()
         {
+            InitializeComponent();
+
             this.SuspendLayout();
 
-            this.DrawMode = DrawMode.OwnerDrawFixed;
-            this.FlatStyle = FlatStyle.Flat;
-
-            this.TabStop = false;
-
-            this.DisplayMemberListToDisplay = new BindingList<String>();
-
-            this.DrawItem += TMTMultipleColumnComboBox_DrawItem;
+            this.DisplayMemberListToDisplay = new BindingList<string>();
+            this.ValueMemberList = new BindingList<string>();
 
             this.ResumeLayout(false);
+        }
+
+        [DefaultValue(DrawMode.OwnerDrawFixed)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        public new DrawMode DrawMode
+        {
+            get
+            {
+                return base.DrawMode;
+            }
+            set
+            {
+                base.DrawMode = value;
+            }
+        }
+
+        [DefaultValue(FlatStyle.Flat)]
+        [Localizable(true)]
+        public new FlatStyle FlatStyle
+        {
+            get
+            {
+                return base.FlatStyle;
+            }
+            set
+            {
+                base.FlatStyle = value;
+            }
+        }
+
+        [DefaultValue(false)]
+        [DispId(-516)]
+        public new bool TabStop
+        {
+            get
+            {
+                return base.TabStop;
+            }
+            set
+            {
+                base.TabStop = value;
+            }
         }
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
@@ -52,7 +92,10 @@ namespace TMTControls
         }
 
         [Category("Data"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public BindingList<String> DisplayMemberListToDisplay { get; private set; }
+        public BindingList<string> DisplayMemberListToDisplay { get; }
+
+        [Category("Data"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public BindingList<string> ValueMemberList { get; }
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
         public new ComboBox.ObjectCollection Items
@@ -64,45 +107,47 @@ namespace TMTControls
         }
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new object Tag
+        public new string DisplayMember
         {
             get
             {
-                return base.Tag;
+                return base.DisplayMember;
             }
             set
             {
-                base.Tag = value;
+                base.DisplayMember = value;
             }
         }
+
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public object PreviousSelectedValue { get; set; }
 
         private void TMTMultipleColumnComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             // Draw the default background
             e.DrawBackground();
 
-            if (e.Index > -1 && this.Items != null && this.Items[e.Index] is DataRowView)
+            if (e.Index <= -1 && this.Items == null)
             {
-                // The ComboBox is bound to a DataTable,
-                // so the items are DataRowView objects.
-                DataRowView drv = this.Items[e.Index] as DataRowView;
+                return;
+            }
 
+            if (this.Items[e.Index] is DataRowView drv)
+            {
                 int displayMemberCount = this.DisplayMemberListToDisplay.Count;
-                string columnToDisplay;
-                string cellValue;
-                Rectangle rectangleColumn = e.Bounds;
+
+                var rectangleColumn = e.Bounds;
                 rectangleColumn.Width /= this.DisplayMemberListToDisplay.Count;
                 for (int i = 0; i < displayMemberCount; i++)
                 {
-                    columnToDisplay = this.DisplayMemberListToDisplay[i];
-
-                    cellValue = drv[columnToDisplay].ToString();
+                    var columnToDisplay = this.DisplayMemberListToDisplay[i];
+                    var cellValue = drv[columnToDisplay].ToString();
 
                     // Get the bounds for the first column
                     rectangleColumn.X = i * rectangleColumn.Width;
 
                     // Draw the text on the first column
-                    using (SolidBrush sb = new SolidBrush(e.ForeColor))
+                    using (var sb = new SolidBrush(e.ForeColor))
                     {
                         e.Graphics.DrawString(cellValue, e.Font, sb, rectangleColumn);
                     }
@@ -110,13 +155,41 @@ namespace TMTControls
                     if (i + 1 < displayMemberCount)
                     {
                         // Draw a line to isolate the columns
-                        using (Pen p = new Pen(Color.Black))
+                        using (var p = new Pen(Color.Black))
                         {
                             e.Graphics.DrawLine(p, rectangleColumn.Right, 0, rectangleColumn.Right, rectangleColumn.Bottom);
                         }
                     }
                 }
             }
+        }
+
+        private void TMTMultipleColumnComboBox_Format(object sender, ListControlConvertEventArgs e)
+        {
+            if (e.ListItem is DataRowView drv)
+            {
+                var cellValueList = new List<string>();
+                foreach (string columnToDisplay in this.DisplayMemberListToDisplay)
+                {
+                    cellValueList.Add(drv[columnToDisplay].ToString());
+                }
+
+                e.Value = string.Join(" | ", cellValueList);
+            }
+        }
+
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            //
+            // TMTMultipleColumnComboBox
+            //
+            this.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.TabStop = false;
+            this.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.TMTMultipleColumnComboBox_DrawItem);
+            this.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.TMTMultipleColumnComboBox_Format);
+            this.ResumeLayout(false);
         }
     }
 }

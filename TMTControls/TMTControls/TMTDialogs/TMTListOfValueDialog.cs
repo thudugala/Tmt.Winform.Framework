@@ -19,18 +19,6 @@ namespace TMTControls.TMTDialogs
             InitializeComponent();
         }
 
-        public string HeaderLabel
-        {
-            get
-            {
-                return labelHeader.Text;
-            }
-            set
-            {
-                labelHeader.Text = value;
-            }
-        }
-
         public void SetDataSourceTable(DataTable table)
         {
             tmtDataGridViewMain.SetTheme();
@@ -77,7 +65,7 @@ namespace TMTControls.TMTDialogs
                         vCol.Visible = false;
                     }
 
-                    this.SelectedRow.Add(dCol.Caption, string.Empty);
+                    this.SelectedRow.Add(dCol.ColumnName, string.Empty);
 
                     tmtDataGridViewMain.Columns.Add(vCol);
                 }
@@ -186,7 +174,7 @@ namespace TMTControls.TMTDialogs
                                     }
 
                                     var sValue = sValueArray[i].Trim();
-                                    var operatorSymbol = GetOperator(sValue);
+                                    var operatorSymbol = TMTExtend.GetDatabaseOperator(sValue);
                                     sValue = sValue.Replace(operatorSymbol, string.Empty).Trim();
 
                                     filter += $" `{sEntity.ColumnName}` {operatorSymbol} '{sValue}' ";
@@ -202,40 +190,6 @@ namespace TMTControls.TMTDialogs
             {
                 TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_FilteringLovValues);
             }
-        }
-
-        private static string GetOperator(string sValue)
-        {
-            string operatorSymbol = "=";
-            if (sValue.StartsWith("<>", StringComparison.Ordinal))
-            {
-                operatorSymbol = "!=";
-            }
-            else if (sValue.StartsWith("!=", StringComparison.Ordinal))
-            {
-                operatorSymbol = "!=";
-            }
-            else if (sValue.StartsWith("<=", StringComparison.Ordinal))
-            {
-                operatorSymbol = "<=";
-            }
-            else if (sValue.StartsWith(">=", StringComparison.Ordinal))
-            {
-                operatorSymbol = ">=";
-            }
-            else if (sValue.StartsWith("<", StringComparison.Ordinal))
-            {
-                operatorSymbol = "<";
-            }
-            else if (sValue.StartsWith(">", StringComparison.Ordinal))
-            {
-                operatorSymbol = ">";
-            }
-            else if (sValue.Contains("%"))
-            {
-                operatorSymbol = "LIKE";
-            }
-            return operatorSymbol;
         }
 
         private void TmtDataGridViewMain_KeyDown(object sender, KeyEventArgs e)

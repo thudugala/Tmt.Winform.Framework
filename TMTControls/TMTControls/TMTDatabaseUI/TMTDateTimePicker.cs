@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
 {
+    [ToolboxBitmap(typeof(DateTimePicker))]
     public class TMTDateTimePicker : DateTimePicker, ITMTDatabaseUIControl
     {
         public TMTDateTimePicker()
@@ -32,7 +34,7 @@ namespace TMTControls.TMTDatabaseUI
         public bool MandatoryColumn { get; set; }
 
         public string GetLableText()
-        {            
+        {
             return this.ConnectedLabel?.Text;
         }
 

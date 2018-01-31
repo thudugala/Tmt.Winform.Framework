@@ -11,6 +11,7 @@ namespace TMTControls.TMTDataGrid
             base.ValueType = typeof(string);
             this.ValidateType = MaskValidateType.None;
             this.CountryCode = "lk";
+            this.TabStop = true;
         }
 
         [Category("Design"), DefaultValue(MaskValidateType.None)]
@@ -38,9 +39,15 @@ namespace TMTControls.TMTDataGrid
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyPrimaryKey { get; set; }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
+        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
+        public CharacterCasing CharacterCasing { get; set; }
+
         public override object Clone()
         {
-            TMTDataGridViewTextBoxColumn that = (TMTDataGridViewTextBoxColumn)base.Clone();
+            var that = (TMTDataGridViewTextBoxColumn)base.Clone();
 
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
@@ -48,7 +55,8 @@ namespace TMTControls.TMTDataGrid
 
             that.ValidateType = this.ValidateType;
             that.CountryCode = this.CountryCode;
-
+            that.TabStop = this.TabStop;
+            that.CharacterCasing = this.CharacterCasing;
             return that;
         }
     }

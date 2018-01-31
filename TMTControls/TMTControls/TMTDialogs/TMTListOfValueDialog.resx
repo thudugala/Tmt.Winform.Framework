@@ -298,7 +298,7 @@
     <value>List Of Values</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>TMTLOVDialog</value>
+    <value>TMTListOfValueDialog</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>TMTControls.TMTDialog, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>

@@ -37,12 +37,7 @@
             this.buttonCancel = new TMTControls.TMTButton();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tmtDataGridViewMain)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // labelHeader
-            // 
-            this.labelHeader.Image = global::TMTControls.Properties.Resources.list;
-            resources.ApplyResources(this.labelHeader, "labelHeader");
+            this.SuspendLayout();            
             // 
             // panelMain
             // 
@@ -65,15 +60,12 @@
             // 
             // tmtDataGridViewMain
             // 
-            this.tmtDataGridViewMain.AllowUserToAddRows = false;
-            this.tmtDataGridViewMain.AllowUserToDeleteRows = false;
             this.tmtDataGridViewMain.AllowUserToOrderColumns = true;
             resources.ApplyResources(this.tmtDataGridViewMain, "tmtDataGridViewMain");
             this.tmtDataGridViewMain.AutoGenerateColumns = false;
             this.tmtDataGridViewMain.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.tmtDataGridViewMain.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.tmtDataGridViewMain.BackgroundColor = System.Drawing.Color.White;
-            this.tmtDataGridViewMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
@@ -93,7 +85,6 @@
             this.tmtDataGridViewMain.DefaultCellStyle = dataGridViewCellStyle2;
             this.tmtDataGridViewMain.DefaultOrderByStatement = null;
             this.tmtDataGridViewMain.DefaultWhereStatement = null;
-            this.tmtDataGridViewMain.EnableHeadersVisualStyles = false;
             this.tmtDataGridViewMain.MultiSelect = false;
             this.tmtDataGridViewMain.Name = "tmtDataGridViewMain";
             this.tmtDataGridViewMain.ReadOnly = true;
@@ -127,12 +118,14 @@
             this.buttonCancel.UseVisualStyleBackColor = false;
             this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
-            // TMTLOVDialog
+            // TMTListOfValueDialog
             // 
+            this.Image = global::TMTControls.Properties.Resources.list;
             this.AcceptButton = this.buttonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.CancelButton = this.buttonCancel;
             resources.ApplyResources(this, "$this");
-            this.Name = "TMTLOVDialog";
+            this.Name = "TMTListOfValueDialog";
             this.ShowInTaskbar = false;
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();

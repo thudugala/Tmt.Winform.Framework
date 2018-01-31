@@ -9,6 +9,7 @@ namespace TMTControls.TMTDataGrid
         public TMTDataGridViewLinkColumn()
         {
             base.ValueType = typeof(string);
+            this.TabStop = true;
         }
 
         [Category("Data"), DefaultValue(false)]
@@ -42,6 +43,9 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
         public override object Clone()
         {
             TMTDataGridViewLinkColumn that = (TMTDataGridViewLinkColumn)base.Clone();
@@ -51,6 +55,7 @@ namespace TMTControls.TMTDataGrid
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyEditAllowed = this.DataPropertyEditAllowed;
             that.DataPropertyIsFuntion = this.DataPropertyIsFuntion;
+            that.TabStop = this.TabStop;
 
             return that;
         }

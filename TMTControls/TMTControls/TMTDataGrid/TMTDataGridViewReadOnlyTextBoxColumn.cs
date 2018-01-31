@@ -9,6 +9,7 @@ namespace TMTControls.TMTDataGrid
         public TMTDataGridViewReadOnlyTextBoxColumn()
         {
             base.ValueType = typeof(string);
+            this.TabStop = true;
         }
 
         public override bool ReadOnly
@@ -70,6 +71,9 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
         public override object Clone()
         {
             TMTDataGridViewReadOnlyTextBoxColumn that = (TMTDataGridViewReadOnlyTextBoxColumn)base.Clone();
@@ -79,6 +83,7 @@ namespace TMTControls.TMTDataGrid
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyEditAllowed = this.DataPropertyEditAllowed;
             that.DataPropertyIsFuntion = this.DataPropertyIsFuntion;
+            that.TabStop = this.TabStop;
 
             return that;
         }

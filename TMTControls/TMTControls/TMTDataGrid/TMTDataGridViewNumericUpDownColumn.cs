@@ -30,13 +30,31 @@ namespace TMTControls.TMTDataGrid
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyPrimaryKey { get; set; }
 
+        [Category("Behavior"), DefaultValue(true)]
+        public bool TabStop { get; set; }
+
+        [Category("Appearance")]
+        public DataGridViewCellStyle HeaderStyle
+        {
+            get
+            {
+                return this.HeaderCell.Style;
+            }
+            set
+            {
+                this.HeaderCell.Style = value;
+            }
+        }
+
         public override object Clone()
         {
-            TMTDataGridViewNumericUpDownColumn that = (TMTDataGridViewNumericUpDownColumn)base.Clone();
+            var that = (TMTDataGridViewNumericUpDownColumn)base.Clone();
 
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyMandatory = this.DataPropertyMandatory;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
+            that.TabStop = this.TabStop;
+            that.HeaderStyle = this.HeaderStyle;
 
             return that;
         }
@@ -47,8 +65,9 @@ namespace TMTControls.TMTDataGrid
         public TMTDataGridViewNumericUpDownColumn()
             : base(new TMTDataGridViewNumericUpDownCell())
         {
-            base.ValueType = typeof(Int64);           
+            base.ValueType = typeof(Int64);
             base.SortMode = DataGridViewColumnSortMode.Automatic;
+            this.TabStop = true;
         }
 
         /// <summary>
@@ -73,7 +92,7 @@ namespace TMTControls.TMTDataGrid
                 else
                 {
                     throw new InvalidCastException($"Value provided for CellTemplate must be of type {nameof(TMTDataGridViewNumericUpDownColumn)}.{nameof(TMTDataGridViewNumericUpDownCell)} or derive from it.");
-                }                
+                }
             }
         }
 

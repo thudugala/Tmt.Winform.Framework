@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ namespace TMTControls.TMTDataGrid
     /// <summary>
     /// Defines the editing control for the DataGridViewNumericUpDownCell custom cell type.
     /// </summary>
+    [ToolboxItem(false)]
     internal class TMTDataGridViewNumericUpDownEditingControl : NumericUpDown, IDataGridViewEditingControl
     {
         /// <summary>

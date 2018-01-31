@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Design" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
@@ -59,16 +60,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BaseUserControl.Designer.cs">
+      <DependentUpon>BaseUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="ColumnData.cs" />
+    <Compile Include="DataLoadArgs.cs" />
+    <Compile Include="DataSaveArg.cs" />
     <Compile Include="DataValidatingEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IDataManager.cs" />
     <Compile Include="ListOfValueLoadedEventArgs.cs" />
     <Compile Include="ListOfValueLoadingEventArgs.cs" />
     <Compile Include="LogOnDataEntity.cs" />
     <Compile Include="MaskValidateType.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="PanelBackgroundWorkEventArgs.cs" />
-    <Compile Include="PanelBackgroundWorkType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -81,6 +89,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SearchEntity.cs" />
+    <Compile Include="TinyIoC.cs" />
     <Compile Include="TMTButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -90,9 +99,14 @@
     <Compile Include="TMTChart.Designer.cs">
       <DependentUpon>TMTChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="TMTChartBackgroundWorkEventArgs.cs" />
     <Compile Include="TMTDatabaseUI\TMTCheckBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TMTDialogs\MessageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TMTDialogs\MessageDialog.Designer.cs">
+      <DependentUpon>MessageDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TMTDialogs\TMTColumnManagerDialog.cs">
       <SubType>Form</SubType>
@@ -186,30 +200,31 @@
     <Compile Include="TMTDatabaseUI\TMTNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TMTPanels\BaseWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\BaseWindow.Designer.cs">
+      <DependentUpon>BaseWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTPanels\FormWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\FormWindow.Designer.cs">
+      <DependentUpon>FormWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TMTPanels\IRootHomeWinodw.cs" />
+    <Compile Include="TMTPanels\TableWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TMTPanels\TableWindow.Designer.cs">
+      <DependentUpon>TableWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="TMTPanels\TileButtonClickedEventArgs.cs" />
-    <Compile Include="TMTPanels\TMTPanelForm.cs">
+    <Compile Include="TMTPanels\BaseHomeWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TMTPanels\TMTPanelForm.Designer.cs">
-      <DependentUpon>TMTPanelForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TMTPanels\TMTPanelHome.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TMTPanels\TMTPanelHome.Designer.cs">
-      <DependentUpon>TMTPanelHome.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TMTPanels\TMTPanelTable.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TMTPanels\TMTPanelTable.Designer.cs">
-      <DependentUpon>TMTPanelTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TMTPanels\TMTPanelV2.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TMTPanels\TMTPanelV2.Designer.cs">
-      <DependentUpon>TMTPanelV2.cs</DependentUpon>
+    <Compile Include="TMTPanels\BaseHomeWindow.Designer.cs">
+      <DependentUpon>BaseHomeWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="TMTDialogs\TMTSearchDialog.cs">
       <SubType>Form</SubType>
@@ -224,6 +239,7 @@
     <Compile Include="TMTDatabaseUI\TMTTextButtonBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="TMTPanels\WindowRecordState.cs" />
     <Compile Include="TMTTextButtonBoxBase.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -233,20 +249,18 @@
     <Compile Include="TMTTileButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="TMTUserControl.Designer.cs">
-      <DependentUpon>TMTUserControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="TMTDialogs\TmtWebApiLogOnDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TMTDialogs\TmtWebApiLogOnDialog.Designer.cs">
       <DependentUpon>TmtWebApiLogOnDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControlEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="BaseUserControl.resx">
+      <DependentUpon>BaseUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -254,6 +268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TMTChart.resx">
       <DependentUpon>TMTChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDialogs\MessageDialog.resx">
+      <DependentUpon>MessageDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTDialogs\TMTColumnManagerDialog.resx">
       <DependentUpon>TMTColumnManagerDialog.cs</DependentUpon>
@@ -288,20 +305,23 @@
     <EmbeddedResource Include="TMTDialogs\TMTListOfValueDialog.resx">
       <DependentUpon>TMTListOfValueDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TMTMultipleColumnComboBox.resx">
+      <DependentUpon>TMTMultipleColumnComboBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TMTNumberTextBoxForSearch.resx">
       <DependentUpon>TMTNumberTextBoxForSearch.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTPanels\TMTPanelForm.resx">
-      <DependentUpon>TMTPanelForm.cs</DependentUpon>
+    <EmbeddedResource Include="TMTPanels\BaseWindow.resx">
+      <DependentUpon>BaseWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTPanels\TMTPanelHome.resx">
-      <DependentUpon>TMTPanelHome.cs</DependentUpon>
+    <EmbeddedResource Include="TMTPanels\FormWindow.resx">
+      <DependentUpon>FormWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTPanels\TMTPanelTable.resx">
-      <DependentUpon>TMTPanelTable.cs</DependentUpon>
+    <EmbeddedResource Include="TMTPanels\TableWindow.resx">
+      <DependentUpon>TableWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTPanels\TMTPanelV2.resx">
-      <DependentUpon>TMTPanelV2.cs</DependentUpon>
+    <EmbeddedResource Include="TMTPanels\BaseHomeWindow.resx">
+      <DependentUpon>BaseHomeWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTDialogs\TMTSearchDialog.resx">
       <DependentUpon>TMTSearchDialog.cs</DependentUpon>
@@ -315,14 +335,17 @@
     <EmbeddedResource Include="TMTTileButton.resx">
       <DependentUpon>TMTTileButton.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTUserControl.resx">
-      <DependentUpon>TMTUserControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="TMTDialogs\TmtWebApiLogOnDialog.resx">
       <DependentUpon>TmtWebApiLogOnDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\question.png" />
+    <None Include="Resources\exclamation.png" />
+    <None Include="Resources\asterisk.png" />
+    <None Include="Resources\Information.png" />
+    <None Include="Resources\warning.png" />
+    <None Include="Resources\formSettings.png" />
     <None Include="app.config" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -332,6 +355,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\System.Data.DataTable.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -20,6 +20,7 @@ namespace TMTControls
         private TMTListOfValueDialog _lovDialog;
         private HashSet<char> allowedKeySetForSearch = new HashSet<char>() { '.', '<', '=', '>', '!', ';' };
         private HashSet<char> allowedKeySet = new HashSet<char>() { '.' };
+        private ToolStripProgressBar _controlProgressBar;
 
         private bool _DoValidate = true;
 
@@ -89,6 +90,19 @@ namespace TMTControls
             }
         }
 
+        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
+        public CharacterCasing CharacterCasing
+        {
+            get
+            {
+                return this.InnerTextBox.CharacterCasing;
+            }
+            set
+            {
+                this.InnerTextBox.CharacterCasing = value;
+            }
+        }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ButtonWidth
@@ -120,23 +134,33 @@ namespace TMTControls
         [Category("Design"), DefaultValue(TextInputType.Text)]
         public TextInputType KeyInputType { get; set; }
 
-        [Category("Design")]
-        public ProgressBar ControlProgressBar { get; set; }
+        private void SetProgressBarVisibile(bool visibility)
+        {
+            if (this._controlProgressBar == null)
+            {
+                this._controlProgressBar = this.FindParentBaseUserControl()?.progressBarBase;
+            }
+
+            if (this._controlProgressBar != null)
+            {
+                this._controlProgressBar.Visible = visibility;
+            }
+        }
 
         public void ClearUndo()
         {
             InnerTextBox.ClearUndo();
         }
 
-        private void Button_Click(object sender, EventArgs e)
+        private async void Button_Click(object sender, EventArgs e)
         {
             if (this is TMTDataGridViewTextButtonBoxEditingControl columEditControl)
             {
-                this.ColumnListOfValue(columEditControl);
+                await this.ColumnListOfValue(columEditControl);
             }
             else if (this is TMTTextButtonBox tmtTextButton)
             {
-                this.FieldListOfValue(tmtTextButton);
+                await this.FieldListOfValue(tmtTextButton);
             }
             if (InnerTextBox.Focused == false)
             {
@@ -144,7 +168,7 @@ namespace TMTControls
             }
         }
 
-        private void InnerTextBox_Validated(object sender, EventArgs e)
+        private async void InnerTextBox_Validated(object sender, EventArgs e)
         {
             if (this._DoValidate)
             {
@@ -152,16 +176,16 @@ namespace TMTControls
 
                 if (this is TMTDataGridViewTextButtonBoxEditingControl columEditControl)
                 {
-                    this.ColumnValidate(columEditControl);
+                    await this.ColumnValidate(columEditControl);
                 }
                 else if (this is TMTTextButtonBox tmtTextButton)
                 {
-                    this.FieldValidate(tmtTextButton);
+                    await this.FieldValidate(tmtTextButton);
                 }
             }
         }
 
-        private async void FieldListOfValue(TMTTextButtonBox tmtTextButton)
+        private async Task FieldListOfValue(TMTTextButtonBox tmtTextButton)
         {
             try
             {
@@ -171,30 +195,30 @@ namespace TMTControls
                 {
                     this._lovDialog = new TMTListOfValueDialog();
                 }
-                if (ControlProgressBar != null)
+                if (this._lovDialog.Visible)
                 {
-                    ControlProgressBar.Visible = true;
+                    return;
                 }
+                this.SetProgressBarVisibile(true);
 
                 var lovEvent = new ListOfValueLoadingEventArgs()
                 {
                     IsValidate = false,
                     PrimaryColumnName = tmtTextButton.DbColumnName,
-                    PrimaryColumnType = tmtTextButton.GetDbColumnSystemType().FullName,
+                    PrimaryColumnType = tmtTextButton.GetDbColumnSystemType(),
                     PrimaryColumnValue = tmtTextButton.Text,
                     ListOfValueHeaderText = tmtTextButton.ConnectedLabel.Text,
-                    SearchConditionTable = TMTExtend.GetSearchConditionTable(),
                     ListOfValueViewName = tmtTextButton.ListOfValueViewName
                 };
 
                 await Task.Run(() => tmtTextButton.GetListOfValueSelectedRow(lovEvent));
 
-                this._lovDialog.HeaderLabel = lovEvent.ListOfValueHeaderText;
+                this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
                 this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
 
                 if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    ListOfValueLoadedEventArgs lovLoaded = new ListOfValueLoadedEventArgs(this._lovDialog.SelectedRow)
+                    var lovLoaded = new ListOfValueLoadedEventArgs(this._lovDialog.SelectedRow)
                     {
                         IsValidate = lovEvent.IsValidate,
                         PrimaryColumnName = lovEvent.PrimaryColumnName,
@@ -216,27 +240,23 @@ namespace TMTControls
             }
             finally
             {
-                if (ControlProgressBar != null)
-                {
-                    ControlProgressBar.Visible = false;
-                }
+                this.SetProgressBarVisibile(false);
                 this._DoValidate = true;
             }
         }
 
-        private async void FieldValidate(TMTTextButtonBox tmtTextButton)
+        private async Task FieldValidate(TMTTextButtonBox tmtTextButton)
         {
             try
             {
                 if (tmtTextButton.ListOfValueText != tmtTextButton.Text)
                 {
-                    ListOfValueLoadingEventArgs lovEvent = new ListOfValueLoadingEventArgs()
+                    var lovEvent = new ListOfValueLoadingEventArgs()
                     {
                         IsValidate = true,
                         PrimaryColumnName = tmtTextButton.DbColumnName,
-                        PrimaryColumnType = tmtTextButton.GetDbColumnSystemType().FullName,
+                        PrimaryColumnType = tmtTextButton.GetDbColumnSystemType(),
                         PrimaryColumnValue = tmtTextButton.Text,
-                        SearchConditionTable = TMTExtend.GetSearchConditionTable(),
                         ListOfValueViewName = tmtTextButton.ListOfValueViewName
                     };
 
@@ -248,13 +268,13 @@ namespace TMTControls
                         tmtTextButton.ListOfValueText = tmtTextButton.Text;
 
                         DataRow selectedDataRow = lovEvent.ListOfValueDataTable.Rows[0];
-                        Dictionary<string, object> selectedRow = new Dictionary<string, object>();
+                        var selectedRow = new Dictionary<string, object>();
                         foreach (DataColumn col in lovEvent.ListOfValueDataTable.Columns)
                         {
                             selectedRow.Add(col.ColumnName, selectedDataRow[col]);
                         }
 
-                        ListOfValueLoadedEventArgs lovLoaded = new ListOfValueLoadedEventArgs(selectedRow)
+                        var lovLoaded = new ListOfValueLoadedEventArgs(selectedRow)
                         {
                             IsValidate = lovEvent.IsValidate,
                             PrimaryColumnName = lovEvent.PrimaryColumnName,
@@ -277,7 +297,7 @@ namespace TMTControls
             }
         }
 
-        private async void ColumnListOfValue(TMTDataGridViewTextButtonBoxEditingControl sender)
+        private async Task ColumnListOfValue(TMTDataGridViewTextButtonBoxEditingControl sender)
         {
             try
             {
@@ -289,10 +309,12 @@ namespace TMTControls
                 {
                     this._lovDialog = new TMTListOfValueDialog();
                 }
-                if (ControlProgressBar != null)
+                if (this._lovDialog.Visible)
                 {
-                    ControlProgressBar.Visible = true;
+                    return;
                 }
+
+                this.SetProgressBarVisibile(true);
 
                 var currentColumn = gridview.CurrentCell.OwningColumn as TMTDataGridViewTextButtonBoxColumn;
 
@@ -301,9 +323,8 @@ namespace TMTControls
                     RowIndex = gridview.CurrentCell.RowIndex,
                     IsValidate = false,
                     PrimaryColumnName = currentColumn.DataPropertyName,
-                    PrimaryColumnType = currentColumn.ValueType.FullName,
+                    PrimaryColumnType = currentColumn.ValueType,
                     ListOfValueHeaderText = currentColumn.HeaderText,
-                    SearchConditionTable = TMTExtend.GetSearchConditionTable(),
                     ListOfValueViewName = currentColumn.ListOfValueViewName
                 };
                 lovEvent.PrimaryColumnValue = gridview.CurrentCell.ValueString();
@@ -311,7 +332,7 @@ namespace TMTControls
 
                 await Task.Run(() => gridview.GetListOfValueSelectedRow(lovEvent));
 
-                this._lovDialog.HeaderLabel = lovEvent.ListOfValueHeaderText;
+                this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
                 this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
 
                 if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
@@ -340,15 +361,12 @@ namespace TMTControls
             }
             finally
             {
-                if (ControlProgressBar != null)
-                {
-                    ControlProgressBar.Visible = false;
-                }
+                this.SetProgressBarVisibile(false);
                 this._DoValidate = true;
             }
         }
 
-        private async void ColumnValidate(TMTDataGridViewTextButtonBoxEditingControl sender)
+        private async Task ColumnValidate(TMTDataGridViewTextButtonBoxEditingControl sender)
         {
             try
             {
@@ -378,8 +396,7 @@ namespace TMTControls
                         RowIndex = gridview.CurrentCell.RowIndex,
                         IsValidate = true,
                         PrimaryColumnName = currentColumn.DataPropertyName,
-                        PrimaryColumnType = currentColumn.ValueType.FullName,
-                        SearchConditionTable = TMTExtend.GetSearchConditionTable(),
+                        PrimaryColumnType = currentColumn.ValueType,
                         ListOfValueViewName = currentColumn.ListOfValueViewName
                     };
 
@@ -450,6 +467,19 @@ namespace TMTControls
                     e.Handled = true;
                 }
             }
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            try
+            {
+                if (keyData == Keys.F8)
+                {
+                    buttonOK.PerformClick();
+                }
+            }
+            catch { }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 

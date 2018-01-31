@@ -1,6 +1,6 @@
 ﻿namespace TMTControls.TMTPanels
 {
-    partial class TMTPanelHome
+    partial class BaseHomeWindow
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TMTPanelHome));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseHomeWindow));
             this.SuspendLayout();
             // 
             // TMTPanelHome

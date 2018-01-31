@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Deployment.Application;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
+using TinyIoC;
 using TMTControls.TMTDialogs;
 using TMTControls.TMTPanels;
 
@@ -18,48 +18,33 @@ namespace TMTControls
             InitializeComponent();
         }
 
-        public UserControl LoadPanel(Type panelType)
+        public virtual UserControl LoadPanel(Type panelType)
         {
             if (panelType == null)
             {
                 throw new ArgumentNullException(nameof(panelType));
             }
 
-            return this.LoadPanel(panelType.Assembly, string.Format(CultureInfo.InvariantCulture, "{0}.{1}", panelType.Namespace, panelType.Name));
-        }
-
-        public virtual UserControl LoadPanel(Assembly assemblyOfType, string panelFullName)
-        {
-            if (assemblyOfType == null)
-            {
-                throw new ArgumentNullException(nameof(assemblyOfType));
-            }
-
             UserControl panel = null;
             try
             {
-                if (string.IsNullOrWhiteSpace(panelFullName))
-                {
-                    return null;
-                }
-
-                string panleName = panelFullName.Substring(panelFullName.LastIndexOf('.') + 1);
+                string panleName = panelType.Name;
 
                 if (panelMain.Controls.ContainsKey(panleName) == false)
                 {
-                    panel = assemblyOfType.CreateInstance(panelFullName) as UserControl;
+                    panel = Activator.CreateInstance(panelType) as UserControl;
 
                     panel.Name = panleName;
                     panel.Dock = DockStyle.Fill;
                     panelMain.Controls.Add(panel);
 
-                    if (panel is TMTPanelHome homePanel)
+                    if (panel is BaseHomeWindow homePanel)
                     {
                         homePanel.TileButtonClicked += FormMain_TileButtonClicked;
                     }
-                    else if (panel is TMTUserControl tmtPanel)
+                    else if (panel is BaseUserControl basePanel)
                     {
-                        tmtPanel.BackButtonClicked += FormMain_BackButtonClicked;
+                        basePanel.NavigateBack += FormMain_BackButtonClicked;
                     }
                 }
                 else
@@ -71,21 +56,18 @@ namespace TMTControls
                 {
                     panel.Visible = true;
                     panel.BringToFront();
-                    if (panel is TMTPanelTable tabelPanel)
+                    panel.Focus();
+                    if (panel is BaseWindow baseWindow)
                     {
-                        tabelPanel.LoadWindowWithDataWhenActive();
-                    }
-                    else if (panel is TMTPanelForm formPanel)
-                    {
-                        formPanel.LoadWindowWithDataWhenActive();
+                        baseWindow.LoadIfActive();
                     }
                     if (this.navigationOrder.Contains(panel.GetType()))
                     {
                         int itemIndex = this.navigationOrder.IndexOf(panel.GetType());
-                        while(itemIndex < this.navigationOrder.Count)
+                        while (itemIndex < this.navigationOrder.Count)
                         {
                             this.navigationOrder.RemoveAt(itemIndex);
-                        }                        
+                        }
                     }
 
                     this.navigationOrder.Add(panel.GetType());
@@ -100,9 +82,9 @@ namespace TMTControls
 
         private void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(e.PanelFullName) == false)
+            if (e.NavigatePanel != null)
             {
-                this.LoadPanel(e.AssemblyOfType, e.PanelFullName);
+                this.LoadPanel(e.NavigatePanel);
             }
         }
 
@@ -153,6 +135,28 @@ namespace TMTControls
                 Properties.Settings.Default.Save();
             }
             catch { }
+        }
+
+        private void TMTFormMain_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    this.Text += $" - {ApplicationDeployment.CurrentDeployment.CurrentVersion}";
+                }
+                TinyIoCContainer.Current.AutoRegister();
+
+                var theHomeWindow = TinyIoCContainer.Current.Resolve<IRootHomeWinodw>();
+                if (theHomeWindow != null)
+                {
+                    this.LoadPanel(theHomeWindow.GetType());
+                }
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+            }
         }
     }
 }

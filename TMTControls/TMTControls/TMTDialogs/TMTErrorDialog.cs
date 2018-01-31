@@ -13,32 +13,18 @@ namespace TMTControls.TMTDialogs
             InitializeComponent();
         }
 
-        public string Caption
-        {
-            set
-            {
-                if (string.IsNullOrWhiteSpace(value) == false)
-                {
-                    labelHeader.Text = value;
-                }
-            }
-            get
-            {
-                return labelHeader.Text;
-            }
-        }
-
         public Exception Error
         {
             set
             {
-                if (value != null)
+                if (value == null)
                 {
-                    this._error = value;
-                    textBoxMessage.Text = this._error.Message;
-
-                    LogManager.GetLogger(System.Diagnostics.Process.GetCurrentProcess().ProcessName).Error(this._error);
+                    return;
                 }
+                this._error = value;
+                textBoxMessage.Text = this._error.Message;
+
+                LogManager.GetLogger(System.Diagnostics.Process.GetCurrentProcess().ProcessName).Error(this._error);
             }
             get
             {
@@ -54,10 +40,17 @@ namespace TMTControls.TMTDialogs
                 errorDialog = new TMTErrorDialog
                 {
                     Error = ex,
-                    Caption = caption
+                    Text = caption
                 };
 
-                return errorDialog.ShowDialog(owner);
+                if (owner == null)
+                {
+                    return errorDialog.ShowDialog();
+                }
+                else
+                {
+                    return errorDialog.ShowDialog(owner);
+                }
             }
             catch
             {
@@ -72,9 +65,16 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void linkLabelCopyToClipboard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabelCopyToClipboard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Clipboard.SetText(this.Error.Message + "\r\n" + this.Error.InnerException + "\r\n" + this.Error.StackTrace);
+            try
+            {
+                Clipboard.SetText($"{this.Error.Message}\r\n{this.Error.InnerException}\r\n{this.Error.StackTrace}");
+            }
+            catch (Exception ex)
+            {
+                LogManager.GetLogger(System.Diagnostics.Process.GetCurrentProcess().ProcessName).Error(ex);
+            }
         }
     }
 }

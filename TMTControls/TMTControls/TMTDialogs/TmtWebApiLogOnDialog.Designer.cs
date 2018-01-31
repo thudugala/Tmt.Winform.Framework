@@ -44,11 +44,6 @@
             this.tableLayoutPanelMain.SuspendLayout();
             this.SuspendLayout();
             // 
-            // labelHeader
-            // 
-            this.labelHeader.Image = global::TMTControls.Properties.Resources.login;
-            resources.ApplyResources(this.labelHeader, "labelHeader");
-            // 
             // panelMain
             // 
             resources.ApplyResources(this.panelMain, "panelMain");
@@ -110,7 +105,7 @@
             resources.GetString("comboBoxAuthSource.Items"),
             resources.GetString("comboBoxAuthSource.Items1")});
             this.comboBoxAuthSource.Name = "comboBoxAuthSource";
-            this.comboBoxAuthSource.SelectedIndexChanged += new System.EventHandler(this.comboBoxAuthSource_SelectedIndexChanged);
+            this.comboBoxAuthSource.SelectedIndexChanged += new System.EventHandler(this.ComboBoxAuthSource_SelectedIndexChanged);
             // 
             // textBoxLdapServerUrl
             // 
@@ -123,7 +118,7 @@
             resources.ApplyResources(this.checkBoxShowDetails, "checkBoxShowDetails");
             this.checkBoxShowDetails.Name = "checkBoxShowDetails";
             this.checkBoxShowDetails.UseVisualStyleBackColor = true;
-            this.checkBoxShowDetails.CheckedChanged += new System.EventHandler(this.checkBoxShowDetails_CheckedChanged);
+            this.checkBoxShowDetails.CheckedChanged += new System.EventHandler(this.CheckBoxShowDetails_CheckedChanged);
             // 
             // tableLayoutPanelMain
             // 
@@ -140,13 +135,14 @@
             this.tableLayoutPanelMain.Controls.Add(this.buttonLogin, 3, 2);
             this.tableLayoutPanelMain.Name = "tableLayoutPanelMain";
             // 
-            // TMTWebAPILogOnDialog
+            // TmtWebApiLogOnDialog
             // 
             this.AcceptButton = this.buttonLogin;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             resources.ApplyResources(this, "$this");
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "TMTWebAPILogOnDialog";
+            this.Image = global::TMTControls.Properties.Resources.login;
+            this.Name = "TmtWebApiLogOnDialog";
             this.ShowIcon = true;
             this.ShowInTaskbar = false;
             this.Load += new System.EventHandler(this.TMTWebAPILoginDialog_Load);
