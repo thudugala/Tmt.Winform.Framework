@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseUserControl));
             this.panelTopPanel = new System.Windows.Forms.Panel();
             this.labelWindowName = new System.Windows.Forms.Label();
-            this.buttonNavigateBack = new System.Windows.Forms.Button();
+            this.buttonNavigateBack = new TMTControls.IconButton();
             this.toolTipBase = new System.Windows.Forms.ToolTip(this.components);
             this.statusStripBase = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelWindowName = new System.Windows.Forms.ToolStripStatusLabel();
@@ -64,7 +64,11 @@
             // 
             resources.ApplyResources(this.buttonNavigateBack, "buttonNavigateBack");
             this.buttonNavigateBack.FlatAppearance.BorderSize = 0;
-            this.buttonNavigateBack.Image = global::TMTControls.Properties.Resources.back;
+            this.buttonNavigateBack.IconBackColor = System.Drawing.Color.Empty;
+            this.buttonNavigateBack.IconBorderColor = System.Drawing.Color.Empty;
+            this.buttonNavigateBack.IconForeColor = System.Drawing.Color.White;
+            this.buttonNavigateBack.IconLocation = new System.Drawing.Point(0, 0);
+            this.buttonNavigateBack.IconType = FontAwesome5.Type.ArrowCircleLeft;
             this.buttonNavigateBack.Name = "buttonNavigateBack";
             this.buttonNavigateBack.TabStop = false;
             this.toolTipBase.SetToolTip(this.buttonNavigateBack, resources.GetString("buttonNavigateBack.ToolTip"));
@@ -103,7 +107,6 @@
             this.toolStripSplitButtonOptions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.toolStripSplitButtonOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.captureScreenToolStripMenuItem});
-            this.toolStripSplitButtonOptions.Image = global::TMTControls.Properties.Resources.formSettings;
             resources.ApplyResources(this.toolStripSplitButtonOptions, "toolStripSplitButtonOptions");
             this.toolStripSplitButtonOptions.Name = "toolStripSplitButtonOptions";
             this.toolStripSplitButtonOptions.ButtonClick += new System.EventHandler(this.ToolStripSplitButtonOptions_ButtonClick);
@@ -120,7 +123,7 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.Controls.Add(this.statusStripBase);
             this.Controls.Add(this.panelTopPanel);
             this.Name = "BaseUserControl";
@@ -136,7 +139,7 @@
 
         #endregion
         protected System.Windows.Forms.Label labelWindowName;
-        private System.Windows.Forms.Button buttonNavigateBack;
+        private IconButton buttonNavigateBack;
         protected System.Windows.Forms.ToolTip toolTipBase;
         private System.Windows.Forms.Panel panelTopPanel;
         protected internal System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelWindowName;

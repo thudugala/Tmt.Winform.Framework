@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TMTControls.TMTDatabaseUI;
 
@@ -10,8 +11,8 @@ namespace TMTControls.TMTDialogs
 {
     public partial class TMTSearchDialog : TMTDialog
     {
-        private static string PROPERTY_LABEL_PRIFIX = "propertyLabel{0}";
         private static string LABEL_DOT = ":";
+        private static string PROPERTY_LABEL_PRIFIX = "propertyLabel{0}";
 
         public TMTSearchDialog()
         {
@@ -19,6 +20,8 @@ namespace TMTControls.TMTDialogs
 
             this.EntityList = new List<SearchEntity>();
         }
+
+        public IList<SearchEntity> EntityList { get; }
 
         public bool IsCaseSensitive
         {
@@ -36,47 +39,52 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        public event EventHandler<ListOfValueLoadingEventArgs> SearchListOfValueLoading;
-
-        public IList<SearchEntity> EntityList { get; }
+        public Func<ListOfValueLoadingEventArgs, Task> SearchListOfValueLoading { get; set; }
 
         public void EntityListAddRange(IReadOnlyCollection<SearchEntity> searchEntityList)
         {
             (this.EntityList as List<SearchEntity>).AddRange(searchEntityList);
         }
 
-        private void ButtonCancel_Click(object sender, EventArgs e)
+        private void AddCheckBox(SearchEntity searchEntity, int rowIndex)
         {
-            this.DialogResult = DialogResult.Cancel;
+            var propertyCheckBox = new CheckBox()
+            {
+                Dock = DockStyle.Fill,
+                Name = searchEntity.ColumnName,
+                ThreeState = true
+            };
+
+            object value = searchEntity.Value;
+            if (value != null && string.IsNullOrWhiteSpace(value.ToString()) == false)
+            {
+                propertyCheckBox.Checked = Boolean.Parse(value.ToString());
+            }
+            else
+            {
+                propertyCheckBox.CheckState = CheckState.Indeterminate;
+            }
+            tableLayoutPanelMain.SetColumn(propertyCheckBox, 1);
+            tableLayoutPanelMain.SetRow(propertyCheckBox, rowIndex);
+            tableLayoutPanelMain.Controls.Add(propertyCheckBox);
         }
 
-        private void ButtonOK_Click(object sender, EventArgs e)
+        private void AddDateTimePickerForSearch(SearchEntity searchEntity, int rowIndex)
         {
-            foreach (Control dbControl in tableLayoutPanelMain.Controls)
+            var propertyDateTimePicker = new TMTDateTimePickerForSearch()
             {
-                var sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
-                if (sEntity != null)
-                {
-                    if (dbControl is CheckBox)
-                    {
-                        var dbCheckControl = dbControl as CheckBox;
-                        if (dbCheckControl.CheckState != CheckState.Indeterminate)
-                        {
-                            sEntity.Value = (dbCheckControl.Checked) ? Boolean.TrueString.ToUpper(CultureInfo.InvariantCulture) : Boolean.FalseString.ToUpper(CultureInfo.InvariantCulture);
-                        }
-                        else
-                        {
-                            sEntity.Value = string.Empty;
-                        }
-                    }
-                    else
-                    {
-                        sEntity.Value = dbControl.Text.Trim();
-                    }
-                }
-            }
+                Dock = DockStyle.Fill,
+                Name = searchEntity.ColumnName
+            };
 
-            this.DialogResult = DialogResult.OK;
+            object value = searchEntity.Value;
+            if (value != null && string.IsNullOrWhiteSpace(value.ToString()) == false)
+            {
+                propertyDateTimePicker.Text = value.ToString();
+            }
+            tableLayoutPanelMain.SetColumn(propertyDateTimePicker, 1);
+            tableLayoutPanelMain.SetRow(propertyDateTimePicker, rowIndex);
+            tableLayoutPanelMain.Controls.Add(propertyDateTimePicker);
         }
 
         private Label AddLabel(SearchEntity searchEntity, int rowIndex)
@@ -120,32 +128,22 @@ namespace TMTControls.TMTDialogs
             tableLayoutPanelMain.Controls.Add(propertyTextButtonBox);
         }
 
-        private void PropertyTextButtonBox_ListOfValueLoading(object sender, ListOfValueLoadingEventArgs e)
+        private void AddNumberTextBoxForSearch(SearchEntity searchEntity, int rowIndex)
         {
-            SearchListOfValueLoading?.Invoke(sender, e);
-        }
-
-        private void AddCheckBox(SearchEntity searchEntity, int rowIndex)
-        {
-            var propertyCheckBox = new CheckBox()
+            var propertyNumberTextBox = new TMTNumberTextBoxForSearch()
             {
                 Dock = DockStyle.Fill,
-                Name = searchEntity.ColumnName,
-                ThreeState = true
+                Name = searchEntity.ColumnName
             };
 
             object value = searchEntity.Value;
-            if (value != null && string.IsNullOrWhiteSpace(value.ToString()) == false)
+            if (value != null)
             {
-                propertyCheckBox.Checked = Boolean.Parse(value.ToString());
+                propertyNumberTextBox.Text = value.ToString();
             }
-            else
-            {
-                propertyCheckBox.CheckState = CheckState.Indeterminate;
-            }
-            tableLayoutPanelMain.SetColumn(propertyCheckBox, 1);
-            tableLayoutPanelMain.SetRow(propertyCheckBox, rowIndex);
-            tableLayoutPanelMain.Controls.Add(propertyCheckBox);
+            tableLayoutPanelMain.SetColumn(propertyNumberTextBox, 1);
+            tableLayoutPanelMain.SetRow(propertyNumberTextBox, rowIndex);
+            tableLayoutPanelMain.Controls.Add(propertyNumberTextBox);
         }
 
         private void AddTextBox(SearchEntity searchEntity, int rowIndex)
@@ -166,46 +164,57 @@ namespace TMTControls.TMTDialogs
             tableLayoutPanelMain.Controls.Add(propertyTextBox);
         }
 
-        private void AddNumberTextBoxForSearch(SearchEntity searchEntity, int rowIndex)
+        private void ButtonCancel_Click(object sender, EventArgs e)
         {
-            var propertyNumberTextBox = new TMTNumberTextBoxForSearch()
-            {
-                Dock = DockStyle.Fill,
-                Name = searchEntity.ColumnName
-            };
-
-            object value = searchEntity.Value;
-            if (value != null)
-            {
-                propertyNumberTextBox.Text = value.ToString();
-            }
-            tableLayoutPanelMain.SetColumn(propertyNumberTextBox, 1);
-            tableLayoutPanelMain.SetRow(propertyNumberTextBox, rowIndex);
-            tableLayoutPanelMain.Controls.Add(propertyNumberTextBox);
+            this.DialogResult = DialogResult.Cancel;
         }
 
-        private void AddDateTimePickerForSearch(SearchEntity searchEntity, int rowIndex)
+        private void ButtonOK_Click(object sender, EventArgs e)
         {
-            var propertyDateTimePicker = new TMTDateTimePickerForSearch()
+            foreach (Control dbControl in tableLayoutPanelMain.Controls)
             {
-                Dock = DockStyle.Fill,
-                Name = searchEntity.ColumnName
-            };
-
-            object value = searchEntity.Value;
-            if (value != null && string.IsNullOrWhiteSpace(value.ToString()) == false)
-            {
-                propertyDateTimePicker.Text = value.ToString();
+                var sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
+                if (sEntity != null)
+                {
+                    if (dbControl is CheckBox)
+                    {
+                        var dbCheckControl = dbControl as CheckBox;
+                        if (dbCheckControl.CheckState != CheckState.Indeterminate)
+                        {
+                            sEntity.Value = (dbCheckControl.Checked) ? Boolean.TrueString.ToUpper(CultureInfo.InvariantCulture) : Boolean.FalseString.ToUpper(CultureInfo.InvariantCulture);
+                        }
+                        else
+                        {
+                            sEntity.Value = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        sEntity.Value = dbControl.Text.Trim();
+                    }
+                }
             }
-            tableLayoutPanelMain.SetColumn(propertyDateTimePicker, 1);
-            tableLayoutPanelMain.SetRow(propertyDateTimePicker, rowIndex);
-            tableLayoutPanelMain.Controls.Add(propertyDateTimePicker);
+
+            this.DialogResult = DialogResult.OK;
+        }
+
+        private void PropertyTextButtonBox_ListOfValueLoading(object sender, ListOfValueLoadingEventArgs e)
+        {
+            SearchListOfValueLoading(e).Wait();
         }
 
         private void TMTSearchDialog_Load(object sender, EventArgs e)
         {
             try
             {
+                var pro = new FontAwesome5.Properties(FontAwesome5.Type.Search)
+                {
+                    Size = 72,
+                    ForeColor = Color.FromArgb(66, 134, 244),
+                    Location = new Point(0, 5)
+                };
+                this.Image = pro.AsImage();
+
                 tableLayoutPanelMain.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
 
                 tableLayoutPanelMain.Controls.Clear();

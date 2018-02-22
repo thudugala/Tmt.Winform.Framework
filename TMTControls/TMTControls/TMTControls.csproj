@@ -37,6 +37,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fkosoft.FontAwesome5, Version=1.1.0.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\EasyBillApp\packages\Fkosoft.FontAwesome5.1.1.0.14\lib\net40\Fkosoft.FontAwesome5.dll</HintPath>
+    </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -71,6 +74,9 @@
     <Compile Include="DataSaveArg.cs" />
     <Compile Include="DataValidatingEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IconButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="IDataManager.cs" />
     <Compile Include="ListOfValueLoadedEventArgs.cs" />
     <Compile Include="ListOfValueLoadingEventArgs.cs" />
@@ -130,25 +136,25 @@
     <Compile Include="TMTDataGrid\TMTDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TMTDataGrid\TMTDataGridViewCalendarCell.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewCalendarColumn.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewCalendarEditingControl.cs">
+    <Compile Include="TMTDataGrid\CalendarColumn\TMTDataGridViewCalendarCell.cs" />
+    <Compile Include="TMTDataGrid\CalendarColumn\TMTDataGridViewCalendarColumn.cs" />
+    <Compile Include="TMTDataGrid\CalendarColumn\TMTDataGridViewCalendarEditingControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TMTDataGrid\TMTDataGridViewCheckBoxColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewComboBoxColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewImageColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewLinkColumn.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownCell.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownColumn.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewNumericUpDownEditingControl.cs">
+    <Compile Include="TMTDataGrid\NumericUpDownColumn\TMTDataGridViewNumericUpDownCell.cs" />
+    <Compile Include="TMTDataGrid\NumericUpDownColumn\TMTDataGridViewNumericUpDownColumn.cs" />
+    <Compile Include="TMTDataGrid\NumericUpDownColumn\TMTDataGridViewNumericUpDownEditingControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TMTDataGrid\TMTDataGridViewReadOnlyTextBoxColumn.cs" />
     <Compile Include="TMTDataGrid\TMTDataGridViewTextBoxColumn.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxCell.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxColumn.cs" />
-    <Compile Include="TMTDataGrid\TMTDataGridViewTextButtonBoxEditingControl.cs">
+    <Compile Include="TMTDataGrid\TextBoxButtonColumn\TMTDataGridViewTextButtonBoxCell.cs" />
+    <Compile Include="TMTDataGrid\TextBoxButtonColumn\TMTDataGridViewTextButtonBoxColumn.cs" />
+    <Compile Include="TMTDataGrid\TextBoxButtonColumn\TMTDataGridViewTextButtonBoxEditingControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="TMTDatabaseUI\TMTDateTimePicker.cs">
@@ -261,6 +267,9 @@
     <EmbeddedResource Include="BaseUserControl.resx">
       <DependentUpon>BaseUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="IconButton.resx">
+      <DependentUpon>IconButton.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -268,6 +277,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TMTChart.resx">
       <DependentUpon>TMTChart.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TMTDatabaseUI\TMTTextBox.resx">
+      <DependentUpon>TMTTextBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTDialogs\MessageDialog.resx">
       <DependentUpon>MessageDialog.cs</DependentUpon>
@@ -281,10 +293,10 @@
     <EmbeddedResource Include="TMTDataGrid\TMTDataGridView.resx">
       <DependentUpon>TMTDataGridView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTDataGrid\TMTDataGridViewCalendarEditingControl.resx">
+    <EmbeddedResource Include="TMTDataGrid\CalendarColumn\TMTDataGridViewCalendarEditingControl.resx">
       <DependentUpon>TMTDataGridViewCalendarEditingControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TMTDataGrid\TMTDataGridViewTextButtonBoxEditingControl.resx">
+    <EmbeddedResource Include="TMTDataGrid\TextBoxButtonColumn\TMTDataGridViewTextButtonBoxEditingControl.resx">
       <DependentUpon>TMTDataGridViewTextButtonBoxEditingControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TMTDateTimePickerForSearch.resx">
@@ -340,12 +352,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\question.png" />
-    <None Include="Resources\exclamation.png" />
-    <None Include="Resources\asterisk.png" />
-    <None Include="Resources\Information.png" />
-    <None Include="Resources\warning.png" />
-    <None Include="Resources\formSettings.png" />
+    <None Include="Resources\fontawesome-webfont.ttf" />
     <None Include="app.config" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -362,49 +369,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\back.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\searchTitle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\login.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\list.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\columns.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\reloadV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\removeV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\saveV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\searchV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\addV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\duplicateV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\columnsV2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\clean48.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="CountryCodes.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Resources\error.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

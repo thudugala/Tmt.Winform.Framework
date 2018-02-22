@@ -13,16 +13,16 @@ namespace TMTControls.TMTDataGrid
         }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey { get; set; }
+        public bool DataPropertyEditAllowed { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyIsFuntion { get; set; }
 
         [Category("Data"), DefaultValue(false)]
         public bool DataPropertyMandatory { get; set; }
 
         [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyEditAllowed { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyIsFuntion { get; set; }
+        public bool DataPropertyPrimaryKey { get; set; }
 
         [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType

@@ -12,16 +12,6 @@ namespace TMTControls
     {
         private IWindowsFormsEditorService editorService;
 
-        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-        {
-            if (context == null || context.Instance == null)
-            {
-                return base.GetEditStyle(context);
-            }
-
-            return UITypeEditorEditStyle.DropDown;
-        }
-
         public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
             if (context == null || context.Instance == null || provider == null)
@@ -59,6 +49,16 @@ namespace TMTControls
                 }
             }
             return value;
+        }
+
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            if (context == null || context.Instance == null)
+            {
+                return base.GetEditStyle(context);
+            }
+
+            return UITypeEditorEditStyle.DropDown;
         }
 
         private void Lb_Click(object sender, EventArgs e)

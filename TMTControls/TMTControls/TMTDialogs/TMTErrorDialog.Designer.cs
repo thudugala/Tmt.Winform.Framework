@@ -33,7 +33,7 @@
             this.textBoxMessage = new System.Windows.Forms.TextBox();
             this.linkLabelCopyToClipboard = new System.Windows.Forms.LinkLabel();
             this.panelMain.SuspendLayout();
-            this.SuspendLayout();           
+            this.SuspendLayout();
             // 
             // panelMain
             // 
@@ -66,12 +66,12 @@
             // 
             // TMTErrorDialog
             // 
-            this.Image = global::TMTControls.Properties.Resources.error;
             this.AcceptButton = this.tmtButtonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             resources.ApplyResources(this, "$this");
             this.Name = "TMTErrorDialog";
             this.ShowInTaskbar = false;
+            this.Load += new System.EventHandler(this.TMTErrorDialog_Load);
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.ResumeLayout(false);

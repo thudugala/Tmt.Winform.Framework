@@ -9,7 +9,7 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="DataGridViewBackgroundColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">White</Value>
+      <Value Profile="(Default)">WhiteSmoke</Value>
     </Setting>
     <Setting Name="DataGridViewDefaultCellBackColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">White</Value>

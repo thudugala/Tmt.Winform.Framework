@@ -33,14 +33,14 @@ namespace TMTControls.TMTDatabaseUI
         [Category("Data"), DefaultValue(false)]
         public bool MandatoryColumn { get; set; }
 
-        public string GetLableText()
-        {
-            return this.ConnectedLabel?.Text;
-        }
-
         public Type GetDbColumnSystemType()
         {
             return Type.GetType("System." + this.DbColumnType);
+        }
+
+        public string GetLableText()
+        {
+            return this.ConnectedLabel?.Text;
         }
     }
 }

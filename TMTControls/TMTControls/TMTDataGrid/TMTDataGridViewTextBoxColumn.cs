@@ -14,11 +14,17 @@ namespace TMTControls.TMTDataGrid
             this.TabStop = true;
         }
 
-        [Category("Design"), DefaultValue(MaskValidateType.None)]
-        public MaskValidateType ValidateType { get; set; }
+        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
+        public CharacterCasing CharacterCasing { get; set; }
 
         [Category("Design"), DefaultValue("lk")]
         public string CountryCode { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyPrimaryKey { get; set; }
 
         [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
@@ -33,17 +39,11 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey { get; set; }
-
         [Category("Behavior"), DefaultValue(true)]
         public bool TabStop { get; set; }
 
-        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
-        public CharacterCasing CharacterCasing { get; set; }
+        [Category("Design"), DefaultValue(MaskValidateType.None)]
+        public MaskValidateType ValidateType { get; set; }
 
         public override object Clone()
         {

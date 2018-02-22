@@ -66,6 +66,7 @@
             this.Controls.Add(this.textBoxMain);
             this.Controls.Add(this.buttonDorpDown);
             this.Name = "TMTDateTimePickerForSearch";
+            this.Load += new System.EventHandler(this.TMTDateTimePickerForSearch_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

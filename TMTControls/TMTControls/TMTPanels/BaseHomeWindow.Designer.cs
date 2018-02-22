@@ -31,11 +31,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseHomeWindow));
             this.SuspendLayout();
             // 
-            // TMTPanelHome
+            // BaseHomeWindow
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "TMTPanelHome";
+            this.Name = "BaseHomeWindow";
             this.Load += new System.EventHandler(this.TMTPanelHome_Load);
             this.ResumeLayout(false);
 

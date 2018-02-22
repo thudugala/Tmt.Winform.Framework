@@ -62,25 +62,43 @@ namespace TMTControls
             return GetChildDataGridViews(parentPanel);
         }
 
-        private static IReadOnlyList<TMTDataGridView> GetChildDataGridViews(Control parentControl)
+        public static string GetDatabaseOperator(string value)
         {
-            if (parentControl == null)
+            string operatorSymbol = "=";
+            if (string.IsNullOrWhiteSpace(value))
             {
-                throw new ArgumentNullException(nameof(parentControl));
+                return operatorSymbol;
             }
 
-            var childTableList = new List<TMTDataGridView>();
-
-            foreach (Control childControl in parentControl.Controls)
+            if (value.StartsWith("<>", StringComparison.Ordinal))
             {
-                if (childControl is TMTDataGridView tmtDataGridView)
-                {
-                    childTableList.Add(tmtDataGridView);
-                }
-                childTableList.AddRange(GetChildDataGridViews(childControl));
+                operatorSymbol = "!=";
             }
-
-            return childTableList;
+            else if (value.StartsWith("!=", StringComparison.Ordinal))
+            {
+                operatorSymbol = "!=";
+            }
+            else if (value.StartsWith("<=", StringComparison.Ordinal))
+            {
+                operatorSymbol = "<=";
+            }
+            else if (value.StartsWith(">=", StringComparison.Ordinal))
+            {
+                operatorSymbol = ">=";
+            }
+            else if (value.StartsWith("<", StringComparison.Ordinal))
+            {
+                operatorSymbol = "<";
+            }
+            else if (value.StartsWith(">", StringComparison.Ordinal))
+            {
+                operatorSymbol = ">";
+            }
+            else if (value.Contains("%"))
+            {
+                operatorSymbol = "LIKE";
+            }
+            return operatorSymbol;
         }
 
         public static DataTable GetDataSourceTableChanges(this DataTable table, string tableName)
@@ -153,51 +171,6 @@ namespace TMTControls
             return changedData;
         }
 
-        public static System.ServiceModel.EndpointAddress GetUrl()
-        {
-            if (Properties.Settings.Default.ServerURL.EndsWith("/", StringComparison.Ordinal) == false)
-            {
-                Properties.Settings.Default.ServerURL += "/";
-            }
-            return new System.ServiceModel.EndpointAddress(Properties.Settings.Default.ServerURL + Properties.Settings.Default.WebAPIName);
-        }
-
-        public static int? MaxValue(this DataRowCollection rows, string columnName)
-        {
-            if (rows == null)
-            {
-                throw new ArgumentNullException(nameof(rows));
-            }
-
-            return rows.Cast<DataRow>().Where(r => r[columnName] != null && r[columnName] != DBNull.Value)
-                                       .Select(r => r[columnName]).Cast<int>().Max();
-        }
-
-        public static string ValueString(this DataGridViewCell cell)
-        {
-            if (cell == null)
-            {
-                throw new ArgumentNullException(nameof(cell));
-            }
-            return cell.Value?.ToString();
-        }
-
-        public static decimal? ValueDecimal(this DataGridViewCell cell)
-        {
-            if (cell == null)
-            {
-                throw new ArgumentNullException(nameof(cell));
-            }
-            if (cell.Value != null)
-            {
-                if (decimal.TryParse(cell.Value.ToString(), out decimal decimalValue))
-                {
-                    return decimalValue;
-                }
-            }
-            return null;
-        }
-
         public static int GetIso8601WeekOfYear(DateTime time)
         {
             // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll
@@ -231,6 +204,15 @@ namespace TMTControls
             return rowList;
         }
 
+        public static System.ServiceModel.EndpointAddress GetUrl()
+        {
+            if (Properties.Settings.Default.ServerURL.EndsWith("/", StringComparison.Ordinal) == false)
+            {
+                Properties.Settings.Default.ServerURL += "/";
+            }
+            return new System.ServiceModel.EndpointAddress(Properties.Settings.Default.ServerURL + Properties.Settings.Default.WebAPIName);
+        }
+
         public static string IsSameRowTypeSelected(this DataGridView table, string uiColumnName)
         {
             string selectedType = string.Empty;
@@ -248,43 +230,61 @@ namespace TMTControls
             return selectedType;
         }
 
-        public static string GetDatabaseOperator(string value)
+        public static int? MaxValue(this DataRowCollection rows, string columnName)
         {
-            string operatorSymbol = "=";
-            if (string.IsNullOrWhiteSpace(value))
+            if (rows == null)
             {
-                return operatorSymbol;
+                throw new ArgumentNullException(nameof(rows));
             }
 
-            if (value.StartsWith("<>", StringComparison.Ordinal))
+            return rows.Cast<DataRow>().Where(r => r[columnName] != null && r[columnName] != DBNull.Value)
+                                       .Select(r => r[columnName]).Cast<int>().Max();
+        }
+
+        public static decimal? ValueDecimal(this DataGridViewCell cell)
+        {
+            if (cell == null)
             {
-                operatorSymbol = "!=";
+                throw new ArgumentNullException(nameof(cell));
             }
-            else if (value.StartsWith("!=", StringComparison.Ordinal))
+            if (cell.Value != null)
             {
-                operatorSymbol = "!=";
+                if (decimal.TryParse(cell.Value.ToString(), out decimal decimalValue))
+                {
+                    return decimalValue;
+                }
             }
-            else if (value.StartsWith("<=", StringComparison.Ordinal))
+            return null;
+        }
+
+        public static string ValueString(this DataGridViewCell cell)
+        {
+            if (cell == null)
             {
-                operatorSymbol = "<=";
+                throw new ArgumentNullException(nameof(cell));
             }
-            else if (value.StartsWith(">=", StringComparison.Ordinal))
+            return cell.Value?.ToString();
+        }
+
+        private static IReadOnlyList<TMTDataGridView> GetChildDataGridViews(Control parentControl)
+        {
+            if (parentControl == null)
             {
-                operatorSymbol = ">=";
+                throw new ArgumentNullException(nameof(parentControl));
             }
-            else if (value.StartsWith("<", StringComparison.Ordinal))
+
+            var childTableList = new List<TMTDataGridView>();
+
+            foreach (Control childControl in parentControl.Controls)
             {
-                operatorSymbol = "<";
+                if (childControl is TMTDataGridView tmtDataGridView)
+                {
+                    childTableList.Add(tmtDataGridView);
+                }
+                childTableList.AddRange(GetChildDataGridViews(childControl));
             }
-            else if (value.StartsWith(">", StringComparison.Ordinal))
-            {
-                operatorSymbol = ">";
-            }
-            else if (value.Contains("%"))
-            {
-                operatorSymbol = "LIKE";
-            }
-            return operatorSymbol;
+
+            return childTableList;
         }
     }
 }

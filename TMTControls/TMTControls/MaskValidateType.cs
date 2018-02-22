@@ -4,6 +4,8 @@
     {
         None,
         Email,
-        Phone
+        Phone,
+        Int,
+        Double
     }
 }

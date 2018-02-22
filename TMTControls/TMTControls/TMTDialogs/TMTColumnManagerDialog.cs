@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDialogs
@@ -9,6 +10,45 @@ namespace TMTControls.TMTDialogs
         public TMTColumnManagerDialog()
         {
             InitializeComponent();
+        }
+
+        public IList<ColumnData> GetColumnList()
+        {
+            var colList = new List<ColumnData>();
+
+            foreach (ListViewItem item in listViewHiddenColumns.Items)
+            {
+                colList.Add(new ColumnData(item.Text, false));
+            }
+            foreach (ListViewItem item in listViewShownColumns.Items)
+            {
+                colList.Add(new ColumnData(item.Text, true));
+            }
+
+            return colList.AsReadOnly();
+        }
+
+        public void SetColumnList(IReadOnlyCollection<ColumnData> colList)
+        {
+            if (colList == null)
+            {
+                throw new ArgumentNullException(nameof(colList));
+            }
+
+            listViewShownColumns.Items.Clear();
+            listViewHiddenColumns.Items.Clear();
+
+            foreach (ColumnData col in colList)
+            {
+                if (col.Visibility)
+                {
+                    listViewShownColumns.Items.Add(col.Name);
+                }
+                else
+                {
+                    listViewHiddenColumns.Items.Add(col.Name);
+                }
+            }
         }
 
         private void tmtButtonHideAll_Click(object sender, EventArgs e)
@@ -53,43 +93,14 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        public IList<ColumnData> GetColumnList()
+        private void TMTColumnManagerDialog_Load(object sender, EventArgs e)
         {
-            var colList = new List<ColumnData>();
-
-            foreach (ListViewItem item in listViewHiddenColumns.Items)
+            var pro = new FontAwesome5.Properties(FontAwesome5.Type.Columns)
             {
-                colList.Add(new ColumnData(item.Text, false));
-            }
-            foreach (ListViewItem item in listViewShownColumns.Items)
-            {
-                colList.Add(new ColumnData(item.Text, true));
-            }
-
-            return colList.AsReadOnly();
-        }
-
-        public void SetColumnList(IReadOnlyCollection<ColumnData> colList)
-        {
-            if (colList == null)
-            {
-                throw new ArgumentNullException(nameof(colList));
-            }
-
-            listViewShownColumns.Items.Clear();
-            listViewHiddenColumns.Items.Clear();
-
-            foreach (ColumnData col in colList)
-            {
-                if (col.Visibility)
-                {
-                    listViewShownColumns.Items.Add(col.Name);
-                }
-                else
-                {
-                    listViewHiddenColumns.Items.Add(col.Name);
-                }
-            }
+                Size = 128,
+                ForeColor = Color.DarkSeaGreen
+            };
+            this.Image = pro.AsImage();
         }
     }
 }

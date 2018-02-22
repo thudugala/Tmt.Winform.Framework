@@ -11,6 +11,13 @@ namespace TMTControls
             InitializeComponent();
         }
 
+        [Category("Appearance")]
+        public Image Image
+        {
+            get => labelHeader.Image;
+            set => labelHeader.Image = value;
+        }
+
         public override string Text
         {
             get => base.Text;
@@ -19,13 +26,6 @@ namespace TMTControls
                 base.Text = value;
                 labelHeader.Text = value;
             }
-        }
-
-        [Category("Appearance")]
-        public Image Image
-        {
-            get => labelHeader.Image;
-            set => labelHeader.Image = value;
         }
     }
 }

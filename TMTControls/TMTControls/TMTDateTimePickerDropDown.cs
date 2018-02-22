@@ -6,15 +6,15 @@ namespace TMTControls
 {
     internal partial class TMTDateTimePickerDropDown : Form
     {
-        [Category("TMT")]
-        public event DateRangeEventHandler DateSelected;
-
         internal TMTDateTimePickerDropDown()
         {
             InitializeComponent();
 
             this.Capture = true; //allows mouse events to be triggered no matter where the mouse clicks
         }
+
+        [Category("TMT")]
+        public event DateRangeEventHandler DateSelected;
 
         internal void SetLocation(Point startLocation)
         {

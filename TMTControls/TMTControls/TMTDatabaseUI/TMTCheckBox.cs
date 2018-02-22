@@ -26,23 +26,11 @@ namespace TMTControls.TMTDatabaseUI
             this.ResumeLayout(false);
         }
 
-        private void TMTCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this._DbValueUpdateLooked == false)
-            {
-                this.DbValue = (this.Checked) ? this.TrueValue : this.FalseValue;
-            }
-        }
+        [Category("Data"), DefaultValue("")]
+        public string DbColumnName { get; set; }
 
-        public string GetLableText()
-        {
-            return this.Text;
-        }
-
-        public Type GetDbColumnSystemType()
-        {
-            return Type.GetType("System." + this.DbColumnType);
-        }
+        [Category("Data"), DefaultValue(TypeCode.String)]
+        public TypeCode DbColumnType { get; set; }
 
         [Browsable(false), DefaultValue("FALSE")]
         public string DbValue
@@ -59,25 +47,37 @@ namespace TMTControls.TMTDatabaseUI
             }
         }
 
-        [Category("Data"), DefaultValue("")]
-        public string DbColumnName { get; set; }
-
-        [Category("Data"), DefaultValue(TypeCode.String)]
-        public TypeCode DbColumnType { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool MandatoryColumn { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool KeyColumn { get; set; }
-
         [Category("Data"), DefaultValue("FALSE")]
         public string FalseValue { get; set; }
 
         [Category("Data"), DefaultValue("FALSE")]
         public string IndeterminateValue { get; set; }
 
+        [Category("Data"), DefaultValue(false)]
+        public bool KeyColumn { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool MandatoryColumn { get; set; }
+
         [Category("Data"), DefaultValue("TRUE")]
         public string TrueValue { get; set; }
+
+        public Type GetDbColumnSystemType()
+        {
+            return Type.GetType("System." + this.DbColumnType);
+        }
+
+        public string GetLableText()
+        {
+            return this.Text;
+        }
+
+        private void TMTCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this._DbValueUpdateLooked == false)
+            {
+                this.DbValue = (this.Checked) ? this.TrueValue : this.FalseValue;
+            }
+        }
     }
 }

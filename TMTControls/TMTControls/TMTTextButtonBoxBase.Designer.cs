@@ -69,6 +69,7 @@
             this.Controls.Add(this.InnerTextBox);
             this.Controls.Add(this.buttonOK);
             this.Name = "TMTTextButtonBoxBase";
+            this.Load += new System.EventHandler(this.TMTTextButtonBoxBase_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

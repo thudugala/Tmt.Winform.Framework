@@ -13,16 +13,22 @@ using TMTControls.TMTDialogs;
 
 namespace TMTControls
 {
+    public enum TextInputType
+    {
+        Text,
+        Number,
+        NumberWithSearch
+    }
+
     [ToolboxBitmap(typeof(UserControl))]
     [DefaultEvent("TextChanged")]
     public partial class TMTTextButtonBoxBase : UserControl
     {
-        private TMTListOfValueDialog _lovDialog;
-        private HashSet<char> allowedKeySetForSearch = new HashSet<char>() { '.', '<', '=', '>', '!', ';' };
-        private HashSet<char> allowedKeySet = new HashSet<char>() { '.' };
         private ToolStripProgressBar _controlProgressBar;
-
         private bool _DoValidate = true;
+        private TMTListOfValueDialog _lovDialog;
+        private HashSet<char> allowedKeySet = new HashSet<char>() { '.' };
+        private HashSet<char> allowedKeySetForSearch = new HashSet<char>() { '.', '<', '=', '>', '!', ';' };
 
         public TMTTextButtonBoxBase()
         {
@@ -35,6 +41,74 @@ namespace TMTControls
 
             this.ResumeLayout(false);
         }
+
+        public override Color BackColor
+        {
+            get
+            {
+                return InnerTextBox.BackColor;
+            }
+            set
+            {
+                InnerTextBox.BackColor = value;
+            }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int ButtonHeight
+        {
+            get
+            {
+                return buttonOK.Height;
+            }
+            set
+            {
+                buttonOK.Height = value;
+            }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public int ButtonWidth
+        {
+            get
+            {
+                return buttonOK.Width;
+            }
+            set
+            {
+                buttonOK.Width = value;
+            }
+        }
+
+        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
+        public CharacterCasing CharacterCasing
+        {
+            get
+            {
+                return this.InnerTextBox.CharacterCasing;
+            }
+            set
+            {
+                this.InnerTextBox.CharacterCasing = value;
+            }
+        }
+
+        public override Color ForeColor
+        {
+            get
+            {
+                return InnerTextBox.ForeColor;
+            }
+            set
+            {
+                InnerTextBox.ForeColor = value;
+            }
+        }
+
+        [Category("Design"), DefaultValue(TextInputType.Text)]
+        public TextInputType KeyInputType { get; set; }
 
         [Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
         [Localizable(true)]
@@ -54,30 +128,6 @@ namespace TMTControls
             }
         }
 
-        public override Color BackColor
-        {
-            get
-            {
-                return InnerTextBox.BackColor;
-            }
-            set
-            {
-                InnerTextBox.BackColor = value;
-            }
-        }
-
-        public override Color ForeColor
-        {
-            get
-            {
-                return InnerTextBox.ForeColor;
-            }
-            set
-            {
-                InnerTextBox.ForeColor = value;
-            }
-        }
-
         public HorizontalAlignment TextAlign
         {
             get
@@ -90,205 +140,39 @@ namespace TMTControls
             }
         }
 
-        [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
-        public CharacterCasing CharacterCasing
-        {
-            get
-            {
-                return this.InnerTextBox.CharacterCasing;
-            }
-            set
-            {
-                this.InnerTextBox.CharacterCasing = value;
-            }
-        }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int ButtonWidth
-        {
-            get
-            {
-                return buttonOK.Width;
-            }
-            set
-            {
-                buttonOK.Width = value;
-            }
-        }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public int ButtonHeight
-        {
-            get
-            {
-                return buttonOK.Height;
-            }
-            set
-            {
-                buttonOK.Height = value;
-            }
-        }
-
-        [Category("Design"), DefaultValue(TextInputType.Text)]
-        public TextInputType KeyInputType { get; set; }
-
-        private void SetProgressBarVisibile(bool visibility)
-        {
-            if (this._controlProgressBar == null)
-            {
-                this._controlProgressBar = this.FindParentBaseUserControl()?.progressBarBase;
-            }
-
-            if (this._controlProgressBar != null)
-            {
-                this._controlProgressBar.Visible = visibility;
-            }
-        }
-
         public void ClearUndo()
         {
             InnerTextBox.ClearUndo();
         }
 
-        private async void Button_Click(object sender, EventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            if (this is TMTDataGridViewTextButtonBoxEditingControl columEditControl)
+            try
             {
-                await this.ColumnListOfValue(columEditControl);
+                if (keyData == Keys.F8)
+                {
+                    buttonOK.PerformClick();
+                }
             }
-            else if (this is TMTTextButtonBox tmtTextButton)
-            {
-                await this.FieldListOfValue(tmtTextButton);
-            }
-            if (InnerTextBox.Focused == false)
-            {
-                InnerTextBox.Focus();
-            }
+            catch { }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        private async void InnerTextBox_Validated(object sender, EventArgs e)
+        private async void Button_Click(object sender, EventArgs e)
         {
-            if (this._DoValidate)
+            try
             {
-                this.OnValidated(e);
-
                 if (this is TMTDataGridViewTextButtonBoxEditingControl columEditControl)
                 {
-                    await this.ColumnValidate(columEditControl);
+                    await this.ColumnListOfValue(columEditControl);
                 }
                 else if (this is TMTTextButtonBox tmtTextButton)
                 {
-                    await this.FieldValidate(tmtTextButton);
+                    await this.FieldListOfValue(tmtTextButton);
                 }
-            }
-        }
-
-        private async Task FieldListOfValue(TMTTextButtonBox tmtTextButton)
-        {
-            try
-            {
-                this._DoValidate = false;
-
-                if (this._lovDialog == null)
+                if (InnerTextBox.Focused == false)
                 {
-                    this._lovDialog = new TMTListOfValueDialog();
-                }
-                if (this._lovDialog.Visible)
-                {
-                    return;
-                }
-                this.SetProgressBarVisibile(true);
-
-                var lovEvent = new ListOfValueLoadingEventArgs()
-                {
-                    IsValidate = false,
-                    PrimaryColumnName = tmtTextButton.DbColumnName,
-                    PrimaryColumnType = tmtTextButton.GetDbColumnSystemType(),
-                    PrimaryColumnValue = tmtTextButton.Text,
-                    ListOfValueHeaderText = tmtTextButton.ConnectedLabel.Text,
-                    ListOfValueViewName = tmtTextButton.ListOfValueViewName
-                };
-
-                await Task.Run(() => tmtTextButton.GetListOfValueSelectedRow(lovEvent));
-
-                this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
-                this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
-
-                if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    var lovLoaded = new ListOfValueLoadedEventArgs(this._lovDialog.SelectedRow)
-                    {
-                        IsValidate = lovEvent.IsValidate,
-                        PrimaryColumnName = lovEvent.PrimaryColumnName,
-                        ListOfValueViewName = lovEvent.ListOfValueViewName
-                    };
-
-                    tmtTextButton.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
-                    tmtTextButton.ListOfValueText = tmtTextButton.Text;
-
-                    tmtTextButton.CausesValidation = true;
-                    tmtTextButton.Focus();
-
-                    tmtTextButton.SetListOfValueSelectedRow(lovLoaded);
-                }
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
-            }
-            finally
-            {
-                this.SetProgressBarVisibile(false);
-                this._DoValidate = true;
-            }
-        }
-
-        private async Task FieldValidate(TMTTextButtonBox tmtTextButton)
-        {
-            try
-            {
-                if (tmtTextButton.ListOfValueText != tmtTextButton.Text)
-                {
-                    var lovEvent = new ListOfValueLoadingEventArgs()
-                    {
-                        IsValidate = true,
-                        PrimaryColumnName = tmtTextButton.DbColumnName,
-                        PrimaryColumnType = tmtTextButton.GetDbColumnSystemType(),
-                        PrimaryColumnValue = tmtTextButton.Text,
-                        ListOfValueViewName = tmtTextButton.ListOfValueViewName
-                    };
-
-                    await Task.Run(() => tmtTextButton.GetListOfValueSelectedRow(lovEvent));
-
-                    bool dataFound = (lovEvent.ListOfValueDataTable != null && lovEvent.ListOfValueDataTable.Rows.Count == 1);
-                    if (dataFound)
-                    {
-                        tmtTextButton.ListOfValueText = tmtTextButton.Text;
-
-                        DataRow selectedDataRow = lovEvent.ListOfValueDataTable.Rows[0];
-                        var selectedRow = new Dictionary<string, object>();
-                        foreach (DataColumn col in lovEvent.ListOfValueDataTable.Columns)
-                        {
-                            selectedRow.Add(col.ColumnName, selectedDataRow[col]);
-                        }
-
-                        var lovLoaded = new ListOfValueLoadedEventArgs(selectedRow)
-                        {
-                            IsValidate = lovEvent.IsValidate,
-                            PrimaryColumnName = lovEvent.PrimaryColumnName,
-                            ListOfValueViewName = lovEvent.ListOfValueViewName
-                        };
-
-                        tmtTextButton.SetListOfValueSelectedRow(lovLoaded);
-                    }
-
-                    this.BackColor = (dataFound) ? Color.Empty : Color.Red;
-                }
-                else
-                {
-                    this.BackColor = Color.Empty;
+                    InnerTextBox.Focus();
                 }
             }
             catch (Exception ex)
@@ -330,7 +214,7 @@ namespace TMTControls
                 lovEvent.PrimaryColumnValue = gridview.CurrentCell.ValueString();
                 lovEvent.Row = gridview.Rows[lovEvent.RowIndex];
 
-                await Task.Run(() => gridview.GetListOfValueSelectedRow(lovEvent));
+                await Task.Run(async () => await gridview.GetListOfValueSelectedRow(lovEvent));
 
                 this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
                 this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
@@ -403,7 +287,7 @@ namespace TMTControls
                     lovEvent.PrimaryColumnValue = gridview.CurrentCell.ValueString();
                     lovEvent.Row = gridview.Rows[lovEvent.RowIndex];
 
-                    await Task.Run(() => gridview.GetListOfValueSelectedRow(lovEvent));
+                    await Task.Run(async () => await gridview.GetListOfValueSelectedRow(lovEvent));
 
                     if (lovEvent.ListOfValueDataTable != null)
                     {
@@ -442,9 +326,116 @@ namespace TMTControls
             }
         }
 
-        private void InnerTextBox_TextChanged(object sender, EventArgs e)
+        private async Task FieldListOfValue(TMTTextButtonBox tmtTextButton)
         {
-            this.OnTextChanged(e);
+            try
+            {
+                this._DoValidate = false;
+
+                if (this._lovDialog == null)
+                {
+                    this._lovDialog = new TMTListOfValueDialog();
+                }
+                if (this._lovDialog.Visible)
+                {
+                    return;
+                }
+                this.SetProgressBarVisibile(true);
+
+                var lovEvent = new ListOfValueLoadingEventArgs()
+                {
+                    IsValidate = false,
+                    PrimaryColumnName = tmtTextButton.DbColumnName,
+                    PrimaryColumnType = tmtTextButton.GetDbColumnSystemType(),
+                    PrimaryColumnValue = tmtTextButton.Text,
+                    ListOfValueHeaderText = tmtTextButton.ConnectedLabel.Text,
+                    ListOfValueViewName = tmtTextButton.ListOfValueViewName
+                };
+
+                await Task.Run(async () => await tmtTextButton.GetListOfValueSelectedRow(lovEvent));
+
+                this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
+                this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
+
+                if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    var lovLoaded = new ListOfValueLoadedEventArgs(this._lovDialog.SelectedRow)
+                    {
+                        IsValidate = lovEvent.IsValidate,
+                        PrimaryColumnName = lovEvent.PrimaryColumnName,
+                        ListOfValueViewName = lovEvent.ListOfValueViewName
+                    };
+
+                    tmtTextButton.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
+                    tmtTextButton.ListOfValueText = tmtTextButton.Text;
+
+                    tmtTextButton.CausesValidation = true;
+                    tmtTextButton.Focus();
+
+                    tmtTextButton.SetListOfValueSelectedRow(lovLoaded);
+                }
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
+            }
+            finally
+            {
+                this.SetProgressBarVisibile(false);
+                this._DoValidate = true;
+            }
+        }
+
+        private async Task FieldValidate(TMTTextButtonBox tmtTextButton)
+        {
+            try
+            {
+                if (tmtTextButton.ListOfValueText != tmtTextButton.Text)
+                {
+                    var lovEvent = new ListOfValueLoadingEventArgs()
+                    {
+                        IsValidate = true,
+                        PrimaryColumnName = tmtTextButton.DbColumnName,
+                        PrimaryColumnType = tmtTextButton.GetDbColumnSystemType(),
+                        PrimaryColumnValue = tmtTextButton.Text,
+                        ListOfValueViewName = tmtTextButton.ListOfValueViewName
+                    };
+
+                    await Task.Run(async () => await tmtTextButton.GetListOfValueSelectedRow(lovEvent));
+
+                    bool dataFound = (lovEvent.ListOfValueDataTable != null && lovEvent.ListOfValueDataTable.Rows.Count == 1);
+                    if (dataFound)
+                    {
+                        tmtTextButton.ListOfValueText = tmtTextButton.Text;
+
+                        DataRow selectedDataRow = lovEvent.ListOfValueDataTable.Rows[0];
+                        var selectedRow = new Dictionary<string, object>();
+                        foreach (DataColumn col in lovEvent.ListOfValueDataTable.Columns)
+                        {
+                            selectedRow.Add(col.ColumnName, selectedDataRow[col]);
+                        }
+
+                        var lovLoaded = new ListOfValueLoadedEventArgs(selectedRow)
+                        {
+                            IsValidate = lovEvent.IsValidate,
+                            PrimaryColumnName = lovEvent.PrimaryColumnName,
+                            ListOfValueViewName = lovEvent.ListOfValueViewName
+                        };
+
+                        tmtTextButton.SetListOfValueSelectedRow(lovLoaded);
+                    }
+
+                    this.BackColor = (dataFound) ? Color.Empty : Color.Red;
+                }
+                else
+                {
+                    this.BackColor = Color.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.MSG_LOV_SetError);
+            }
         }
 
         private void InnerTextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -469,24 +460,54 @@ namespace TMTControls
             }
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        private void InnerTextBox_TextChanged(object sender, EventArgs e)
+        {
+            this.OnTextChanged(e);
+        }
+
+        private async void InnerTextBox_Validated(object sender, EventArgs e)
+        {
+            if (this._DoValidate)
+            {
+                this.OnValidated(e);
+
+                if (this is TMTDataGridViewTextButtonBoxEditingControl columEditControl)
+                {
+                    await this.ColumnValidate(columEditControl);
+                }
+                else if (this is TMTTextButtonBox tmtTextButton)
+                {
+                    await this.FieldValidate(tmtTextButton);
+                }
+            }
+        }
+
+        private void SetProgressBarVisibile(bool visibility)
+        {
+            if (this._controlProgressBar == null)
+            {
+                this._controlProgressBar = this.FindParentBaseUserControl()?.progressBarBase;
+            }
+
+            if (this._controlProgressBar != null)
+            {
+                this._controlProgressBar.Visible = visibility;
+            }
+        }
+
+        private void TMTTextButtonBoxBase_Load(object sender, EventArgs e)
         {
             try
             {
-                if (keyData == Keys.F8)
+                var pro = new FontAwesome5.Properties(FontAwesome5.Type.Bars)
                 {
-                    buttonOK.PerformClick();
-                }
+                    Size = 24,
+                    ForeColor = Color.FromArgb(95, 117, 142)
+                };
+                buttonOK.Image = pro.AsImage();
+                buttonOK.Text = string.Empty;
             }
             catch { }
-            return base.ProcessCmdKey(ref msg, keyData);
         }
-    }
-
-    public enum TextInputType
-    {
-        Text,
-        Number,
-        NumberWithSearch
     }
 }

@@ -37,7 +37,7 @@
             // 
             this.tmtDataGridViewTable.AllowUserToOrderColumns = true;
             this.tmtDataGridViewTable.AutoGenerateColumns = false;
-            this.tmtDataGridViewTable.BackgroundColor = System.Drawing.Color.White;
+            this.tmtDataGridViewTable.BackgroundColor = System.Drawing.Color.WhiteSmoke;
             this.tmtDataGridViewTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.White;

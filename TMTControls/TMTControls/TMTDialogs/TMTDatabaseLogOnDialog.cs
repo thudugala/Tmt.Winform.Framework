@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDialogs
@@ -8,11 +9,6 @@ namespace TMTControls.TMTDialogs
         public TMTDatabaseLogOnDialog()
         {
             InitializeComponent();
-        }
-
-        private void TMTDatabaseLoginDialog_Load(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.None;
         }
 
         private void ButtonLogin_Click(object sender, EventArgs e)
@@ -56,6 +52,19 @@ namespace TMTControls.TMTDialogs
             Properties.Settings.Default.Save();
 
             this.DialogResult = DialogResult.OK;
+        }
+
+        private void TMTDatabaseLoginDialog_Load(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.None;
+
+            var pro = new FontAwesome5.Properties(FontAwesome5.Type.SignIn)
+            {
+                Location = new Point(0, 5),
+                Size = 96,
+                ForeColor = Color.DarkBlue
+            };
+            labelHeader.Image = pro.AsImage();
         }
     }
 }

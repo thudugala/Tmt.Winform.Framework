@@ -57,7 +57,7 @@
             this.buttonLogin.FlatAppearance.BorderSize = 0;
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.UseVisualStyleBackColor = false;
-            this.buttonLogin.Click += new System.EventHandler(this.buttonLogin_Click);
+            this.buttonLogin.Click += new System.EventHandler(this.ButtonLogin_Click);
             // 
             // textBoxUserId
             // 
@@ -141,7 +141,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             resources.ApplyResources(this, "$this");
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Image = global::TMTControls.Properties.Resources.login;
             this.Name = "TmtWebApiLogOnDialog";
             this.ShowIcon = true;
             this.ShowInTaskbar = false;

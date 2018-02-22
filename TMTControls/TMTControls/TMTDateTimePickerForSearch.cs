@@ -113,5 +113,20 @@ namespace TMTControls
                 TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_CloseCalendar);
             }
         }
+
+        private void TMTDateTimePickerForSearch_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                var pro = new FontAwesome5.Properties(FontAwesome5.Type.CaretDown)
+                {
+                    Size = 24,
+                    ForeColor = Color.FromArgb(95, 117, 142)
+                };
+                buttonDorpDown.Image = pro.AsImage();
+                buttonDorpDown.Text = string.Empty;
+            }
+            catch { }
+        }
     }
 }

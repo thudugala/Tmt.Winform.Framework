@@ -63,8 +63,7 @@
             // 
             this.labelHeader.BackColor = System.Drawing.Color.CornflowerBlue;
             resources.ApplyResources(this.labelHeader, "labelHeader");
-            this.labelHeader.ForeColor = System.Drawing.Color.White;
-            this.labelHeader.Image = global::TMTControls.Properties.Resources.login;
+            this.labelHeader.ForeColor = System.Drawing.Color.White;            
             this.labelHeader.Name = "labelHeader";
             // 
             // label1

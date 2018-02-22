@@ -8,6 +8,11 @@ namespace TMTControls.TMTDatabaseUI
     [ToolboxBitmap(typeof(ComboBox))]
     public class TMTComboBox : ComboBox, ITMTDatabaseUIControl
     {
+        private static int WM_PAINT = 0x000F;
+
+        //private Color _borderColor = Color.Black;
+        private Border3DStyle _borderStyle = Border3DStyle.Flat;
+
         public TMTComboBox()
         {
             this.SuspendLayout();
@@ -16,6 +21,17 @@ namespace TMTControls.TMTDatabaseUI
             this.FlatStyle = FlatStyle.Flat;
 
             this.ResumeLayout(false);
+        }
+
+        [Category("Appearance")]
+        public Border3DStyle BorderStyle
+        {
+            get { return _borderStyle; }
+            set
+            {
+                _borderStyle = value;
+                Invalidate();
+            }
         }
 
         [Category("Design")]
@@ -33,10 +49,15 @@ namespace TMTControls.TMTDatabaseUI
         [Category("Data"), DefaultValue(false)]
         public bool MandatoryColumn { get; set; }
 
-        //private Color _borderColor = Color.Black;
-        private Border3DStyle _borderStyle = Border3DStyle.Flat;
+        public Type GetDbColumnSystemType()
+        {
+            return Type.GetType("System." + this.DbColumnType);
+        }
 
-        private static int WM_PAINT = 0x000F;
+        public string GetLableText()
+        {
+            return this.ConnectedLabel?.Text;
+        }
 
         protected override void WndProc(ref Message m)
         {
@@ -47,27 +68,6 @@ namespace TMTControls.TMTDatabaseUI
                 Graphics g = Graphics.FromHwnd(Handle);
                 Rectangle bounds = new Rectangle(0, 0, Width, Height);
                 ControlPaint.DrawBorder3D(g, bounds, _borderStyle);
-            }
-        }
-
-        public string GetLableText()
-        {
-            return this.ConnectedLabel?.Text;
-        }
-
-        public Type GetDbColumnSystemType()
-        {
-            return Type.GetType("System." + this.DbColumnType);
-        }
-
-        [Category("Appearance")]
-        public Border3DStyle BorderStyle
-        {
-            get { return _borderStyle; }
-            set
-            {
-                _borderStyle = value;
-                Invalidate();
             }
         }
     }

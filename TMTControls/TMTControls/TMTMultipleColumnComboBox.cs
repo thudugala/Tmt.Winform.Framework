@@ -22,6 +22,49 @@ namespace TMTControls
             this.ResumeLayout(false);
         }
 
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public new object DataSource
+        {
+            get
+            {
+                return base.DataSource;
+            }
+            set
+            {
+                base.DataSource = value;
+            }
+        }
+
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public DataTable DataSourceTable
+        {
+            get
+            {
+                return this.DataSource as DataTable;
+            }
+            set
+            {
+                this.DataSource = value;
+            }
+        }
+
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public new string DisplayMember
+        {
+            get
+            {
+                return base.DisplayMember;
+            }
+            set
+            {
+                base.DisplayMember = value;
+            }
+        }
+
+        [Category("Data"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public BindingList<string> DisplayMemberListToDisplay { get; }
+
         [DefaultValue(DrawMode.OwnerDrawFixed)]
         [RefreshProperties(RefreshProperties.Repaint)]
         public new DrawMode DrawMode
@@ -50,6 +93,18 @@ namespace TMTControls
             }
         }
 
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public new ComboBox.ObjectCollection Items
+        {
+            get
+            {
+                return base.Items;
+            }
+        }
+
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public object PreviousSelectedValue { get; set; }
+
         [DefaultValue(false)]
         [DispId(-516)]
         public new bool TabStop
@@ -64,63 +119,22 @@ namespace TMTControls
             }
         }
 
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new object DataSource
-        {
-            get
-            {
-                return base.DataSource;
-            }
-            set
-            {
-                base.DataSource = value;
-            }
-        }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public DataTable DataSourceTable
-        {
-            get
-            {
-                return this.DataSource as DataTable;
-            }
-            set
-            {
-                this.DataSource = value;
-            }
-        }
-
-        [Category("Data"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public BindingList<string> DisplayMemberListToDisplay { get; }
-
         [Category("Data"), DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public BindingList<string> ValueMemberList { get; }
 
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new ComboBox.ObjectCollection Items
+        private void InitializeComponent()
         {
-            get
-            {
-                return base.Items;
-            }
+            this.SuspendLayout();
+            //
+            // TMTMultipleColumnComboBox
+            //
+            this.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.TabStop = false;
+            this.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.TMTMultipleColumnComboBox_DrawItem);
+            this.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.TMTMultipleColumnComboBox_Format);
+            this.ResumeLayout(false);
         }
-
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public new string DisplayMember
-        {
-            get
-            {
-                return base.DisplayMember;
-            }
-            set
-            {
-                base.DisplayMember = value;
-            }
-        }
-
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public object PreviousSelectedValue { get; set; }
 
         private void TMTMultipleColumnComboBox_DrawItem(object sender, DrawItemEventArgs e)
         {
@@ -176,20 +190,6 @@ namespace TMTControls
 
                 e.Value = string.Join(" | ", cellValueList);
             }
-        }
-
-        private void InitializeComponent()
-        {
-            this.SuspendLayout();
-            //
-            // TMTMultipleColumnComboBox
-            //
-            this.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.TabStop = false;
-            this.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.TMTMultipleColumnComboBox_DrawItem);
-            this.Format += new System.Windows.Forms.ListControlConvertEventHandler(this.TMTMultipleColumnComboBox_Format);
-            this.ResumeLayout(false);
         }
     }
 }

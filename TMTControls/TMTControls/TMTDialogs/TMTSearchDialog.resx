@@ -117,34 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="labelHeader.Size" type="System.Drawing.Size, System.Drawing">
-    <value>782, 60</value>
-  </data>
-  <data name="labelHeader.Text" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.Name" xml:space="preserve">
-    <value>labelHeader</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="checkBoxTop100.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="checkBoxTop100.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 11</value>
   </data>
   <data name="checkBoxTop100.Size" type="System.Drawing.Size, System.Drawing">
-    <value>161, 24</value>
+    <value>139, 21</value>
   </data>
   <data name="checkBoxTop100.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -217,7 +199,7 @@
     <value>1</value>
   </data>
   <data name="tableLayoutPanelMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>758, 436</value>
+    <value>758, 432</value>
   </data>
   <data name="tableLayoutPanelMain.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -277,7 +259,7 @@
     <value>179, 11</value>
   </data>
   <data name="checkBoxCaseSensitive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>122, 24</value>
+    <value>102, 21</value>
   </data>
   <data name="checkBoxCaseSensitive.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -300,14 +282,11 @@
   <data name="&gt;&gt;checkBoxCaseSensitive.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="panelMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 60</value>
-  </data>
   <data name="panelMain.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>5, 5, 5, 5</value>
   </data>
   <data name="panelMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>782, 493</value>
+    <value>782, 489</value>
   </data>
   <data name="&gt;&gt;panelMain.Name" xml:space="preserve">
     <value>panelMain</value>

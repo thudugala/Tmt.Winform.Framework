@@ -13,6 +13,12 @@ namespace TMTControls.TMTDataGrid
             this.TabStop = true;
         }
 
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyPrimaryKey { get; set; }
+
         [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
         public TypeCode DataPropertyType
         {
@@ -25,12 +31,6 @@ namespace TMTControls.TMTDataGrid
                 base.ValueType = Type.GetType("System." + value);
             }
         }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey { get; set; }
 
         [Category("Behavior"), DefaultValue(true)]
         public bool TabStop { get; set; }

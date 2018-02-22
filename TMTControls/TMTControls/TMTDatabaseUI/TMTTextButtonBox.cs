@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDatabaseUI
@@ -53,7 +54,17 @@ namespace TMTControls.TMTDatabaseUI
         [Category("Design"), DefaultValue(MaskValidateType.None)]
         public MaskValidateType ValidateType { get; set; }
 
-        public void GetListOfValueSelectedRow(ListOfValueLoadingEventArgs e)
+        public Type GetDbColumnSystemType()
+        {
+            return Type.GetType("System." + this.DbColumnType);
+        }
+
+        public string GetLableText()
+        {
+            return this.ConnectedLabel?.Text;
+        }
+
+        public async Task GetListOfValueSelectedRow(ListOfValueLoadingEventArgs e)
         {
             if (e == null)
             {
@@ -67,7 +78,7 @@ namespace TMTControls.TMTDatabaseUI
                 if (basewindow != null)
                 {
                     basewindow.FillSearchConditionTable(e);
-                    basewindow.DataPopulateAllListOfValueRecords(e);
+                    await basewindow.DataPopulateAllListOfValueRecords(e);
                 }
             }
         }
@@ -113,16 +124,6 @@ namespace TMTControls.TMTDatabaseUI
             {
                 this.BackColor = Color.Red;
             }
-        }
-
-        public string GetLableText()
-        {
-            return this.ConnectedLabel?.Text;
-        }
-
-        public Type GetDbColumnSystemType()
-        {
-            return Type.GetType("System." + this.DbColumnType);
         }
     }
 }

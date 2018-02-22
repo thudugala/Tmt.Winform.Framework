@@ -17,12 +17,10 @@ namespace TMTControls
 
         public bool IsValidate { get; set; }
 
+        public string ListOfValueViewName { get; set; }
         public string PrimaryColumnName { get; set; }
 
         public int RowIndex { get; set; }
-
-        public string ListOfValueViewName { get; set; }
-
         public Dictionary<string, object> SelectedRow { get; }
     }
 }

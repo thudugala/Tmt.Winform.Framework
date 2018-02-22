@@ -6,12 +6,19 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using TMTControls.TMTDialogs;
 
 namespace TMTControls.TMTDataGrid
 {
+    public enum NewRowPossition
+    {
+        After = 0,
+        Before = 1
+    }
+
     [ToolboxBitmap(typeof(DataGridView))]
     [Designer(typeof(ControlDesigner)), DefaultEvent("LovLoading")]
     public class TMTDataGridView : DataGridView
@@ -36,6 +43,61 @@ namespace TMTControls.TMTDataGrid
         [Category("TMT Data")]
         public event EventHandler<ListOfValueLoadingEventArgs> ListOfValueLoading;
 
+        [Category("Behavior"), DefaultValue(NewRowPossition.After)]
+        public NewRowPossition AddNewRowPossition { get; set; }
+
+        [DefaultValue(false)]
+        public new bool AllowUserToAddRows
+        {
+            get
+            {
+                return base.AllowUserToAddRows;
+            }
+            set
+            {
+                base.AllowUserToAddRows = value;
+            }
+        }
+
+        [DefaultValue(false)]
+        public new bool AllowUserToDeleteRows
+        {
+            get
+            {
+                return base.AllowUserToDeleteRows;
+            }
+            set
+            {
+                base.AllowUserToDeleteRows = value;
+            }
+        }
+
+        [DefaultValue(false)]
+        public new bool AllowUserToOrderColumns
+        {
+            get
+            {
+                return base.AllowUserToOrderColumns;
+            }
+            set
+            {
+                base.AllowUserToOrderColumns = value;
+            }
+        }
+
+        [DefaultValue(BorderStyle.None)]
+        public new BorderStyle BorderStyle
+        {
+            get
+            {
+                return base.BorderStyle;
+            }
+            set
+            {
+                base.BorderStyle = value;
+            }
+        }
+
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DataTable DataSourceTable
@@ -50,11 +112,30 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("Data"), DefaultValue(false)]
-        public bool IsNewAllowed { get; set; }
+        [Category("Data")]
+        public string DefaultOrderByStatement { get; set; }
+
+        [Category("Data")]
+        public string DefaultWhereStatement { get; set; }
+
+        [DefaultValue(false)]
+        public new bool EnableHeadersVisualStyles
+        {
+            get
+            {
+                return base.EnableHeadersVisualStyles;
+            }
+            set
+            {
+                base.EnableHeadersVisualStyles = value;
+            }
+        }
 
         [Category("Data"), DefaultValue(false)]
         public bool IsDeleteAllowed { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool IsNewAllowed { get; set; }
 
         [Category("Data"), DefaultValue(false)]
         public bool LoadDataWhenActive { get; set; }
@@ -62,20 +143,168 @@ namespace TMTControls.TMTDataGrid
         [Category("Data"), DefaultValue(true)]
         public bool LoadSchema { get; set; }
 
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IList<int> SelectedRowIndexList
+        {
+            get
+            {
+                var selectedCellsRowIndexes = this.SelectedCells.Cast<DataGridViewCell>().Select(c => c.RowIndex);
+                var selectedRowIndexes = selectedCellsRowIndexes.Distinct();
+                return selectedRowIndexes.ToList();
+            }
+        }
+
         [Category("Data")]
         public string TableName { get; set; }
 
         [Category("Data")]
         public string ViewName { get; set; }
 
-        [Category("Data")]
-        public string DefaultWhereStatement { get; set; }
+        public bool AddNewRow()
+        {
+            if (this.IsNewAllowed == false)
+            {
+                return false;
+            }
 
-        [Category("Data")]
-        public string DefaultOrderByStatement { get; set; }
+            this.DataSourceTable.Columns.Cast<DataColumn>().ToList().ForEach(c => c.AllowDBNull = true);
 
-        [Category("Behavior"), DefaultValue(NewRowPossition.After)]
-        public NewRowPossition AddNewRowPossition { get; set; }
+            int location = this.DataSourceTable.Rows.Count;
+            if (this.SelectedRowIndexList.Count > 0)
+            {
+                if (this.AddNewRowPossition == NewRowPossition.After)
+                {
+                    location = this.SelectedRowIndexList.Last() + 1;
+                }
+                else if (this.AddNewRowPossition == NewRowPossition.Before)
+                {
+                    location = this.SelectedRowIndexList.First();
+                    if (location < 0)
+                    {
+                        location = 0;
+                    }
+                }
+            }
+            var newRow = this.DataSourceTable.NewRow();
+            this.DataSourceTable.Rows.InsertAt(newRow, location);
+
+            return true;
+        }
+
+        public bool DeleteSelectedRows()
+        {
+            if (this.IsDeleteAllowed == false)
+            {
+                return false;
+            }
+            if (this.SelectedRows == null ||
+                this.SelectedRows.Count <= 0)
+            {
+                return false;
+            }
+            if (MessageDialog.ShowQuestion(this, Properties.Resources.QUESTION_DeleteConfirmAll,
+                                        Properties.Resources.QUESTION_Delete) == DialogResult.Yes)
+            {
+                foreach (DataGridViewRow deleteRow in this.SelectedRows)
+                {
+                    this.Rows.RemoveAt(deleteRow.Index);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public bool DuplicateSelectedRows()
+        {
+            if (this.IsNewAllowed == false)
+            {
+                return false;
+            }
+            if (this.SelectedRows == null ||
+                this.SelectedRows.Count <= 0)
+            {
+                return false;
+            }
+            this.DataSourceTable.Columns.Cast<DataColumn>().ToList().ForEach(c => c.AllowDBNull = true);
+            bool rowsDuplicated = false;
+            foreach (DataGridViewRow selectedViewRow in this.SelectedRows)
+            {
+                if (selectedViewRow.Cells.Cast<DataGridViewCell>().All(cell => cell.Value == null &&
+                                                                               string.IsNullOrWhiteSpace(cell.ValueString())))
+                {
+                    continue;
+                }
+
+                var dupliacteRow = this.DataSourceTable.NewRow();
+                var columnList = this.Columns.Cast<DataGridViewColumn>()
+                                            .Where(c => c.Visible &&
+                                                        c.ReadOnly == false &&
+                                                        string.IsNullOrWhiteSpace(c.DataPropertyName) == false &&
+                                                        (c is ITMTDataGridViewColumn myColum && myColum.DataPropertyPrimaryKey == false));
+                foreach (var col in columnList)
+                {
+                    dupliacteRow[col.DataPropertyName] = selectedViewRow.Cells[col.Name].Value;
+                }
+
+                int location = this.DataSourceTable.Rows.Count;
+                if (this.SelectedRowIndexList.Count > 0)
+                {
+                    location = this.SelectedRowIndexList.Last() + 1;
+                }
+                this.DataSourceTable.Rows.InsertAt(dupliacteRow, location);
+                rowsDuplicated = true;
+            }
+            return rowsDuplicated;
+        }
+
+        public void SetTheme()
+        {
+            this.SuspendLayout();
+
+            this.BackgroundColor = Properties.Settings.Default.DataGridViewBackgroundColor;
+            this.DefaultCellStyle.BackColor = Properties.Settings.Default.DataGridViewDefaultCellBackColor;
+            this.DefaultCellStyle.ForeColor = Properties.Settings.Default.DataGridViewDefaultCellForeColor;
+            this.DefaultCellStyle.SelectionBackColor = Properties.Settings.Default.DataGridViewDefaultCellSelectionBackColor;
+            this.DefaultCellStyle.SelectionForeColor = Properties.Settings.Default.DataGridViewDefaultCellSelectionForeColor;
+
+            this.ResumeLayout(false);
+        }
+
+        internal bool DataValidateBeforeSave(DataSet dataToBeSaved)
+        {
+            if (dataToBeSaved == null)
+            {
+                throw new ArgumentNullException(nameof(dataToBeSaved));
+            }
+
+            if (dataToBeSaved.Tables.Contains(this.TableName))
+            {
+                var mandatoryViewColumnList = this.GetMandatoryViewColumnList();
+
+                if (mandatoryViewColumnList != null &&
+                    mandatoryViewColumnList.Count > 0)
+                {
+                    var rowCollection = dataToBeSaved.Tables[this.TableName].Rows;
+                    foreach (DataRow row in rowCollection)
+                    {
+                        if (row.RowState != DataRowState.Deleted)
+                        {
+                            foreach (var mandatoryViewColumn in mandatoryViewColumnList)
+                            {
+                                var cancelSave = this.ShowEmptyExclamation(row[mandatoryViewColumn.DataPropertyName],
+                                                                           mandatoryViewColumn.HeaderText);
+                                if (cancelSave)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
 
         internal DataTable GetDataSourceTableChanges()
         {
@@ -126,6 +355,20 @@ namespace TMTControls.TMTDataGrid
         {
             return this.Columns.Cast<DataGridViewColumn>()
                                .Where(c => (c is ITMTDataGridViewColumn myCol && myCol.DataPropertyPrimaryKey)).ToList();
+        }
+
+        internal async Task GetListOfValueSelectedRow(ListOfValueLoadingEventArgs e)
+        {
+            ListOfValueLoading?.Invoke(this, e);
+            if (e.Handled == false)
+            {
+                var basewindow = this.FindParentBaseWindow();
+                if (basewindow != null)
+                {
+                    basewindow.FillSearchConditionTable(e);
+                    await basewindow.DataPopulateAllListOfValueRecords(e);
+                }
+            }
         }
 
         internal IReadOnlyCollection<DataGridViewColumn> GetMandatoryViewColumnList()
@@ -213,17 +456,23 @@ namespace TMTControls.TMTDataGrid
             return searchEntityList;
         }
 
-        public void SetTheme()
+        internal void SetListOfValueSelectedRow(ListOfValueLoadedEventArgs e)
         {
-            this.SuspendLayout();
+            ListOfValueLoaded?.Invoke(this, e);
+        }
 
-            this.BackgroundColor = Properties.Settings.Default.DataGridViewBackgroundColor;
-            this.DefaultCellStyle.BackColor = Properties.Settings.Default.DataGridViewDefaultCellBackColor;
-            this.DefaultCellStyle.ForeColor = Properties.Settings.Default.DataGridViewDefaultCellForeColor;
-            this.DefaultCellStyle.SelectionBackColor = Properties.Settings.Default.DataGridViewDefaultCellSelectionBackColor;
-            this.DefaultCellStyle.SelectionForeColor = Properties.Settings.Default.DataGridViewDefaultCellSelectionForeColor;
-
-            this.ResumeLayout(false);
+        internal bool ShowEmptyExclamation(object oValue, string columnHeaderText)
+        {
+            bool cancelSave = false;
+            if (oValue == null || string.IsNullOrWhiteSpace(oValue.ToString()))
+            {
+                MessageDialog.Show(this,
+                    string.Format(CultureInfo.InvariantCulture, Properties.Resources.Exclamation_MandatoryValueEmpty, columnHeaderText),
+                    Properties.Resources.Exclamation_MandatoryEmpty,
+                    MessageDialogIcon.Exclamation);
+                cancelSave = true;
+            }
+            return cancelSave;
         }
 
         protected bool MyProcessTabKey()
@@ -288,23 +537,25 @@ namespace TMTControls.TMTDataGrid
             return base.ProcessDialogKey(keyData);
         }
 
-        internal void GetListOfValueSelectedRow(ListOfValueLoadingEventArgs e)
+        private void InitializeComponent()
         {
-            ListOfValueLoading?.Invoke(this, e);
-            if (e.Handled == false)
-            {
-                var basewindow = this.FindParentBaseWindow();
-                if (basewindow != null)
-                {
-                    basewindow.FillSearchConditionTable(e);
-                    basewindow.DataPopulateAllListOfValueRecords(e);
-                }
-            }
-        }
-
-        internal void SetListOfValueSelectedRow(ListOfValueLoadedEventArgs e)
-        {
-            ListOfValueLoaded?.Invoke(this, e);
+            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            this.SuspendLayout();
+            //
+            // TMTDataGridView
+            //
+            this.AllowUserToAddRows = false;
+            this.AllowUserToDeleteRows = false;
+            this.AllowUserToOrderColumns = true;
+            this.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.RowTemplate.Height = 24;
+            this.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.TMTDataGridView_CellValidated);
+            this.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.TMTDataGridView_DataError);
+            this.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.TMTDataGridView_EditingControlShowing);
+            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
+            this.ResumeLayout(false);
         }
 
         private void TMTDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
@@ -348,253 +599,10 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        private void InitializeComponent()
-        {
-            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
-            this.SuspendLayout();
-            //
-            // TMTDataGridView
-            //
-            this.AllowUserToAddRows = false;
-            this.AllowUserToDeleteRows = false;
-            this.AllowUserToOrderColumns = true;
-            this.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.RowTemplate.Height = 24;
-            this.CellValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.TMTDataGridView_CellValidated);
-            this.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.TMTDataGridView_DataError);
-            this.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.TMTDataGridView_EditingControlShowing);
-            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
-            this.ResumeLayout(false);
-        }
-
-        [DefaultValue(false)]
-        public new bool AllowUserToAddRows
-        {
-            get
-            {
-                return base.AllowUserToAddRows;
-            }
-            set
-            {
-                base.AllowUserToAddRows = value;
-            }
-        }
-
-        [DefaultValue(false)]
-        public new bool AllowUserToDeleteRows
-        {
-            get
-            {
-                return base.AllowUserToDeleteRows;
-            }
-            set
-            {
-                base.AllowUserToDeleteRows = value;
-            }
-        }
-
-        [DefaultValue(false)]
-        public new bool AllowUserToOrderColumns
-        {
-            get
-            {
-                return base.AllowUserToOrderColumns;
-            }
-            set
-            {
-                base.AllowUserToOrderColumns = value;
-            }
-        }
-
-        [DefaultValue(BorderStyle.None)]
-        public new BorderStyle BorderStyle
-        {
-            get
-            {
-                return base.BorderStyle;
-            }
-            set
-            {
-                base.BorderStyle = value;
-            }
-        }
-
-        [DefaultValue(false)]
-        public new bool EnableHeadersVisualStyles
-        {
-            get
-            {
-                return base.EnableHeadersVisualStyles;
-            }
-            set
-            {
-                base.EnableHeadersVisualStyles = value;
-            }
-        }
-
         private void TMTDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             e.ThrowException = false;
             TMTErrorDialog.Show(this, e.Exception, string.Format(CultureInfo.InvariantCulture, Properties.Resources.ERROR_CellDataError, e.ColumnIndex, e.RowIndex));
-        }
-
-        public bool AddNewRow()
-        {
-            if (this.IsNewAllowed == false)
-            {
-                return false;
-            }
-
-            this.DataSourceTable.Columns.Cast<DataColumn>().ToList().ForEach(c => c.AllowDBNull = true);
-
-            int location = this.DataSourceTable.Rows.Count;
-            if (this.SelectedRowIndexList.Count > 0)
-            {
-                if (this.AddNewRowPossition == NewRowPossition.After)
-                {
-                    location = this.SelectedRowIndexList.Last() + 1;
-                }
-                else if (this.AddNewRowPossition == NewRowPossition.Before)
-                {
-                    location = this.SelectedRowIndexList.First();
-                    if (location < 0)
-                    {
-                        location = 0;
-                    }
-                }
-            }
-            var newRow = this.DataSourceTable.NewRow();
-            this.DataSourceTable.Rows.InsertAt(newRow, location);
-
-            return true;
-        }
-
-        public bool DuplicateSelectedRows()
-        {
-            if (this.IsNewAllowed == false)
-            {
-                return false;
-            }
-            if (this.SelectedRows == null ||
-                this.SelectedRows.Count <= 0)
-            {
-                return false;
-            }
-            this.DataSourceTable.Columns.Cast<DataColumn>().ToList().ForEach(c => c.AllowDBNull = true);
-            bool rowsDuplicated = false;
-            foreach (DataGridViewRow selectedViewRow in this.SelectedRows)
-            {
-                if (selectedViewRow.Cells.Cast<DataGridViewCell>().All(cell => cell.Value == null &&
-                                                                               string.IsNullOrWhiteSpace(cell.ValueString())))
-                {
-                    continue;
-                }
-
-                var dupliacteRow = this.DataSourceTable.NewRow();
-                var columnList = this.Columns.Cast<DataGridViewColumn>()
-                                            .Where(c => c.Visible &&
-                                                        c.ReadOnly == false &&
-                                                        string.IsNullOrWhiteSpace(c.DataPropertyName) == false &&
-                                                        (c is ITMTDataGridViewColumn myColum && myColum.DataPropertyPrimaryKey == false));
-                foreach (var col in columnList)
-                {
-                    dupliacteRow[col.DataPropertyName] = selectedViewRow.Cells[col.Name].Value;
-                }
-
-                int location = this.DataSourceTable.Rows.Count;
-                if (this.SelectedRowIndexList.Count > 0)
-                {
-                    location = this.SelectedRowIndexList.Last() + 1;
-                }
-                this.DataSourceTable.Rows.InsertAt(dupliacteRow, location);
-                rowsDuplicated = true;
-            }
-            return rowsDuplicated;
-        }
-
-        public bool DeleteSelectedRows()
-        {
-            if (this.IsDeleteAllowed == false)
-            {
-                return false;
-            }
-            if (this.SelectedRows == null ||
-                this.SelectedRows.Count <= 0)
-            {
-                return false;
-            }
-            if (MessageDialog.ShowQuestion(this, Properties.Resources.QUESTION_DeleteConfirmAll,
-                                        Properties.Resources.QUESTION_Delete) == DialogResult.Yes)
-            {
-                foreach (DataGridViewRow deleteRow in this.SelectedRows)
-                {
-                    this.Rows.RemoveAt(deleteRow.Index);
-                }
-                return true;
-            }
-            return false;
-        }
-
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IList<int> SelectedRowIndexList
-        {
-            get
-            {
-                var selectedCellsRowIndexes = this.SelectedCells.Cast<DataGridViewCell>().Select(c => c.RowIndex);
-                var selectedRowIndexes = selectedCellsRowIndexes.Distinct();
-                return selectedRowIndexes.ToList();
-            }
-        }
-
-        internal bool ShowEmptyExclamation(object oValue, string columnHeaderText)
-        {
-            bool cancelSave = false;
-            if (oValue == null || string.IsNullOrWhiteSpace(oValue.ToString()))
-            {
-                MessageDialog.Show(this,
-                    string.Format(CultureInfo.InvariantCulture, Properties.Resources.Exclamation_MandatoryValueEmpty, columnHeaderText),
-                    Properties.Resources.Exclamation_MandatoryEmpty,
-                    MessageDialogIcon.Exclamation);
-                cancelSave = true;
-            }
-            return cancelSave;
-        }
-
-        internal bool DataValidateBeforeSave(DataSet dataToBeSaved)
-        {
-            if (dataToBeSaved == null)
-            {
-                throw new ArgumentNullException(nameof(dataToBeSaved));
-            }
-
-            if (dataToBeSaved.Tables.Contains(this.TableName))
-            {
-                var mandatoryViewColumnList = this.GetMandatoryViewColumnList();
-
-                if (mandatoryViewColumnList != null &&
-                    mandatoryViewColumnList.Count > 0)
-                {
-                    var rowCollection = dataToBeSaved.Tables[this.TableName].Rows;
-                    foreach (DataRow row in rowCollection)
-                    {
-                        if (row.RowState != DataRowState.Deleted)
-                        {
-                            foreach (var mandatoryViewColumn in mandatoryViewColumnList)
-                            {
-                                var cancelSave = this.ShowEmptyExclamation(row[mandatoryViewColumn.DataPropertyName],
-                                                                           mandatoryViewColumn.HeaderText);
-                                if (cancelSave)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
         }
 
         private void TMTDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
@@ -614,11 +622,5 @@ namespace TMTControls.TMTDataGrid
                 }
             }
         }
-    }
-
-    public enum NewRowPossition
-    {
-        After = 0,
-        Before = 1
     }
 }

@@ -12,46 +12,24 @@ namespace TMTControls.TMTPanels
     [ToolboxItem(false)]
     public partial class BaseWindow : TMTControls.BaseUserControl
     {
+        private IDataManager DataManager;
+
         public BaseWindow()
         {
             InitializeComponent();
         }
 
-        private IDataManager DataManager;
+        [Category("Data"), DefaultValue(false)]
+        public virtual bool IsDeleteAllowed { get; set; }
 
-        private void BaseWindow_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                this.SuspendLayout();
-
-                TinyIoCContainer.Current.TryResolve(out this.DataManager);
-
-                this.SearchDialog = new TMTSearchDialog();
-                this.SearchDialog.SearchListOfValueLoading += SearchDialog_SearchListOfValueLoading;
-                this.ColumnManagerDialog = new TMTColumnManagerDialog();
-                this.ShowSaveNullMessage = true;
-
-                this.ResumeLayout(false);
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
-            }
-        }
+        [Category("Data"), DefaultValue(false)]
+        public virtual bool IsNewAllowed { get; set; }
 
         internal WindowRecordState WindowRecordState { get; private set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [DefaultValue(true)]
-        protected bool ShowSaveNullMessage { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public virtual bool IsNewAllowed { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public virtual bool IsDeleteAllowed { get; set; }
+        protected TMTColumnManagerDialog ColumnManagerDialog { get; private set; }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -59,101 +37,103 @@ namespace TMTControls.TMTPanels
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        protected TMTColumnManagerDialog ColumnManagerDialog { get; private set; }
+        [DefaultValue(true)]
+        protected bool ShowSaveNullMessage { get; set; }
 
-        protected internal virtual Task<bool> DataSearch()
+        public void PerformDataNew()
         {
-            throw new NotImplementedException();
-        }
-
-        protected virtual bool DataValidateBeforeSave(DataSet dataToBeSaved)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected internal virtual Task<bool> DataSave()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected virtual void DataNew()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected internal virtual void DataDuplicate()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected internal virtual void DataDelete()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected internal virtual void DataClear()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected void DataPopulateAllRecords(DataLoadArgs args)
-        {
-            if (args == null)
+            try
             {
-                return;
+                this.UseWaitCursor = true;
+                this.WindowRecordState = WindowRecordState.New;
+
+                this.DataNew();
+
+                buttonRefresh.Enabled = true;
+                buttonClear.Enabled = true;
+
+                buttonNew.Enabled = false;
+                buttonDuplicate.Enabled = false;
+
+                buttonDelete.Enabled = this.IsDeleteAllowed;
+                buttonSave.Enabled = true;
             }
-
-            foreach (var arg in args.DataLoadArgList)
+            catch (Exception ex)
             {
-                DataTable dataTable = null;
-                if (arg.LimitLoad)
-                {
-                    dataTable = DataManager?.LoadDataFromDatabase(arg, null);
-                }
-                else
-                {
-                    int limitOffset = 0;
-                    bool keepOnloading = true;
-                    while (keepOnloading)
-                    {
-                        var table = DataManager?.LoadDataFromDatabase(arg, limitOffset);
-
-                        limitOffset += 100;
-                        if (table != null)
-                        {
-                            if (dataTable == null)
-                            {
-                                dataTable = table;
-                            }
-                            else
-                            {
-                                dataTable.Merge(table);
-                            }
-
-                            if (table.Rows.Count < 100)
-                            {
-                                keepOnloading = false;
-                            }
-                        }
-                        else
-                        {
-                            keepOnloading = false;
-                        }
-                    }
-                }
-                if (dataTable != null)
-                {
-                    args.ChangedDataSet.Tables.Add(dataTable);
-                }
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_AddingNew);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
             }
         }
 
-        internal void DataPopulateAllListOfValueRecords(ListOfValueLoadingEventArgs arg)
+        public async Task PerformDataSave()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
+                this.WindowRecordState = WindowRecordState.None;
+
+                await this.DataSave();
+
+                buttonRefresh.Enabled = true;
+                buttonClear.Enabled = true;
+
+                buttonNew.Enabled = this.IsNewAllowed;
+                buttonDuplicate.Enabled = this.IsNewAllowed;
+
+                buttonDelete.Enabled = this.IsDeleteAllowed;
+                buttonSave.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_SavingData);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
+            }
+        }
+
+        public async Task PerformRefresh()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
+                this.WindowRecordState = WindowRecordState.None;
+
+                await this.DataSearch();
+
+                buttonRefresh.Enabled = true;
+                buttonClear.Enabled = true;
+
+                buttonNew.Enabled = this.IsNewAllowed;
+                buttonDuplicate.Enabled = this.IsNewAllowed;
+
+                buttonDelete.Enabled = this.IsDeleteAllowed;
+                buttonSave.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ReLoadingData);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
+            }
+        }
+
+        internal async Task DataPopulateAllListOfValueRecords(ListOfValueLoadingEventArgs arg)
         {
             DataTable dataTable = null;
             if (arg.LimitLoad)
             {
-                dataTable = DataManager?.LoadListOfValuesDataFromDatabase(arg,
+                dataTable = await DataManager?.LoadListOfValuesDataFromDatabase(arg,
                     this.GetListOfValueViewColumnDbNameList(arg.ListOfValueViewName), null);
             }
             else
@@ -162,7 +142,7 @@ namespace TMTControls.TMTPanels
                 bool keepOnloading = true;
                 while (keepOnloading)
                 {
-                    var table = DataManager?.LoadListOfValuesDataFromDatabase(arg,
+                    var table = await DataManager?.LoadListOfValuesDataFromDatabase(arg,
                         this.GetListOfValueViewColumnDbNameList(arg.ListOfValueViewName), limitOffset);
 
                     limitOffset += 100;
@@ -189,11 +169,6 @@ namespace TMTControls.TMTPanels
                 }
             }
             arg.ListOfValueDataTable = dataTable;
-        }
-
-        protected virtual IList<string> GetListOfValueViewColumnDbNameList(string listOfValueViewName)
-        {
-            return new List<string>();
         }
 
         internal void FillSearchConditionTable(ListOfValueLoadingEventArgs e)
@@ -234,9 +209,49 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        protected void SaveDataToDatabase(DataSaveArg saveArg)
+        internal virtual void LoadIfActive()
         {
-            DataManager?.SaveDataToDatabase(saveArg);
+            throw new NotImplementedException();
+        }
+
+        protected internal virtual void DataClear()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected internal virtual void DataDelete()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected internal virtual void DataDuplicate()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected internal virtual Task<bool> DataSave()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected internal virtual Task<bool> DataSearch()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected internal void SetChangeColumnButtonEnabled(bool value)
+        {
+            buttonChangeColumnVisibility.Enabled = value;
+        }
+
+        protected internal void SetDeleteButtonEnabled(bool isDeleteAllowed)
+        {
+            buttonDelete.Enabled = isDeleteAllowed;
+        }
+
+        protected internal void SetNewButtonEnabled(bool isNewAllowed)
+        {
+            buttonNew.Enabled = isNewAllowed;
         }
 
         protected virtual void ChangeSelectedDataGridViewColumnVisibility()
@@ -249,195 +264,171 @@ namespace TMTControls.TMTPanels
             buttonSave.Enabled = true;
         }
 
-        protected internal void SetNewButtonEnabled(bool isNewAllowed)
-        {
-            buttonNew.Enabled = isNewAllowed;
-        }
-
-        protected internal void SetDeleteButtonEnabled(bool isDeleteAllowed)
-        {
-            buttonDelete.Enabled = isDeleteAllowed;
-        }
-
-        protected internal void SetChangeColumnButtonEnabled(bool value)
-        {
-            buttonChangeColumnVisibility.Enabled = value;
-        }
-
-        protected virtual void SearchDialogListOfValuesLoading(ListOfValueLoadingEventArgs e)
+        protected virtual void DataNew()
         {
             throw new NotImplementedException();
         }
 
-        internal virtual void LoadIfActive()
+        protected async Task DataPopulateAllRecords(DataLoadArgs args)
         {
-            throw new NotImplementedException();
-        }
-
-        private void SearchDialog_SearchListOfValueLoading(object sender, ListOfValueLoadingEventArgs e)
-        {
-            try
+            if (args == null)
             {
-                this.SearchDialogListOfValuesLoading(e);
+                return;
             }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_SearchDialogListOfValueLoading);
-            }
-        }
 
-        private async void ButtonSearch_Click(object sender, EventArgs e)
-        {
-            try
+            foreach (var arg in args.DataLoadArgList)
             {
-                this.UseWaitCursor = true;
-                progressBarBase.Visible = true;
-                this.WindowRecordState = WindowRecordState.None;
-
-                if (this.SearchDialog.ShowDialog(this) == DialogResult.OK)
+                DataTable dataTable = null;
+                if (arg.LimitLoad)
                 {
-                    await this.DataSearch();
+                    dataTable = await DataManager?.LoadDataFromDatabase(arg, null);
+                }
+                else
+                {
+                    int limitOffset = 0;
+                    bool keepOnloading = true;
+                    while (keepOnloading)
+                    {
+                        var table = await DataManager?.LoadDataFromDatabase(arg, limitOffset);
 
-                    buttonRefresh.Enabled = true;
-                    buttonClear.Enabled = true;
+                        limitOffset += 100;
+                        if (table != null)
+                        {
+                            if (dataTable == null)
+                            {
+                                dataTable = table;
+                            }
+                            else
+                            {
+                                dataTable.Merge(table);
+                            }
 
-                    buttonNew.Enabled = this.IsNewAllowed;
-                    buttonDuplicate.Enabled = this.IsNewAllowed;
-
-                    buttonDelete.Enabled = this.IsDeleteAllowed;
-                    buttonSave.Enabled = false;
+                            if (table.Rows.Count < 100)
+                            {
+                                keepOnloading = false;
+                            }
+                        }
+                        else
+                        {
+                            keepOnloading = false;
+                        }
+                    }
+                }
+                if (dataTable != null)
+                {
+                    args.ChangedDataSet.Tables.Add(dataTable);
                 }
             }
+        }
+
+        protected virtual bool DataValidateBeforeSave(DataSet dataToBeSaved)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual IList<string> GetListOfValueViewColumnDbNameList(string listOfValueViewName)
+        {
+            return new List<string>();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            try
+            {
+                if (keyData == Keys.F3)
+                {
+                    this.buttonSearch.PerformClick();
+                }
+                else if (keyData == Keys.F5)
+                {
+                    this.buttonNew.PerformClick();
+                }
+                else if (keyData == Keys.F12)
+                {
+                    this.buttonSave.PerformClick();
+                }
+                else if (keyData == Keys.F7)
+                {
+                    this.buttonDelete.PerformClick();
+                }
+            }
+            catch { }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        protected async Task SaveDataToDatabase(DataSaveArg saveArg)
+        {
+            await DataManager?.SaveDataToDatabase(saveArg);
+        }
+
+        protected async virtual Task SearchDialogListOfValuesLoading(ListOfValueLoadingEventArgs e)
+        {
+            e.Handled = true;
+            await this.DataPopulateAllListOfValueRecords(e);
+        }
+
+        private void BaseWindow_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                this.SuspendLayout();
+
+                TinyIoCContainer.Current.TryResolve(out this.DataManager);
+
+                this.SearchDialog = new TMTSearchDialog
+                {
+                    SearchListOfValueLoading = SearchDialogListOfValuesLoading
+                };
+                this.ColumnManagerDialog = new TMTColumnManagerDialog();
+                this.ShowSaveNullMessage = true;
+
+                buttonSearch.UpdateIcon();
+                buttonRefresh.UpdateIcon();
+                buttonSave.UpdateIcon();
+                buttonClear.UpdateIcon();
+                buttonChangeColumnVisibility.UpdateIcon();
+                buttonNew.UpdateIcon();
+                buttonDuplicate.UpdateIcon();
+                buttonDelete.UpdateIcon();
+
+                this.ResumeLayout(false);
+            }
             catch (Exception ex)
             {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoadingData);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-                progressBarBase.Visible = false;
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
             }
         }
 
-        private async void ButtonRefresh_Click(object sender, EventArgs e)
+        private void ButtonChangeColumnVisibility_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.ChangeSelectedDataGridViewColumnVisibility();
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ColumnManager);
+            }
+        }
+
+        private void ButtonClear_Click(object sender, EventArgs e)
         {
             try
             {
                 this.UseWaitCursor = true;
-                progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.None;
 
-                await this.DataSearch();
+                this.DataClear();
 
-                buttonRefresh.Enabled = true;
-                buttonClear.Enabled = true;
-
-                buttonNew.Enabled = this.IsNewAllowed;
-                buttonDuplicate.Enabled = this.IsNewAllowed;
-
-                buttonDelete.Enabled = this.IsDeleteAllowed;
-                buttonSave.Enabled = false;
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ReLoadingData);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-                progressBarBase.Visible = false;
-            }
-        }
-
-        private async void ButtonSave_Click(object sender, EventArgs e)
-        {
-            await this.PerformDataSave();
-        }
-
-        public async Task PerformDataSave()
-        {
-            try
-            {
-                this.UseWaitCursor = true;
-                progressBarBase.Visible = true;
-                this.WindowRecordState = WindowRecordState.None;
-
-                await this.DataSave();
-
-                buttonRefresh.Enabled = true;
-                buttonClear.Enabled = true;
-
-                buttonNew.Enabled = this.IsNewAllowed;
-                buttonDuplicate.Enabled = this.IsNewAllowed;
-
-                buttonDelete.Enabled = this.IsDeleteAllowed;
-                buttonSave.Enabled = false;
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_SavingData);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-                progressBarBase.Visible = false;
-            }
-        }
-
-        private void ButtonNew_Click(object sender, EventArgs e)
-        {
-            this.PerformDataNew();
-        }
-
-        public void PerformDataNew()
-        {
-            try
-            {
-                this.UseWaitCursor = true;
-                this.WindowRecordState = WindowRecordState.New;
-
-                this.DataNew();
-
-                buttonRefresh.Enabled = true;
-                buttonClear.Enabled = true;
-
-                buttonNew.Enabled = false;
+                buttonRefresh.Enabled = false;
                 buttonDuplicate.Enabled = false;
-
-                buttonDelete.Enabled = this.IsDeleteAllowed;
-                buttonSave.Enabled = true;
+                buttonDelete.Enabled = false;
+                buttonSave.Enabled = false;
+                buttonClear.Enabled = false;
             }
             catch (Exception ex)
             {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_AddingNew);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-            }
-        }
-
-        private void ButtonDuplicate_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                this.UseWaitCursor = true;
-                this.WindowRecordState = WindowRecordState.New;
-
-                this.DataDuplicate();
-
-                buttonRefresh.Enabled = true;
-                buttonClear.Enabled = true;
-
-                buttonNew.Enabled = false;
-                buttonDuplicate.Enabled = false;
-
-                buttonDelete.Enabled = this.IsDeleteAllowed;
-                buttonSave.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_DuplicatingNew);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ClearingData);
             }
             finally
             {
@@ -473,24 +464,27 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void ButtonClear_Click(object sender, EventArgs e)
+        private void ButtonDuplicate_Click(object sender, EventArgs e)
         {
             try
             {
                 this.UseWaitCursor = true;
-                this.WindowRecordState = WindowRecordState.None;
+                this.WindowRecordState = WindowRecordState.New;
 
-                this.DataClear();
+                this.DataDuplicate();
 
-                buttonRefresh.Enabled = false;
+                buttonRefresh.Enabled = true;
+                buttonClear.Enabled = true;
+
+                buttonNew.Enabled = false;
                 buttonDuplicate.Enabled = false;
-                buttonDelete.Enabled = false;
-                buttonSave.Enabled = false;
-                buttonClear.Enabled = false;
+
+                buttonDelete.Enabled = this.IsDeleteAllowed;
+                buttonSave.Enabled = true;
             }
             catch (Exception ex)
             {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ClearingData);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_DuplicatingNew);
             }
             finally
             {
@@ -498,41 +492,52 @@ namespace TMTControls.TMTPanels
             }
         }
 
-        private void ButtonChangeColumnVisibility_Click(object sender, EventArgs e)
+        private void ButtonNew_Click(object sender, EventArgs e)
+        {
+            this.PerformDataNew();
+        }
+
+        private async void ButtonRefresh_Click(object sender, EventArgs e)
+        {
+            await this.PerformRefresh();
+        }
+
+        private async void ButtonSave_Click(object sender, EventArgs e)
+        {
+            await this.PerformDataSave();
+        }
+
+        private async void ButtonSearch_Click(object sender, EventArgs e)
         {
             try
             {
-                this.ChangeSelectedDataGridViewColumnVisibility();
+                this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
+                this.WindowRecordState = WindowRecordState.None;
+
+                if (this.SearchDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    await this.DataSearch();
+
+                    buttonRefresh.Enabled = true;
+                    buttonClear.Enabled = true;
+
+                    buttonNew.Enabled = this.IsNewAllowed;
+                    buttonDuplicate.Enabled = this.IsNewAllowed;
+
+                    buttonDelete.Enabled = this.IsDeleteAllowed;
+                    buttonSave.Enabled = false;
+                }
             }
             catch (Exception ex)
             {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ColumnManager);
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoadingData);
             }
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            try
+            finally
             {
-                if (keyData == Keys.F3)
-                {
-                    this.buttonSearch.PerformClick();
-                }
-                else if (keyData == Keys.F5)
-                {
-                    this.buttonNew.PerformClick();
-                }
-                else if (keyData == Keys.F12)
-                {
-                    this.buttonSave.PerformClick();
-                }
-                else if (keyData == Keys.F7)
-                {
-                    this.buttonDelete.PerformClick();
-                }
+                this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
             }
-            catch { }
-            return base.ProcessCmdKey(ref msg, keyData);
         }
     }
 }

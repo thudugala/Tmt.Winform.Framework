@@ -41,7 +41,7 @@
             this.tmtButtonOK = new TMTControls.TMTButton();
             this.panelMain.SuspendLayout();
             this.tableLayoutPanelMain.SuspendLayout();
-            this.SuspendLayout();           
+            this.SuspendLayout();
             // 
             // panelMain
             // 
@@ -140,11 +140,11 @@
             // 
             // TMTColumnManagerDialog
             // 
-            this.Image = global::TMTControls.Properties.Resources.columns;
             this.AcceptButton = this.tmtButtonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             resources.ApplyResources(this, "$this");
             this.Name = "TMTColumnManagerDialog";
+            this.Load += new System.EventHandler(this.TMTColumnManagerDialog_Load);
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.tableLayoutPanelMain.ResumeLayout(false);

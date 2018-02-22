@@ -11,16 +11,13 @@ namespace TMTControls
 
         public Type DataType { get; set; }
 
-        public string Value { get; set; }
-
-        public bool IsCheckBox { get; set; }
         public object FalseValue { get; set; }
-        public object TrueValue { get; set; }
         public object IndeterminateValue { get; set; }
-
-        public string ListOfValueView { get; set; }
-
+        public bool IsCheckBox { get; set; }
         public bool IsFuntion { get; set; }
+        public string ListOfValueView { get; set; }
+        public object TrueValue { get; set; }
+        public string Value { get; set; }
 
         public IList<string> GetSearchValueList()
         {

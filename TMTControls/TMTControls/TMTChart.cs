@@ -22,25 +22,6 @@ namespace TMTControls
         [Category("Data")]
         public string ViewName { get; set; }
 
-        private void TMTChart_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                this.SuspendLayout();
-
-                TinyIoCContainer.Current.TryResolve(out this.DataManager);
-
-                chartMain.ChartAreas["ChartAreaMain"].BackColor = chartMain.BackColor;
-                chartMain.Legends["LegendMain"].BackColor = chartMain.BackColor;
-
-                this.ResumeLayout(false);
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
-            }
-        }
-
         public async virtual void ShowChart()
         {
             try
@@ -48,15 +29,12 @@ namespace TMTControls
                 progressBarMain.Visible = true;
                 this.UseWaitCursor = true;
 
-                //chartMain.ChartAreas["ChartAreaMain"].BackColor = chartMain.BackColor;
-                //chartMain.Legends["LegendMain"].BackColor = chartMain.BackColor;
-
                 var charArg = new ListOfValueLoadingEventArgs
                 {
                     ListOfValueViewName = this.ViewName
                 };
 
-                await Task.Run(() => this.DataPopulateAllListOfValueRecords(charArg));
+                await Task.Run(async () => await this.DataPopulateAllListOfValueRecords(charArg));
 
                 chartMain.DataSource = charArg.ListOfValueDataTable;
                 chartMain.DataBind();
@@ -72,12 +50,12 @@ namespace TMTControls
             }
         }
 
-        internal void DataPopulateAllListOfValueRecords(ListOfValueLoadingEventArgs arg)
+        internal async Task DataPopulateAllListOfValueRecords(ListOfValueLoadingEventArgs arg)
         {
             DataTable dataTable = null;
             if (arg.LimitLoad)
             {
-                dataTable = DataManager?.LoadListOfValuesDataFromDatabase(arg,
+                dataTable = await DataManager?.LoadListOfValuesDataFromDatabase(arg,
                     this.GetViewColumnDbNameList(), null);
             }
             else
@@ -86,7 +64,7 @@ namespace TMTControls
                 bool keepOnloading = true;
                 while (keepOnloading)
                 {
-                    var table = DataManager?.LoadListOfValuesDataFromDatabase(arg,
+                    var table = await DataManager?.LoadListOfValuesDataFromDatabase(arg,
                         this.GetViewColumnDbNameList(), limitOffset);
 
                     limitOffset += 100;
@@ -118,6 +96,25 @@ namespace TMTControls
         protected virtual IList<string> GetViewColumnDbNameList()
         {
             return new List<string>();
+        }
+
+        private void TMTChart_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                this.SuspendLayout();
+
+                TinyIoCContainer.Current.TryResolve(out this.DataManager);
+
+                chartMain.ChartAreas["ChartAreaMain"].BackColor = chartMain.BackColor;
+                chartMain.Legends["LegendMain"].BackColor = chartMain.BackColor;
+
+                this.ResumeLayout(false);
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Deployment.Application;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TinyIoC;
@@ -80,26 +81,6 @@ namespace TMTControls
             return panel;
         }
 
-        private void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
-        {
-            if (e.NavigatePanel != null)
-            {
-                this.LoadPanel(e.NavigatePanel);
-            }
-        }
-
-        private void FormMain_BackButtonClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                this.LoadTopWindow(sender);
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
-            }
-        }
-
         public virtual UserControl LoadTopWindow(object sender)
         {
             if (sender == null)
@@ -128,6 +109,26 @@ namespace TMTControls
             return null;
         }
 
+        private void FormMain_BackButtonClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                this.LoadTopWindow(sender);
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+            }
+        }
+
+        private void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
+        {
+            if (e.NavigatePanel != null)
+            {
+                this.LoadPanel(e.NavigatePanel);
+            }
+        }
+
         private void TMTFormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
@@ -141,6 +142,10 @@ namespace TMTControls
         {
             try
             {
+                FontAwesome5.SetFontFileBytes(Properties.Resources.fontawesome_webfont);
+                FontAwesome5.DefaultProperties.Size = 48;
+                FontAwesome5.DefaultProperties.ForeColor = Color.White;
+
                 if (ApplicationDeployment.IsNetworkDeployed)
                 {
                     this.Text += $" - {ApplicationDeployment.CurrentDeployment.CurrentVersion}";

@@ -117,48 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="labelHeader.Size" type="System.Drawing.Size, System.Drawing">
-    <value>782, 60</value>
-  </data>
-  <data name="labelHeader.Text" xml:space="preserve">
-    <value>Column Manager</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.Name" xml:space="preserve">
-    <value>labelHeader</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;labelHeader.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tmtButtonOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Right</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="tmtButtonOK.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="tmtButtonOK.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
-    <value>Flat</value>
-  </data>
-  <data name="tmtButtonOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>727, 9</value>
-  </data>
-  <data name="tmtButtonOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>43, 30</value>
-  </data>
-  <data name="tmtButtonOK.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="tmtButtonOK.Text" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="&gt;&gt;tmtButtonOK.Name" xml:space="preserve">
     <value>tmtButtonOK</value>
   </data>
@@ -171,17 +129,173 @@
   <data name="&gt;&gt;tmtButtonOK.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.Name" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.Parent" xml:space="preserve">
+    <value>panelMain</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="tableLayoutPanelMain.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="tmtButtonHideAll" Row="2" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonHideOne" Row="3" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonShowOne" Row="4" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonShowAll" Row="5" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="listViewShownColumns" Row="1" RowSpan="6" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="listViewHiddenColumns" Row="1" RowSpan="6" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="label1" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="label2" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,49.99999,AutoSize,0,Percent,50.00001" /&gt;&lt;Rows Styles="AutoSize,0,Percent,50,AutoSize,0,AutoSize,0,AutoSize,0,AutoSize,0,Percent,50" /&gt;&lt;/TableLayoutSettings&gt;</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="panelMain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>782, 289</value>
+  </data>
+  <data name="&gt;&gt;panelMain.Name" xml:space="preserve">
+    <value>panelMain</value>
+  </data>
+  <data name="&gt;&gt;panelMain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panelMain.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;panelMain.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="tableLayoutPanelMain.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="tableLayoutPanelMain.ColumnCount" type="System.Int32, mscorlib">
     <value>3</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideAll.Name" xml:space="preserve">
+    <value>tmtButtonHideAll</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideAll.Type" xml:space="preserve">
+    <value>TMTControls.TMTButton, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideAll.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideAll.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideOne.Name" xml:space="preserve">
+    <value>tmtButtonHideOne</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideOne.Type" xml:space="preserve">
+    <value>TMTControls.TMTButton, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideOne.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonHideOne.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowOne.Name" xml:space="preserve">
+    <value>tmtButtonShowOne</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowOne.Type" xml:space="preserve">
+    <value>TMTControls.TMTButton, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowOne.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowOne.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowAll.Name" xml:space="preserve">
+    <value>tmtButtonShowAll</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowAll.Type" xml:space="preserve">
+    <value>TMTControls.TMTButton, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowAll.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;tmtButtonShowAll.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;listViewShownColumns.Name" xml:space="preserve">
+    <value>listViewShownColumns</value>
+  </data>
+  <data name="&gt;&gt;listViewShownColumns.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;listViewShownColumns.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;listViewShownColumns.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;listViewHiddenColumns.Name" xml:space="preserve">
+    <value>listViewHiddenColumns</value>
+  </data>
+  <data name="&gt;&gt;listViewHiddenColumns.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;listViewHiddenColumns.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;listViewHiddenColumns.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="tableLayoutPanelMain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 9</value>
+  </data>
+  <data name="tableLayoutPanelMain.RowCount" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="tableLayoutPanelMain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>709, 268</value>
+  </data>
+  <data name="tableLayoutPanelMain.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.Name" xml:space="preserve">
+    <value>tableLayoutPanelMain</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.Parent" xml:space="preserve">
+    <value>panelMain</value>
+  </data>
+  <data name="&gt;&gt;tableLayoutPanelMain.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tableLayoutPanelMain.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
+    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="tmtButtonHideAll" Row="2" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonHideOne" Row="3" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonShowOne" Row="4" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonShowAll" Row="5" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="listViewShownColumns" Row="1" RowSpan="6" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="listViewHiddenColumns" Row="1" RowSpan="6" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="label1" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="label2" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,49.99999,AutoSize,0,Percent,50.00001" /&gt;&lt;Rows Styles="AutoSize,0,Percent,50,AutoSize,0,AutoSize,0,AutoSize,0,AutoSize,0,Percent,50" /&gt;&lt;/TableLayoutSettings&gt;</value>
   </data>
   <data name="tmtButtonHideAll.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>Flat</value>
   </data>
   <data name="tmtButtonHideAll.Location" type="System.Drawing.Point, System.Drawing">
-    <value>336, 86</value>
+    <value>336, 82</value>
   </data>
   <data name="tmtButtonHideAll.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 2, 3, 2</value>
@@ -211,7 +325,7 @@
     <value>Flat</value>
   </data>
   <data name="tmtButtonHideOne.Location" type="System.Drawing.Point, System.Drawing">
-    <value>336, 117</value>
+    <value>336, 113</value>
   </data>
   <data name="tmtButtonHideOne.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 2, 3, 2</value>
@@ -241,7 +355,7 @@
     <value>Flat</value>
   </data>
   <data name="tmtButtonShowOne.Location" type="System.Drawing.Point, System.Drawing">
-    <value>336, 148</value>
+    <value>336, 144</value>
   </data>
   <data name="tmtButtonShowOne.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 2, 3, 2</value>
@@ -271,7 +385,7 @@
     <value>Flat</value>
   </data>
   <data name="tmtButtonShowAll.Location" type="System.Drawing.Point, System.Drawing">
-    <value>336, 179</value>
+    <value>336, 175</value>
   </data>
   <data name="tmtButtonShowAll.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 2, 3, 2</value>
@@ -301,13 +415,13 @@
     <value>Fill</value>
   </data>
   <data name="listViewShownColumns.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 22</value>
+    <value>3, 19</value>
   </data>
   <data name="listViewShownColumns.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 2, 3, 2</value>
   </data>
   <data name="listViewShownColumns.Size" type="System.Drawing.Size, System.Drawing">
-    <value>327, 248</value>
+    <value>327, 247</value>
   </data>
   <data name="listViewShownColumns.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -328,13 +442,13 @@
     <value>Fill</value>
   </data>
   <data name="listViewHiddenColumns.Location" type="System.Drawing.Point, System.Drawing">
-    <value>378, 22</value>
+    <value>378, 19</value>
   </data>
   <data name="listViewHiddenColumns.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 2, 3, 2</value>
   </data>
   <data name="listViewHiddenColumns.Size" type="System.Drawing.Size, System.Drawing">
-    <value>328, 248</value>
+    <value>328, 247</value>
   </data>
   <data name="listViewHiddenColumns.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -358,7 +472,7 @@
     <value>3, 0</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 20</value>
+    <value>50, 17</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -385,7 +499,7 @@
     <value>378, 0</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>62, 20</value>
+    <value>53, 17</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -405,49 +519,37 @@
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="tableLayoutPanelMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 9</value>
+  <data name="tmtButtonOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
   </data>
-  <data name="tableLayoutPanelMain.RowCount" type="System.Int32, mscorlib">
-    <value>7</value>
+  <data name="tmtButtonOK.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="tableLayoutPanelMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>709, 272</value>
+  <data name="tmtButtonOK.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
   </data>
-  <data name="tableLayoutPanelMain.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="tmtButtonOK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>727, 9</value>
   </data>
-  <data name="&gt;&gt;tableLayoutPanelMain.Name" xml:space="preserve">
-    <value>tableLayoutPanelMain</value>
+  <data name="tmtButtonOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 30</value>
   </data>
-  <data name="&gt;&gt;tableLayoutPanelMain.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tableLayoutPanelMain.Parent" xml:space="preserve">
-    <value>panelMain</value>
-  </data>
-  <data name="&gt;&gt;tableLayoutPanelMain.ZOrder" xml:space="preserve">
+  <data name="tmtButtonOK.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="tableLayoutPanelMain.LayoutSettings" type="System.Windows.Forms.TableLayoutSettings, System.Windows.Forms">
-    <value>&lt;?xml version="1.0" encoding="utf-16"?&gt;&lt;TableLayoutSettings&gt;&lt;Controls&gt;&lt;Control Name="tmtButtonHideAll" Row="2" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonHideOne" Row="3" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonShowOne" Row="4" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="tmtButtonShowAll" Row="5" RowSpan="1" Column="1" ColumnSpan="1" /&gt;&lt;Control Name="listViewShownColumns" Row="1" RowSpan="6" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="listViewHiddenColumns" Row="1" RowSpan="6" Column="2" ColumnSpan="1" /&gt;&lt;Control Name="label1" Row="0" RowSpan="1" Column="0" ColumnSpan="1" /&gt;&lt;Control Name="label2" Row="0" RowSpan="1" Column="2" ColumnSpan="1" /&gt;&lt;/Controls&gt;&lt;Columns Styles="Percent,49.99999,AutoSize,0,Percent,50.00001" /&gt;&lt;Rows Styles="AutoSize,0,Percent,50,AutoSize,0,AutoSize,0,AutoSize,0,AutoSize,0,Percent,50" /&gt;&lt;/TableLayoutSettings&gt;</value>
+  <data name="tmtButtonOK.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
-  <data name="panelMain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 60</value>
+  <data name="&gt;&gt;tmtButtonOK.Name" xml:space="preserve">
+    <value>tmtButtonOK</value>
   </data>
-  <data name="panelMain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>782, 293</value>
+  <data name="&gt;&gt;tmtButtonOK.Type" xml:space="preserve">
+    <value>TMTControls.TMTButton, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;panelMain.Name" xml:space="preserve">
+  <data name="&gt;&gt;tmtButtonOK.Parent" xml:space="preserve">
     <value>panelMain</value>
   </data>
-  <data name="&gt;&gt;panelMain.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panelMain.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;panelMain.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tmtButtonOK.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

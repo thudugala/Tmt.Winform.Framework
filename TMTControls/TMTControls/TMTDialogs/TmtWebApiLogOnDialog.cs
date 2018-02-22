@@ -1,14 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
 using System.DirectoryServices.AccountManagement;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace TMTControls.TMTDialogs
 {
     public partial class TmtWebApiLogOnDialog : TMTDialog
     {
-        private static string LDAP = "LDAP";
         private static string DB = "DB";
+        private static string LDAP = "LDAP";
 
         public TmtWebApiLogOnDialog()
         {
@@ -38,7 +39,7 @@ namespace TMTControls.TMTDialogs
             return myLogOnDataEntity;
         }
 
-        private void buttonLogin_Click(object sender, EventArgs e)
+        private void ButtonLogin_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBoxUserId.Text))
             {
@@ -100,65 +101,94 @@ namespace TMTControls.TMTDialogs
             this.DialogResult = DialogResult.OK;
         }
 
-        private void ComboBoxAuthSource_SelectedIndexChanged(object sender, EventArgs e)
+        private void CheckBoxShowDetails_CheckedChanged(object sender, EventArgs e)
         {
-            if (comboBoxAuthSource.SelectedItem.ToString() == LDAP)
+            try
             {
                 if (checkBoxShowDetails.Checked)
                 {
-                    textBoxLdapServerUrl.Visible = true;
+                    labelServer.Visible = true;
+                    textBoxServerUrl.Visible = true;
+                    if (this.OnlyDBAuth == false)
+                    {
+                        comboBoxAuthSource.Visible = true;
+                        if (comboBoxAuthSource.SelectedItem.ToString() == LDAP)
+                        {
+                            textBoxLdapServerUrl.Visible = true;
+                        }
+                    }
                 }
-
-                textBoxUserId.Text = Environment.UserName;
-            }
-            else
-            {
-                textBoxLdapServerUrl.Visible = false;
-
-                if (textBoxUserId.Tag != null)
+                else
                 {
-                    textBoxUserId.Text = textBoxUserId.Tag.ToString();
+                    labelServer.Visible = false;
+                    textBoxServerUrl.Visible = false;
+                    comboBoxAuthSource.Visible = false;
+                    textBoxLdapServerUrl.Visible = false;
                 }
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ApplicationLogin);
+            }
+        }
+
+        private void ComboBoxAuthSource_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (comboBoxAuthSource.SelectedItem.ToString() == LDAP)
+                {
+                    if (checkBoxShowDetails.Checked)
+                    {
+                        textBoxLdapServerUrl.Visible = true;
+                    }
+
+                    textBoxUserId.Text = Environment.UserName;
+                }
+                else
+                {
+                    textBoxLdapServerUrl.Visible = false;
+
+                    if (textBoxUserId.Tag != null)
+                    {
+                        textBoxUserId.Text = textBoxUserId.Tag.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ApplicationLogin);
             }
         }
 
         private void TMTWebAPILoginDialog_Load(object sender, EventArgs e)
         {
-            textBoxUserId.Text = Properties.Settings.Default.LogInUserId;
-            textBoxUserId.Tag = textBoxUserId.Text;
-            textBoxPassword.Text = Properties.Settings.Default.LogInPassword;
-            textBoxServerUrl.Text = Properties.Settings.Default.ServerURL;
-            comboBoxAuthSource.Text = (Properties.Settings.Default.LDAPAuth) ? LDAP : DB;
-            textBoxLdapServerUrl.Text = Properties.Settings.Default.LDAPServerURL;
-
-            if (this.OnlyDBAuth)
+            try
             {
-                comboBoxAuthSource.Visible = false;
-                textBoxLdapServerUrl.Visible = false;
-            }
-        }
+                textBoxUserId.Text = Properties.Settings.Default.LogInUserId;
+                textBoxUserId.Tag = textBoxUserId.Text;
+                textBoxPassword.Text = Properties.Settings.Default.LogInPassword;
+                textBoxServerUrl.Text = Properties.Settings.Default.ServerURL;
+                comboBoxAuthSource.Text = (Properties.Settings.Default.LDAPAuth) ? LDAP : DB;
+                textBoxLdapServerUrl.Text = Properties.Settings.Default.LDAPServerURL;
 
-        private void CheckBoxShowDetails_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBoxShowDetails.Checked)
-            {
-                labelServer.Visible = true;
-                textBoxServerUrl.Visible = true;
-                if (this.OnlyDBAuth == false)
+                if (this.OnlyDBAuth)
                 {
-                    comboBoxAuthSource.Visible = true;
-                    if (comboBoxAuthSource.SelectedItem.ToString() == LDAP)
-                    {
-                        textBoxLdapServerUrl.Visible = true;
-                    }
+                    comboBoxAuthSource.Visible = false;
+                    textBoxLdapServerUrl.Visible = false;
                 }
+
+                var pro = new FontAwesome5.Properties(FontAwesome5.Type.SignIn)
+                {
+                    Size = 96,
+                    ForeColor = Color.FromArgb(82, 124, 182),
+                    Location = new Point(0, 5)
+                };
+                this.Image = pro.AsImage();
             }
-            else
+            catch (Exception ex)
             {
-                labelServer.Visible = false;
-                textBoxServerUrl.Visible = false;
-                comboBoxAuthSource.Visible = false;
-                textBoxLdapServerUrl.Visible = false;
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_ApplicationLogin);
             }
         }
     }

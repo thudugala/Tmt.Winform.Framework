@@ -127,7 +127,6 @@
             // 
             this.pictureBoxImage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBoxImage.Image = global::TMTControls.Properties.Resources.Information;
             this.pictureBoxImage.Location = new System.Drawing.Point(13, 13);
             this.pictureBoxImage.Name = "pictureBoxImage";
             this.pictureBoxImage.Size = new System.Drawing.Size(135, 135);
@@ -140,7 +139,6 @@
             this.AcceptButton = this.tmtButtonOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.ClientSize = new System.Drawing.Size(525, 258);
-            this.Image = global::TMTControls.Properties.Resources.Information;
             this.Name = "MessageDialog";
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();

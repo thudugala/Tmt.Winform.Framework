@@ -12,15 +12,34 @@ namespace TMTControls.TMTDataGrid
             this.TabStop = true;
         }
 
-        public override bool ReadOnly
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyEditAllowed { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyIsFuntion { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyMandatory { get; set; }
+
+        [Category("Data"), DefaultValue(false)]
+        public bool DataPropertyPrimaryKey { get; set; }
+
+        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
+        public TypeCode DataPropertyType
         {
             get
             {
-                return true;
+                return Type.GetTypeCode(base.ValueType);
             }
             set
             {
-                base.ReadOnly = true;
+                base.ValueType = Type.GetType("System." + value);
+                if (value == TypeCode.Decimal ||
+                    value == TypeCode.Double)
+                {
+                    this.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    this.DefaultCellStyle.Format = "N2";
+                }
             }
         }
 
@@ -40,34 +59,15 @@ namespace TMTControls.TMTDataGrid
             }
         }
 
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyPrimaryKey { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyMandatory { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyEditAllowed { get; set; }
-
-        [Category("Data"), DefaultValue(false)]
-        public bool DataPropertyIsFuntion { get; set; }
-
-        [Category("Data"), DefaultValue(TypeCode.String), RefreshProperties(RefreshProperties.All)]
-        public TypeCode DataPropertyType
+        public override bool ReadOnly
         {
             get
             {
-                return Type.GetTypeCode(base.ValueType);
+                return true;
             }
             set
             {
-                base.ValueType = Type.GetType("System." + value);
-                if (value == TypeCode.Decimal ||
-                    value == TypeCode.Double)
-                {
-                    this.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-                    this.DefaultCellStyle.Format = "N2";
-                }
+                base.ReadOnly = true;
             }
         }
 

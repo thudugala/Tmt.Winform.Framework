@@ -14,42 +14,12 @@ namespace TMTControls
             InitializeComponent();
         }
 
-        private void BaseUserControl_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                this.toolStripStatusLabelWindowName.Text = this.Name;
-                this.SetServerInformation();
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
-            }
-        }
-
-        private void SetServerInformation()
-        {
-            toolStripStatusLabelFill.Text = $"{Properties.Settings.Default.LogInUserId} at {Properties.Settings.Default.ServerURL}";
-        }
+        [Category("TMT")]
+        public event EventHandler NavigateBack;
 
         protected T NavigateToPanel<T>() where T : UserControl
         {
             return (this.ParentForm as TMTFormMain)?.LoadPanel(typeof(T)) as T;
-        }
-
-        [Category("TMT")]
-        public event EventHandler NavigateBack;
-
-        private void ButtonNavigateBack_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                NavigateBack?.Invoke(this, e);
-            }
-            catch (Exception ex)
-            {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_NavigationBack);
-            }
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -63,6 +33,55 @@ namespace TMTControls
             }
             catch { }
             return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void BaseUserControl_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                this.toolStripStatusLabelWindowName.Text = this.Name;
+                this.SetServerInformation();
+
+                buttonNavigateBack.UpdateIcon();
+
+                var iconProperties = new FontAwesome5.Properties(FontAwesome5.Type.Cog)
+                {
+                    ForeColor = Color.FromArgb(154, 189, 224),
+                    Size = 16,
+                };
+                toolStripSplitButtonOptions.Image = iconProperties.AsImage();
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+            }
+        }
+
+        private void BaseUserControl_Validated(object sender, EventArgs e)
+        {
+            this.SetServerInformation();
+        }
+
+        private void ButtonNavigateBack_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                NavigateBack?.Invoke(this, e);
+            }
+            catch (Exception ex)
+            {
+                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_NavigationBack);
+            }
+        }
+
+        private void SetServerInformation()
+        {
+            string server = Properties.Settings.Default.ServerURL;
+            if (string.IsNullOrWhiteSpace(server))
+            {
+                server = $"{Properties.Settings.Default.DatabaseServerName}:{Properties.Settings.Default.DatabaseServerPort}";
+            }
+            toolStripStatusLabelFill.Text = $"{Properties.Settings.Default.LogInUserId} at {server}";
         }
 
         private void ToolStripSplitButtonOptions_ButtonClick(object sender, EventArgs e)
@@ -85,11 +104,6 @@ namespace TMTControls
             }
             catch
             { }
-        }
-
-        private void BaseUserControl_Validated(object sender, EventArgs e)
-        {
-            this.SetServerInformation();
         }
     }
 }

@@ -12,12 +12,12 @@ namespace TMTControls.TMTDialogs
     {
         private TMTSearchDialog searchDialog;
 
-        public Dictionary<string, object> SelectedRow { get; private set; }
-
         public TMTListOfValueDialog()
         {
             InitializeComponent();
         }
+
+        public Dictionary<string, object> SelectedRow { get; private set; }
 
         public void SetDataSourceTable(DataTable table)
         {
@@ -75,35 +75,15 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private Dictionary<string, string> GetColumnTypeDictionary()
-        {
-            var colType = new Dictionary<string, string>();
-
-            var sourceTable = tmtDataGridViewMain.DataSourceTable;
-
-            var enumBoolean = new List<string> { "TRUE", "FALSE" };
-
-            foreach (DataColumn dCol in sourceTable.Columns)
-            {
-                colType.Add(dCol.ColumnName, dCol.DataType.FullName);
-
-                if (typeof(string).FullName == dCol.DataType.FullName)
-                {
-                    var distinctValueList = sourceTable.Rows.Cast<DataRow>().Select(r => r[dCol.ColumnName]).Where(i => i.GetType() != typeof(DBNull)).Cast<string>().Distinct().ToList();
-                    if (distinctValueList.Intersect(enumBoolean).Any())
-                    {
-                        colType[dCol.ColumnName] = "ENUM_BOOLEAN";
-                    }
-                }
-            }
-
-            return colType;
-        }
-
         private static string GetHeaderText(string orginalText)
         {
             orginalText = orginalText.Replace("_", " ").ToLowerInvariant().Trim();
             return CultureInfo.InvariantCulture.TextInfo.ToTitleCase(orginalText);
+        }
+
+        private void ButtonCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)
@@ -192,35 +172,29 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void TmtDataGridViewMain_KeyDown(object sender, KeyEventArgs e)
+        private Dictionary<string, string> GetColumnTypeDictionary()
         {
-            try
-            {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    buttonOK.PerformClick();
+            var colType = new Dictionary<string, string>();
 
-                    e.Handled = true;
+            var sourceTable = tmtDataGridViewMain.DataSourceTable;
+
+            var enumBoolean = new List<string> { "TRUE", "FALSE" };
+
+            foreach (DataColumn dCol in sourceTable.Columns)
+            {
+                colType.Add(dCol.ColumnName, dCol.DataType.FullName);
+
+                if (typeof(string).FullName == dCol.DataType.FullName)
+                {
+                    var distinctValueList = sourceTable.Rows.Cast<DataRow>().Select(r => r[dCol.ColumnName]).Where(i => i.GetType() != typeof(DBNull)).Cast<string>().Distinct().ToList();
+                    if (distinctValueList.Intersect(enumBoolean).Any())
+                    {
+                        colType[dCol.ColumnName] = "ENUM_BOOLEAN";
+                    }
                 }
             }
-            catch
-            {
-            }
-        }
 
-        private void TmtDataGridViewMain_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            try
-            {
-                if (e.Button == MouseButtons.Left &&
-                    e.Clicks == 2)
-                {
-                    buttonOK.PerformClick();
-                }
-            }
-            catch
-            {
-            }
+            return colType;
         }
 
         private void TmtDataGridViewMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -255,9 +229,52 @@ namespace TMTControls.TMTDialogs
             }
         }
 
-        private void ButtonCancel_Click(object sender, EventArgs e)
+        private void TmtDataGridViewMain_KeyDown(object sender, KeyEventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
+            try
+            {
+                if (e.KeyCode == Keys.Enter)
+                {
+                    buttonOK.PerformClick();
+
+                    e.Handled = true;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void TmtDataGridViewMain_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            try
+            {
+                if (e.Button == MouseButtons.Left &&
+                    e.Clicks == 2)
+                {
+                    buttonOK.PerformClick();
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void TMTListOfValueDialog_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                var pro = new FontAwesome5.Properties(FontAwesome5.Type.ThList)
+                {
+                    Size = 96,
+                    ForeColor = Color.FromArgb(0, 158, 178),
+                    Location = new Point(0, 5)
+                };
+                this.Image = pro.AsImage();
+            }
+            catch
+            {
+            }
         }
     }
 }

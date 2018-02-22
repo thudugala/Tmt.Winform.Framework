@@ -35,7 +35,7 @@
             this.checkBoxCaseSensitive = new System.Windows.Forms.CheckBox();
             this.checkBoxTop100 = new System.Windows.Forms.CheckBox();
             this.panelMain.SuspendLayout();
-            this.SuspendLayout();           
+            this.SuspendLayout();
             // 
             // panelMain
             // 
@@ -89,7 +89,6 @@
             // 
             // TMTSearchDialog
             // 
-            this.Image = global::TMTControls.Properties.Resources.searchTitle;
             this.AcceptButton = this.buttonOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.BackColor = System.Drawing.Color.White;
