@@ -162,8 +162,8 @@
   <data name="buttonNavigateBack.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
-  <data name="buttonNavigateBack.Image" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="buttonNavigateBack.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
+    <value>Flat</value>
   </data>
   <data name="buttonNavigateBack.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -177,9 +177,6 @@
   <data name="buttonNavigateBack.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="buttonNavigateBack.Text" xml:space="preserve">
-    <value>BCK</value>
-  </data>
   <metadata name="toolTipBase.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
@@ -190,7 +187,7 @@
     <value>buttonNavigateBack</value>
   </data>
   <data name="&gt;&gt;buttonNavigateBack.Type" xml:space="preserve">
-    <value>TMTControls.IconButton, TMTControls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>FontAwesome.Sharp.IconButton, FontAwesome.Sharp, Version=4.7.1.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;buttonNavigateBack.Parent" xml:space="preserve">
     <value>panelTopPanel</value>
@@ -228,6 +225,39 @@
   <metadata name="statusStripBase.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>132, 17</value>
   </metadata>
+  <data name="toolStripStatusLabelWindowName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>86, 17</value>
+  </data>
+  <data name="toolStripStatusLabelWindowName.Text" xml:space="preserve">
+    <value>Window Name</value>
+  </data>
+  <data name="progressBarBase.Size" type="System.Drawing.Size, System.Drawing">
+    <value>300, 16</value>
+  </data>
+  <data name="progressBarBase.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="toolStripStatusLabelFill.Size" type="System.Drawing.Size, System.Drawing">
+    <value>683, 17</value>
+  </data>
+  <data name="captureScreenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 22</value>
+  </data>
+  <data name="captureScreenToolStripMenuItem.Text" xml:space="preserve">
+    <value>Capture Screen</value>
+  </data>
+  <data name="toolStripSplitButtonOptions.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="toolStripSplitButtonOptions.Size" type="System.Drawing.Size, System.Drawing">
+    <value>16, 20</value>
+  </data>
+  <data name="toolStripSplitButtonOptions.Text" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="toolStripSplitButtonOptions.ToolTipText" xml:space="preserve">
+    <value>Options</value>
+  </data>
   <data name="statusStripBase.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 578</value>
   </data>
@@ -248,39 +278,6 @@
   </data>
   <data name="&gt;&gt;statusStripBase.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="toolStripStatusLabelWindowName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>86, 17</value>
-  </data>
-  <data name="toolStripStatusLabelWindowName.Text" xml:space="preserve">
-    <value>Window Name</value>
-  </data>
-  <data name="progressBarBase.Size" type="System.Drawing.Size, System.Drawing">
-    <value>300, 16</value>
-  </data>
-  <data name="progressBarBase.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="toolStripStatusLabelFill.Size" type="System.Drawing.Size, System.Drawing">
-    <value>683, 17</value>
-  </data>
-  <data name="toolStripSplitButtonOptions.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
-    <value>Magenta</value>
-  </data>
-  <data name="toolStripSplitButtonOptions.Size" type="System.Drawing.Size, System.Drawing">
-    <value>16, 20</value>
-  </data>
-  <data name="toolStripSplitButtonOptions.Text" xml:space="preserve">
-    <value>Options</value>
-  </data>
-  <data name="toolStripSplitButtonOptions.ToolTipText" xml:space="preserve">
-    <value>Options</value>
-  </data>
-  <data name="captureScreenToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
-  </data>
-  <data name="captureScreenToolStripMenuItem.Text" xml:space="preserve">
-    <value>Capture Screen</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

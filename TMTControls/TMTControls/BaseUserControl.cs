@@ -1,10 +1,11 @@
-﻿using System;
+﻿using FontAwesome.Sharp;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using TMTControls.TMTDialogs;
+using TMT.Controls.WinForms.Dialogs;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     [ToolboxItem(false)]
     public partial class BaseUserControl : UserControl
@@ -14,12 +15,12 @@ namespace TMTControls
             InitializeComponent();
         }
 
-        [Category("TMT")]
+        [Category("Behavior")]
         public event EventHandler NavigateBack;
 
         protected T NavigateToPanel<T>() where T : UserControl
         {
-            return (this.ParentForm as TMTFormMain)?.LoadPanel(typeof(T)) as T;
+            return (this.ParentForm as FormMain)?.LoadPanel(typeof(T)) as T;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -42,18 +43,11 @@ namespace TMTControls
                 this.toolStripStatusLabelWindowName.Text = this.Name;
                 this.SetServerInformation();
 
-                buttonNavigateBack.UpdateIcon();
-
-                var iconProperties = new FontAwesome5.Properties(FontAwesome5.Type.Cog)
-                {
-                    ForeColor = Color.FromArgb(154, 189, 224),
-                    Size = 16,
-                };
-                toolStripSplitButtonOptions.Image = iconProperties.AsImage();
+                toolStripSplitButtonOptions.Image = IconChar.Cog.ToBitmap(16, Color.FromArgb(154, 189, 224));
             }
             catch (Exception ex)
             {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
             }
         }
 
@@ -70,7 +64,7 @@ namespace TMTControls
             }
             catch (Exception ex)
             {
-                TMTErrorDialog.Show(this, ex, Properties.Resources.ERROR_NavigationBack);
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_NavigationBack);
             }
         }
 

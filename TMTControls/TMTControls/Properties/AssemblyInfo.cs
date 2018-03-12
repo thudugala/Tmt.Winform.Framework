@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TMTControls")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TMT Controls WinForms")]
+[assembly: AssemblyDescription("WinForm Control Library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("TMT")]
-[assembly: AssemblyProduct("TMTControls")]
-[assembly: AssemblyCopyright("Copyright © TMT 2015")]
+[assembly: AssemblyCompany("ththlk")]
+[assembly: AssemblyProduct("TMT Controls")]
+[assembly: AssemblyCopyright("Copyright © Tharindu Thudugala 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,4 +34,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.0.0-alpha")]
 [assembly: NeutralResourcesLanguage("en")]

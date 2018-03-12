@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TMTControls.Properties {
+namespace TMT.Controls.WinForms.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TMTControls.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TMTControls.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TMT.Controls.WinForms.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace TMTControls.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TMT Design Issue.
+        ///   Looks up a localized string similar to Design Issue.
         /// </summary>
         public static string DESIN_ERROR {
             get {
@@ -219,6 +219,15 @@ namespace TMTControls.Properties {
         public static string ERROR_LoginDialog_Header {
             get {
                 return ResourceManager.GetString("ERROR_LoginDialog_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LDAP server is not reachable, please check your connection properties.
+        /// </summary>
+        public static string ERROR_LoginDialog_LDAP {
+            get {
+                return ResourceManager.GetString("ERROR_LoginDialog_LDAP", resourceCulture);
             }
         }
         

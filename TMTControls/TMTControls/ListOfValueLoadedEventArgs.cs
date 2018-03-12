@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     public class ListOfValueLoadedEventArgs : EventArgs
     {

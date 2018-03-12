@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     internal static class NativeMethods
     {

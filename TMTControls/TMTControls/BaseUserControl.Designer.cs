@@ -1,4 +1,4 @@
-﻿namespace TMTControls
+﻿namespace TMT.Controls.WinForms
 {
     partial class BaseUserControl
     {
@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BaseUserControl));
             this.panelTopPanel = new System.Windows.Forms.Panel();
             this.labelWindowName = new System.Windows.Forms.Label();
-            this.buttonNavigateBack = new TMTControls.IconButton();
+            this.buttonNavigateBack = new FontAwesome.Sharp.IconButton();
             this.toolTipBase = new System.Windows.Forms.ToolTip(this.components);
             this.statusStripBase = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelWindowName = new System.Windows.Forms.ToolStripStatusLabel();
@@ -46,33 +46,33 @@
             // 
             // panelTopPanel
             // 
-            this.panelTopPanel.BackColor = global::TMTControls.Properties.Settings.Default.PanelLabelBackColor;
+            this.panelTopPanel.BackColor = global::TMT.Controls.WinForms.Properties.Settings.Default.PanelLabelBackColor;
             this.panelTopPanel.Controls.Add(this.labelWindowName);
             this.panelTopPanel.Controls.Add(this.buttonNavigateBack);
-            this.panelTopPanel.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::TMTControls.Properties.Settings.Default, "PanelLabelBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.panelTopPanel.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::TMT.Controls.WinForms.Properties.Settings.Default, "PanelLabelBackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             resources.ApplyResources(this.panelTopPanel, "panelTopPanel");
             this.panelTopPanel.Name = "panelTopPanel";
             // 
             // labelWindowName
             // 
-            this.labelWindowName.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::TMTControls.Properties.Settings.Default, "PanelLabelForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.labelWindowName.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::TMT.Controls.WinForms.Properties.Settings.Default, "PanelLabelForeColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             resources.ApplyResources(this.labelWindowName, "labelWindowName");
-            this.labelWindowName.ForeColor = global::TMTControls.Properties.Settings.Default.PanelLabelForeColor;
+            this.labelWindowName.ForeColor = global::TMT.Controls.WinForms.Properties.Settings.Default.PanelLabelForeColor;
             this.labelWindowName.Name = "labelWindowName";
             // 
             // buttonNavigateBack
             // 
             resources.ApplyResources(this.buttonNavigateBack, "buttonNavigateBack");
             this.buttonNavigateBack.FlatAppearance.BorderSize = 0;
-            this.buttonNavigateBack.IconBackColor = System.Drawing.Color.Empty;
-            this.buttonNavigateBack.IconBorderColor = System.Drawing.Color.Empty;
-            this.buttonNavigateBack.IconForeColor = System.Drawing.Color.White;
-            this.buttonNavigateBack.IconLocation = new System.Drawing.Point(0, 0);
-            this.buttonNavigateBack.IconType = FontAwesome5.Type.ArrowCircleLeft;
+            this.buttonNavigateBack.Flip = FontAwesome.Sharp.FlipOrientation.Normal;
+            this.buttonNavigateBack.IconChar = FontAwesome.Sharp.IconChar.ArrowCircleLeft;
+            this.buttonNavigateBack.IconColor = System.Drawing.Color.White;
+            this.buttonNavigateBack.IconSize = 60;
             this.buttonNavigateBack.Name = "buttonNavigateBack";
+            this.buttonNavigateBack.Rotation = 0D;
             this.buttonNavigateBack.TabStop = false;
             this.toolTipBase.SetToolTip(this.buttonNavigateBack, resources.GetString("buttonNavigateBack.ToolTip"));
-            this.buttonNavigateBack.UseVisualStyleBackColor = true;
+            this.buttonNavigateBack.UseVisualStyleBackColor = false;
             this.buttonNavigateBack.Click += new System.EventHandler(this.ButtonNavigateBack_Click);
             // 
             // statusStripBase
@@ -139,7 +139,7 @@
 
         #endregion
         protected System.Windows.Forms.Label labelWindowName;
-        private IconButton buttonNavigateBack;
+        private FontAwesome.Sharp.IconButton buttonNavigateBack;
         protected System.Windows.Forms.ToolTip toolTipBase;
         private System.Windows.Forms.Panel panelTopPanel;
         protected internal System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelWindowName;

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     public class UserControlEditor : UITypeEditor
     {

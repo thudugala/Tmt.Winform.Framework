@@ -2,7 +2,7 @@
 using System.Data;
 using System.Threading.Tasks;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     public interface IDataManager
     {

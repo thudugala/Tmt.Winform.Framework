@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     public class DataSaveArg : IDisposable
     {

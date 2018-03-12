@@ -1,4 +1,4 @@
-﻿namespace TMTControls
+﻿namespace TMT.Controls.WinForms
 {
     public class ColumnData
     {

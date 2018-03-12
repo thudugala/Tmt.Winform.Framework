@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     public class ListOfValueLoadingEventArgs : EventArgs
     {

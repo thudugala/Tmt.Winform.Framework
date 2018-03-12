@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
 
-namespace TMTControls
+namespace TMT.Controls.WinForms
 {
     public class DataValidatingEventArgs : EventArgs
     {

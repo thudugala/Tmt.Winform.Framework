@@ -238,7 +238,7 @@
     <value>Port must have value</value>
   </data>
   <data name="DESIN_ERROR" xml:space="preserve">
-    <value>TMT Design Issue</value>
+    <value>Design Issue</value>
   </data>
   <data name="QUESTION_DeleteConfirm" xml:space="preserve">
     <value>"{0}" will be removed. Are you sure ?</value>
@@ -255,5 +255,8 @@
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="fontawesome_webfont" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\fontawesome-webfont.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ERROR_LoginDialog_LDAP" xml:space="preserve">
+    <value>LDAP server is not reachable, please check your connection properties</value>
   </data>
 </root>
