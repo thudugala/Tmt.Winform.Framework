@@ -63,9 +63,9 @@ namespace TMT.Controls.WinForms
             return GetChildDataGridViews(parentPanel);
         }
 
-        public static string GetDatabaseOperator(string value)
+        public static string GetDatabaseOperator(in string value)
         {
-            string operatorSymbol = "=";
+            var operatorSymbol = "=";
             if (string.IsNullOrWhiteSpace(value))
             {
                 return operatorSymbol;
@@ -102,7 +102,7 @@ namespace TMT.Controls.WinForms
             return operatorSymbol;
         }
 
-        public static DataTable GetDataSourceTableChanges(this DataTable table, string tableName)
+        public static DataTable GetDataSourceTableChanges(this DataTable table, in string tableName)
         {
             if (table == null)
             {
@@ -114,10 +114,11 @@ namespace TMT.Controls.WinForms
 
             if (changedData != null && changedData.Rows.Count > 0)
             {
-                List<DataRow> removeList = new List<DataRow>();
+                var removeList = new List<DataRow>();
                 foreach (DataRow row in changedData.Rows)
                 {
-                    if (row.RowState != DataRowState.Deleted && row.ItemArray.All(i => i == null || string.IsNullOrWhiteSpace(i.ToString())))
+                    if (row.RowState != DataRowState.Deleted && 
+                        row.ItemArray.All(i => i == null || string.IsNullOrWhiteSpace(i.ToString())))
                     {
                         removeList.Add(row);
                     }
@@ -136,14 +137,14 @@ namespace TMT.Controls.WinForms
                                 actualyModified = true;
                                 break;
                             }
-                            else if (row[col.ColumnName] is byte[])
+                            else if (row[col.ColumnName] is byte[] byteValue)
                             {
                                 if ((row[col.ColumnName, DataRowVersion.Original] as byte[]) == null)
                                 {
                                     actualyModified = true;
                                     break;
                                 }
-                                if ((row[col.ColumnName] as byte[]).SequenceEqual<byte>(row[col.ColumnName, DataRowVersion.Original] as byte[]) == false)
+                                if (byteValue.SequenceEqual(row[col.ColumnName, DataRowVersion.Original] as byte[]) == false)
                                 {
                                     actualyModified = true;
                                     break;
@@ -177,7 +178,7 @@ namespace TMT.Controls.WinForms
             // Seriously cheat.  If its Monday, Tuesday or Wednesday, then it'll
             // be the same week# as whatever Thursday, Friday or Saturday are,
             // and we always get those right
-            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+            var day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
             if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
             {
                 time = time.AddDays(3);
@@ -216,7 +217,7 @@ namespace TMT.Controls.WinForms
 
         public static string IsSameRowTypeSelected(this DataGridView table, string uiColumnName)
         {
-            string selectedType = string.Empty;
+            var selectedType = string.Empty;
 
             var selectedRowList = table.GetSelectedRowList();
             if (selectedRowList.Count() > 0)

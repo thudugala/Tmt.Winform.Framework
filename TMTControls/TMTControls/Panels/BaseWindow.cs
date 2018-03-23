@@ -12,7 +12,7 @@ namespace TMT.Controls.WinForms.Panels
     [ToolboxItem(false)]
     public partial class BaseWindow : TMT.Controls.WinForms.BaseUserControl
     {
-        private IDataManager DataManager;
+        private IDataManager _dataManager;
 
         public BaseWindow()
         {
@@ -39,6 +39,31 @@ namespace TMT.Controls.WinForms.Panels
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [DefaultValue(true)]
         protected bool ShowSaveNullMessage { get; set; }
+
+        public void PerformClear()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                this.WindowRecordState = WindowRecordState.None;
+
+                this.DataClear();
+
+                buttonRefresh.Enabled = false;
+                buttonDuplicate.Enabled = false;
+                buttonDelete.Enabled = false;
+                buttonSave.Enabled = false;
+                buttonClear.Enabled = false;
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_ClearingData);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
+            }
+        }
 
         public void PerformDataNew()
         {
@@ -98,6 +123,62 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
+        public void PerformDelete()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                this.WindowRecordState = WindowRecordState.None;
+
+                this.DataDelete();
+
+                buttonRefresh.Enabled = true;
+                buttonClear.Enabled = true;
+
+                buttonNew.Enabled = this.IsNewAllowed;
+                buttonDuplicate.Enabled = this.IsNewAllowed;
+
+                buttonDelete.Enabled = this.IsDeleteAllowed;
+                buttonSave.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_Removing);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
+            }
+        }
+
+        public void PerformDuplicate()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                this.WindowRecordState = WindowRecordState.New;
+
+                this.DataDuplicate();
+
+                buttonRefresh.Enabled = true;
+                buttonClear.Enabled = true;
+
+                buttonNew.Enabled = false;
+                buttonDuplicate.Enabled = false;
+
+                buttonDelete.Enabled = this.IsDeleteAllowed;
+                buttonSave.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_DuplicatingNew);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
+            }
+        }
+
         public async Task PerformRefresh()
         {
             try
@@ -128,21 +209,54 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
+        public async Task PerformSearch()
+        {
+            try
+            {
+                this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
+                this.WindowRecordState = WindowRecordState.None;
+
+                if (this.SearchDialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    await this.DataSearch();
+
+                    buttonRefresh.Enabled = true;
+                    buttonClear.Enabled = true;
+
+                    buttonNew.Enabled = this.IsNewAllowed;
+                    buttonDuplicate.Enabled = this.IsNewAllowed;
+
+                    buttonDelete.Enabled = this.IsDeleteAllowed;
+                    buttonSave.Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoadingData);
+            }
+            finally
+            {
+                this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
+            }
+        }
+
         internal async Task DataPopulateAllListOfValueRecords(ListOfValueLoadingEventArgs arg)
         {
             DataTable dataTable = null;
             if (arg.LimitLoad)
             {
-                dataTable = await DataManager?.LoadListOfValuesDataFromDatabase(arg,
+                dataTable = await _dataManager?.LoadListOfValuesDataFromDatabase(arg,
                     this.GetListOfValueViewColumnDbNameList(arg.ListOfValueViewName), null);
             }
             else
             {
-                int limitOffset = 0;
-                bool keepOnloading = true;
+                var limitOffset = 0;
+                var keepOnloading = true;
                 while (keepOnloading)
                 {
-                    var table = await DataManager?.LoadListOfValuesDataFromDatabase(arg,
+                    var table = await _dataManager?.LoadListOfValuesDataFromDatabase(arg,
                         this.GetListOfValueViewColumnDbNameList(arg.ListOfValueViewName), limitOffset);
 
                     limitOffset += 100;
@@ -194,7 +308,7 @@ namespace TMT.Controls.WinForms.Panels
                 return;
             }
 
-            foreach (KeyValuePair<string, string> filterColumn in e.FilterColumns)
+            foreach (var filterColumn in e.FilterColumns)
             {
                 if (e.Row.Cells[filterColumn.Value].Value != null)
                 {
@@ -209,7 +323,7 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
-        internal virtual void LoadIfActive()
+        internal virtual Task LoadIfActive()
         {
             throw new NotImplementedException();
         }
@@ -269,7 +383,7 @@ namespace TMT.Controls.WinForms.Panels
             throw new NotImplementedException();
         }
 
-        protected async Task DataPopulateAllRecords(DataLoadArgs args)
+        protected async Task DataPopulateAllRecords(DataLoadEventArgs args)
         {
             if (args == null)
             {
@@ -281,15 +395,15 @@ namespace TMT.Controls.WinForms.Panels
                 DataTable dataTable = null;
                 if (arg.LimitLoad)
                 {
-                    dataTable = await DataManager?.LoadDataFromDatabase(arg, null);
+                    dataTable = await _dataManager?.LoadDataFromDatabase(arg, null);
                 }
                 else
                 {
-                    int limitOffset = 0;
-                    bool keepOnloading = true;
+                    var limitOffset = 0;
+                    var keepOnloading = true;
                     while (keepOnloading)
                     {
-                        var table = await DataManager?.LoadDataFromDatabase(arg, limitOffset);
+                        var table = await _dataManager?.LoadDataFromDatabase(arg, limitOffset);
 
                         limitOffset += 100;
                         if (table != null)
@@ -356,9 +470,9 @@ namespace TMT.Controls.WinForms.Panels
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
-        protected async Task SaveDataToDatabase(DataSaveArg saveArg)
+        protected Task<int[]> SaveDataToDatabase(DataSaveEventArgs saveArg)
         {
-            await DataManager?.SaveDataToDatabase(saveArg);
+            return _dataManager?.SaveDataToDatabase(saveArg);
         }
 
         protected async virtual Task SearchDialogListOfValuesLoading(ListOfValueLoadingEventArgs e)
@@ -373,7 +487,7 @@ namespace TMT.Controls.WinForms.Panels
             {
                 this.SuspendLayout();
 
-                TinyIoCContainer.Current.TryResolve(out this.DataManager);
+                TinyIoCContainer.Current.TryResolve(out this._dataManager);
 
                 this.SearchDialog = new SearchDialog
                 {
@@ -404,131 +518,37 @@ namespace TMT.Controls.WinForms.Panels
 
         private void ButtonClear_Click(object sender, EventArgs e)
         {
-            try
-            {
-                this.UseWaitCursor = true;
-                this.WindowRecordState = WindowRecordState.None;
-
-                this.DataClear();
-
-                buttonRefresh.Enabled = false;
-                buttonDuplicate.Enabled = false;
-                buttonDelete.Enabled = false;
-                buttonSave.Enabled = false;
-                buttonClear.Enabled = false;
-            }
-            catch (Exception ex)
-            {
-                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_ClearingData);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-            }
+            PerformClear();
         }
 
         private void ButtonDelete_Click(object sender, EventArgs e)
         {
-            try
-            {
-                this.UseWaitCursor = true;
-                this.WindowRecordState = WindowRecordState.None;
-
-                this.DataDelete();
-
-                buttonRefresh.Enabled = true;
-                buttonClear.Enabled = true;
-
-                buttonNew.Enabled = this.IsNewAllowed;
-                buttonDuplicate.Enabled = this.IsNewAllowed;
-
-                buttonDelete.Enabled = this.IsDeleteAllowed;
-                buttonSave.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_Removing);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-            }
+            PerformDelete();
         }
 
         private void ButtonDuplicate_Click(object sender, EventArgs e)
         {
-            try
-            {
-                this.UseWaitCursor = true;
-                this.WindowRecordState = WindowRecordState.New;
-
-                this.DataDuplicate();
-
-                buttonRefresh.Enabled = true;
-                buttonClear.Enabled = true;
-
-                buttonNew.Enabled = false;
-                buttonDuplicate.Enabled = false;
-
-                buttonDelete.Enabled = this.IsDeleteAllowed;
-                buttonSave.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_DuplicatingNew);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-            }
+            PerformDuplicate();
         }
 
         private void ButtonNew_Click(object sender, EventArgs e)
         {
-            this.PerformDataNew();
+            PerformDataNew();
         }
 
         private async void ButtonRefresh_Click(object sender, EventArgs e)
         {
-            await this.PerformRefresh();
+            await PerformRefresh();
         }
 
         private async void ButtonSave_Click(object sender, EventArgs e)
         {
-            await this.PerformDataSave();
+            await PerformDataSave();
         }
 
         private async void ButtonSearch_Click(object sender, EventArgs e)
         {
-            try
-            {
-                this.UseWaitCursor = true;
-                progressBarBase.Visible = true;
-                this.WindowRecordState = WindowRecordState.None;
-
-                if (this.SearchDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    await this.DataSearch();
-
-                    buttonRefresh.Enabled = true;
-                    buttonClear.Enabled = true;
-
-                    buttonNew.Enabled = this.IsNewAllowed;
-                    buttonDuplicate.Enabled = this.IsNewAllowed;
-
-                    buttonDelete.Enabled = this.IsDeleteAllowed;
-                    buttonSave.Enabled = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoadingData);
-            }
-            finally
-            {
-                this.UseWaitCursor = false;
-                progressBarBase.Visible = false;
-            }
+            await PerformSearch();
         }
     }
 }

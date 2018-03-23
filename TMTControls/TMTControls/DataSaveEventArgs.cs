@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 
 namespace TMT.Controls.WinForms
 {
-    public class DataSaveArg : IDisposable
+    public class DataSaveEventArgs : EventArgs
     {
-        public DataSaveArg()
+        public DataSaveEventArgs()
         {
             this.ChangedDataSet = new DataSet
             {
@@ -17,13 +16,5 @@ namespace TMT.Controls.WinForms
 
         public DataSet ChangedDataSet { get; }
         public object GeneratedKey { get; set; }
-
-        public void Dispose()
-        {
-            if (ChangedDataSet != null)
-            {
-                ChangedDataSet.Dispose();
-            }
-        }
     }
 }

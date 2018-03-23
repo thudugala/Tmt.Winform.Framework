@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Deployment.Application;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TinyIoC;
 using TMT.Controls.WinForms.Dialogs;
@@ -18,7 +19,7 @@ namespace TMT.Controls.WinForms
             InitializeComponent();
         }
 
-        public virtual UserControl LoadPanel(Type panelType)
+        public virtual async Task<UserControl> LoadPanel(Type panelType)
         {
             if (panelType == null)
             {
@@ -52,26 +53,28 @@ namespace TMT.Controls.WinForms
                     panel = panelMain.Controls[panleName] as UserControl;
                 }
 
-                if (panel != null)
+                if (panel == null)
                 {
-                    panel.Visible = true;
-                    panel.BringToFront();
-                    panel.Focus();
-                    if (panel is BaseWindow baseWindow)
-                    {
-                        baseWindow.LoadIfActive();
-                    }
-                    if (this.navigationOrder.Contains(panel.GetType()))
-                    {
-                        int itemIndex = this.navigationOrder.IndexOf(panel.GetType());
-                        while (itemIndex < this.navigationOrder.Count)
-                        {
-                            this.navigationOrder.RemoveAt(itemIndex);
-                        }
-                    }
-
-                    this.navigationOrder.Add(panel.GetType());
+                    return null;
                 }
+
+                panel.Visible = true;
+                panel.BringToFront();
+                panel.Focus();
+                if (panel is BaseWindow baseWindow)
+                {
+                    await baseWindow.LoadIfActive();
+                }
+                if (this.navigationOrder.Contains(panel.GetType()))
+                {
+                    int itemIndex = this.navigationOrder.IndexOf(panel.GetType());
+                    while (itemIndex < this.navigationOrder.Count)
+                    {
+                        this.navigationOrder.RemoveAt(itemIndex);
+                    }
+                }
+
+                this.navigationOrder.Add(panel.GetType());
             }
             catch (Exception ex)
             {
@@ -80,7 +83,7 @@ namespace TMT.Controls.WinForms
             return panel;
         }
 
-        public virtual UserControl LoadTopWindow(object sender)
+        public virtual Task<UserControl> LoadTopWindow(object sender)
         {
             if (sender == null)
             {
@@ -88,24 +91,26 @@ namespace TMT.Controls.WinForms
             }
 
             var topWindow = this.navigationOrder.Last();
-            if (topWindow != null)
+            if (topWindow == null)
             {
-                this.navigationOrder.Remove(topWindow);
+                return null;
+            }
 
-                if (topWindow == sender.GetType())
-                {
-                    topWindow = this.navigationOrder.Last();
-                    if (topWindow != null)
-                    {
-                        this.navigationOrder.Remove(topWindow);
-                    }
-                }
+            this.navigationOrder.Remove(topWindow);
+
+            if (topWindow == sender.GetType())
+            {
+                topWindow = this.navigationOrder.Last();
                 if (topWindow != null)
                 {
-                    return this.LoadPanel(topWindow);
+                    this.navigationOrder.Remove(topWindow);
                 }
             }
-            return null;
+            if (topWindow == null)
+            {
+                return null;
+            }
+            return this.LoadPanel(topWindow);
         }
 
         private void FormMain_BackButtonClicked(object sender, EventArgs e)
@@ -120,14 +125,6 @@ namespace TMT.Controls.WinForms
             }
         }
 
-        private void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
-        {
-            if (e.NavigatePanel != null)
-            {
-                this.LoadPanel(e.NavigatePanel);
-            }
-        }
-
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
@@ -137,10 +134,10 @@ namespace TMT.Controls.WinForms
             catch { }
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
+        private async void FormMain_Load(object sender, EventArgs e)
         {
             try
-            {               
+            {
                 if (ApplicationDeployment.IsNetworkDeployed)
                 {
                     this.Text += $" - {ApplicationDeployment.CurrentDeployment.CurrentVersion}";
@@ -148,10 +145,27 @@ namespace TMT.Controls.WinForms
                 TinyIoCContainer.Current.AutoRegister();
 
                 var theHomeWindow = TinyIoCContainer.Current.Resolve<IRootHomeWinodw>();
-                if (theHomeWindow != null)
+                if (theHomeWindow == null)
                 {
-                    this.LoadPanel(theHomeWindow.GetType());
+                    return;
                 }
+                await this.LoadPanel(theHomeWindow.GetType());
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+            }
+        }
+
+        private async void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
+        {
+            try
+            {
+                if (e.NavigatePanel == null)
+                {
+                    return;
+                }
+                await this.LoadPanel(e.NavigatePanel);
             }
             catch (Exception ex)
             {

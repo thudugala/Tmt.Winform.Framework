@@ -6,10 +6,10 @@ namespace TMT.Controls.WinForms
 {
     public interface IDataManager
     {
-        Task<DataTable> LoadDataFromDatabase(DataLoadArg loadArg, int? limitOffset);
+        Task<DataTable> LoadDataFromDatabase(in DataLoadArg loadArg, in int? limitOffset);
 
-        Task<DataTable> LoadListOfValuesDataFromDatabase(ListOfValueLoadingEventArgs e, IList<string> listOfValueViewColumnDbNameList, int? limitOffset);
+        Task<DataTable> LoadListOfValuesDataFromDatabase(in ListOfValueLoadingEventArgs e, in IList<string> listOfValueViewColumnDbNameList, in int? limitOffset);
 
-        Task SaveDataToDatabase(DataSaveArg saveArg);
+        Task<int[]> SaveDataToDatabase(in DataSaveEventArgs saveArg);
     }
 }

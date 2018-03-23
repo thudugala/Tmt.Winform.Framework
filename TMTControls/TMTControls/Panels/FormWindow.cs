@@ -58,7 +58,8 @@ namespace TMT.Controls.WinForms.Panels
         {
             get
             {
-                return (this._focusedChildDataGridView != null && this._focusedChildDataGridView.ContainsFocus) ? this._focusedChildDataGridView.IsDeleteAllowed : base.IsDeleteAllowed;
+                return (this._focusedChildDataGridView != null && this._focusedChildDataGridView.ContainsFocus) ?
+                    this._focusedChildDataGridView.IsDeleteAllowed : base.IsDeleteAllowed;
             }
             set => base.IsDeleteAllowed = value;
         }
@@ -72,15 +73,16 @@ namespace TMT.Controls.WinForms.Panels
         [Category("Data")]
         public string ViewName { get; set; }
 
-        internal async override void LoadIfActive()
+        internal async override Task LoadIfActive()
         {
             try
             {
-                if (this.LoadDataWhenActive)
+                if (this.LoadDataWhenActive == false)
                 {
-                    this.SearchDialog.DialogResult = DialogResult.Ignore;
-                    await this.DataSearch();
+                    return;
                 }
+                this.SearchDialog.DialogResult = DialogResult.Ignore;
+                await this.DataSearch();
             }
             catch (Exception ex)
             {
@@ -170,7 +172,7 @@ namespace TMT.Controls.WinForms.Panels
                 {
                     recordSelector.PreviousSelectedValue = recordSelector.SelectedValue;
                 }
-                var arg = new DataSaveArg();
+                var arg = new DataSaveEventArgs();
 
                 this.Validate();
                 this.bindingSourceForm.EndEdit();
@@ -182,9 +184,12 @@ namespace TMT.Controls.WinForms.Panels
                 {
                     if (this.DataValidateBeforeSave(arg.ChangedDataSet) == false)
                     {
-                        await Task.Run(async () => await this.SaveDataToDatabase(arg));
+                        var saveResults = await Task.Run(async () =>
+                        {
+                            return await this.SaveDataToDatabase(arg);
+                        });
 
-                        if (arg.SaveResults.Any(i => i > 0))
+                        if (saveResults.Any(i => i > 0))
                         {
                             if ((recordSelector.PreviousSelectedValue == null || string.IsNullOrWhiteSpace(recordSelector.PreviousSelectedValue.ToString())) &&
                                (arg.GeneratedKey != null &&
@@ -253,7 +258,7 @@ namespace TMT.Controls.WinForms.Panels
                 arg.SearchConditionList.AddRange(this.SearchDialog.EntityList);
                 arg.ColumnDbNameList.AddRange(viewColumnDbNameList);
 
-                var args = new DataLoadArgs();
+                var args = new DataLoadEventArgs();
                 args.DataLoadArgList.Add(arg);
 
                 await Task.Run(async () => await this.DataPopulateAllRecords(args));
@@ -438,7 +443,7 @@ namespace TMT.Controls.WinForms.Panels
                 return;
             }
 
-            var args = new DataLoadArgs();
+            var args = new DataLoadEventArgs();
             foreach (var childDataGridView in childDataGridViewList)
             {
                 var arg = new DataLoadArg
@@ -481,7 +486,7 @@ namespace TMT.Controls.WinForms.Panels
             await base.SearchDialogListOfValuesLoading(e);
         }
 
-        protected virtual void SetChildTableListSearchConditionTables(DataRow headerSelectedRow, DataLoadArgs args)
+        protected virtual void SetChildTableListSearchConditionTables(DataRow headerSelectedRow, DataLoadEventArgs args)
         {
             if (headerSelectedRow == null)
             {
@@ -526,42 +531,47 @@ namespace TMT.Controls.WinForms.Panels
 
         private void ChildDataGridView_GotFocus(object sender, EventArgs e)
         {
-            if (sender is DbDataGridView gridView && gridView.Visible)
+            if (!(sender is DbDataGridView gridView && gridView.Visible))
             {
-                this._focusedChildDataGridView = gridView;
-                this._focusedChildDataGridView.BorderStyle = BorderStyle.FixedSingle;
-                this.SetChangeColumnButtonEnabled(true);
-                if (this.DataSourceTable.Rows.Count > 0)
+                return;
+            }
+            this._focusedChildDataGridView = gridView;
+            this._focusedChildDataGridView.BorderStyle = BorderStyle.FixedSingle;
+            this.SetChangeColumnButtonEnabled(true);
+            if (this.DataSourceTable.Rows.Count > 0)
+            {
+                this.SetNewButtonEnabled(this._focusedChildDataGridView.IsNewAllowed && this.WindowRecordState != WindowRecordState.New);
+                if (this._focusedChildDataGridView.DataSourceTable.Rows.Count <= 0)
                 {
-                    this.SetNewButtonEnabled(this._focusedChildDataGridView.IsNewAllowed && this.WindowRecordState != WindowRecordState.New);
-                    if (this._focusedChildDataGridView.DataSourceTable.Rows.Count > 0)
-                    {
-                        this.SetDeleteButtonEnabled(this._focusedChildDataGridView.IsDeleteAllowed);
-                    }
+                    return;
                 }
-                else
-                {
-                    this.SetNewButtonEnabled(false);
-                    this.SetDeleteButtonEnabled(false);
-                }
+                this.SetDeleteButtonEnabled(this._focusedChildDataGridView.IsDeleteAllowed);
+            }
+            else
+            {
+                this.SetNewButtonEnabled(false);
+                this.SetDeleteButtonEnabled(false);
             }
         }
 
         private void ChildDataGridView_VisibleChanged(object sender, EventArgs e)
         {
-            if (sender is DbDataGridView gridView && gridView.Visible)
+            if (!(sender is DbDataGridView gridView && gridView.Visible))
             {
-                this._focusedChildDataGridView = gridView;
-                this.SetChangeColumnButtonEnabled(true);
-                if (this.DataSourceTable.Rows.Count > 0)
-                {
-                    this.SetNewButtonEnabled(this._focusedChildDataGridView.IsNewAllowed && this.WindowRecordState != WindowRecordState.New);
-                    if (this._focusedChildDataGridView.DataSourceTable.Rows.Count > 0)
-                    {
-                        this.SetDeleteButtonEnabled(this._focusedChildDataGridView.IsDeleteAllowed);
-                    }
-                }
+                return;
             }
+            this._focusedChildDataGridView = gridView;
+            this.SetChangeColumnButtonEnabled(true);
+            if (this.DataSourceTable.Rows.Count <= 0)
+            {
+                return;
+            }
+            this.SetNewButtonEnabled(this._focusedChildDataGridView.IsNewAllowed && this.WindowRecordState != WindowRecordState.New);
+            if (this._focusedChildDataGridView.DataSourceTable.Rows.Count <= 0)
+            {
+                return;
+            }
+            this.SetDeleteButtonEnabled(this._focusedChildDataGridView.IsDeleteAllowed);
         }
 
         private void ClearChildDataGridViews(bool enableDataGrids)
@@ -628,7 +638,7 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
-        private void GetChildTableChangedDataTable(DataSaveArg arg)
+        private void GetChildTableChangedDataTable(DataSaveEventArgs arg)
         {
             var childDataGridViewList = this.panelForm.GetChildDataGridViewList();
             if (childDataGridViewList.Count <= 0)
@@ -646,7 +656,7 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
-        private void GetFormChangedDataTable(DataSaveArg arg)
+        private void GetFormChangedDataTable(DataSaveEventArgs arg)
         {
             var changedData = this.DataSourceTable.GetDataSourceTableChanges(this.TableName);
             if (changedData == null || changedData.Rows.Count <= 0)
@@ -742,53 +752,55 @@ namespace TMT.Controls.WinForms.Panels
                 Locale = CultureInfo.InvariantCulture
             };
 
-            var dbControlList = this.panelForm.Controls.Cast<Control>()
+            var dbControlList = this.panelForm.Controls.OfType<Control>()
                                                         .Where(c => c is IDbControl)
                                                         .OrderBy(c => c.TabIndex);
             foreach (var uiControl in dbControlList)
             {
                 var sourceInfor = uiControl as IDbControl;
 
-                if (string.IsNullOrWhiteSpace(sourceInfor.DbColumnName) == false)
+                if (string.IsNullOrWhiteSpace(sourceInfor.DbColumnName))
                 {
-                    var myCheckBox = uiControl as DbCheckBox;
-
-                    if (uiControl.Visible)
-                    {
-                        var searchEntity = new SearchEntity()
-                        {
-                            Caption = sourceInfor.GetLableText(),
-                            ColumnName = sourceInfor.DbColumnName,
-                            DataType = sourceInfor.GetDbColumnSystemType()
-                        };
-                        if (uiControl is DbTextButtonBox myTextButtonBox)
-                        {
-                            searchEntity.ListOfValueView = myTextButtonBox.ListOfValueViewName;
-                        }
-
-                        if (myCheckBox != null)
-                        {
-                            searchEntity.IsCheckBox = true;
-                            searchEntity.FalseValue = myCheckBox.FalseValue;
-                            searchEntity.TrueValue = myCheckBox.TrueValue;
-                            searchEntity.IndeterminateValue = myCheckBox.IndeterminateValue;
-                        }
-
-                        this.SearchDialog.EntityList.Add(searchEntity);
-                    }
-
-                    dataTable.Columns.Add(sourceInfor.DbColumnName, sourceInfor.GetDbColumnSystemType());
-
-                    if (myCheckBox != null)
-                    {
-                        myCheckBox.CheckedChanged += UiControl_CheckedChanged;
-                    }
-                    else
-                    {
-                        uiControl.TextChanged += UiControl_TextChanged;
-                    }
-                    uiControl.GotFocus += UiControl_GotFocus;
+                    continue;
                 }
+                dataTable.Columns.Add(sourceInfor.DbColumnName, sourceInfor.GetDbColumnSystemType());
+
+                var myCheckBox = uiControl as DbCheckBox;
+
+                if (myCheckBox != null)
+                {
+                    myCheckBox.CheckedChanged += UiControl_CheckedChanged;
+                }
+                else
+                {
+                    uiControl.TextChanged += UiControl_TextChanged;
+                }
+                uiControl.GotFocus += UiControl_GotFocus;
+
+                if (uiControl.Visible == false)
+                {
+                    continue;
+                }
+                var searchEntity = new SearchEntity()
+                {
+                    Caption = sourceInfor.GetLableText(),
+                    ColumnName = sourceInfor.DbColumnName,
+                    DataType = sourceInfor.GetDbColumnSystemType()
+                };
+                if (uiControl is DbTextButtonBox myTextButtonBox)
+                {
+                    searchEntity.ListOfValueView = myTextButtonBox.ListOfValueViewName;
+                }
+
+                if (myCheckBox != null)
+                {
+                    searchEntity.IsCheckBox = true;
+                    searchEntity.FalseValue = myCheckBox.FalseValue;
+                    searchEntity.TrueValue = myCheckBox.TrueValue;
+                    searchEntity.IndeterminateValue = myCheckBox.IndeterminateValue;
+                }
+
+                this.SearchDialog.EntityList.Add(searchEntity);
             }
 
             this.DataSourceTable = dataTable;
@@ -831,33 +843,32 @@ namespace TMT.Controls.WinForms.Panels
 
         private void SetControlDataBindings(IEnumerable<Control> uiControlList)
         {
+            var controls = uiControlList.Where(c => (c is IDbControl dbControl && string.IsNullOrWhiteSpace(dbControl.DbColumnName) == false));
+
             string propetyName;
-            foreach (var dbControl in uiControlList)
+            foreach (var dbControl in controls)
             {
                 var dbColumnName = (dbControl as IDbControl).DbColumnName;
 
-                if (string.IsNullOrWhiteSpace(dbColumnName) == false)
+                if (dbControl is NumericUpDown ||
+                    dbControl is DateTimePicker)
                 {
-                    if (dbControl is NumericUpDown ||
-                        dbControl is DateTimePicker)
-                    {
-                        propetyName = "Value";
-                    }
-                    else if (dbControl is DbCheckBox)
-                    {
-                        propetyName = "DbValue";
-                    }
-                    else if (dbControl is ComboBox)
-                    {
-                        propetyName = "SelectedValue";
-                    }
-                    else
-                    {
-                        propetyName = "Text";
-                    }
-                    dbControl.DataBindings.Add(propetyName, this.bindingSourceForm, dbColumnName,
-                                                true, DataSourceUpdateMode.OnValidation);
+                    propetyName = "Value";
                 }
+                else if (dbControl is DbCheckBox dbCheckBox)
+                {
+                    propetyName = nameof(dbCheckBox.DbValue);
+                }
+                else if (dbControl is ComboBox comboBox)
+                {
+                    propetyName = nameof(comboBox.SelectedValue);
+                }
+                else
+                {
+                    propetyName = "Text";
+                }
+                dbControl.DataBindings.Add(propetyName, this.bindingSourceForm, dbColumnName,
+                                            true, DataSourceUpdateMode.OnValidation);
             }
         }
 
@@ -916,47 +927,48 @@ namespace TMT.Controls.WinForms.Panels
             {
                 return;
             }
-            if (sender is IDbControl dbControl)
+            var dataRowView = this.bindingSourceForm.Current as DataRowView;
+            if (dataRowView == null)
             {
-                if (string.IsNullOrWhiteSpace(dbControl.DbColumnName))
-                {
-                    return;
-                }
+                return;
+            }
+            if (!(sender is IDbControl dbControl))
+            {
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(dbControl.DbColumnName))
+            {
+                return;
+            }
 
-                object senderValue = null;
-                if (sender is NumericUpDown senderNumericUpDown)
-                {
-                    senderValue = senderNumericUpDown.Value;
-                }
-                else if (sender is DateTimePicker senderDateTimePicker)
-                {
-                    senderValue = senderDateTimePicker.Value;
-                }
-                else if (sender is DbCheckBox senderCheckBox)
-                {
-                    senderValue = senderCheckBox.DbValue;
-                }
-                else if (sender is ComboBox senderComboBox)
-                {
-                    senderValue = senderComboBox.SelectedValue;
-                }
-                else
-                {
-                    senderValue = (sender as Control).Text;
-                }
+            object senderValue = null;
+            if (sender is NumericUpDown senderNumericUpDown)
+            {
+                senderValue = senderNumericUpDown.Value;
+            }
+            else if (sender is DateTimePicker senderDateTimePicker)
+            {
+                senderValue = senderDateTimePicker.Value;
+            }
+            else if (sender is DbCheckBox senderCheckBox)
+            {
+                senderValue = senderCheckBox.DbValue;
+            }
+            else if (sender is ComboBox senderComboBox)
+            {
+                senderValue = senderComboBox.SelectedValue;
+            }
+            else
+            {
+                senderValue = (sender as Control).Text;
+            }
 
-                var dataRowView = this.bindingSourceForm.Current as DataRowView;
-                if (dataRowView == null)
-                {
-                    return;
-                }
-                var orginalValue = dataRowView.Row[dbControl.DbColumnName, DataRowVersion.Current];
-                if ((senderValue == null && orginalValue != null) ||
-                    (senderValue != null && orginalValue == null) ||
-                    (senderValue.ToString() != orginalValue.ToString()))
-                {
-                    this.DataChanged();
-                }
+            var orginalValue = dataRowView.Row[dbControl.DbColumnName, DataRowVersion.Current];
+            if ((senderValue == null && orginalValue != null) ||
+                (senderValue != null && orginalValue == null) ||
+                (senderValue.ToString() != orginalValue.ToString()))
+            {
+                this.DataChanged();
             }
         }
     }

@@ -51,15 +51,17 @@ namespace TMT.Controls.WinForms.Panels
             this.SearchDialog.EntityListAddRange(this.dbViewTable.InitializeTableControls());
         }
 
-        internal async override void LoadIfActive()
+        internal async override Task LoadIfActive()
         {
             try
             {
-                if (this.dbViewTable.LoadDataWhenActive)
+                if (this.dbViewTable.LoadDataWhenActive == false)
                 {
-                    this.SearchDialog.DialogResult = DialogResult.Ignore;
-                    await this.DataSearch();
+                    return;
                 }
+
+                this.SearchDialog.DialogResult = DialogResult.Ignore;
+                await this.DataSearch();
             }
             catch (Exception ex)
             {
@@ -97,7 +99,7 @@ namespace TMT.Controls.WinForms.Panels
 
                 if (changedData != null && changedData.Rows.Count > 0)
                 {
-                    var arg = new DataSaveArg();
+                    var arg = new DataSaveEventArgs();
                     arg.ChangedDataSet.Tables.Add(changedData);
                     this.Validate();
 
@@ -108,9 +110,12 @@ namespace TMT.Controls.WinForms.Panels
                     };
                     if (this.DataValidateBeforeSave(arg.ChangedDataSet) == false)
                     {
-                        await Task.Run(async () => await this.SaveDataToDatabase(arg));
+                        var saveResults = await Task.Run(async () =>
+                        {
+                            return await this.SaveDataToDatabase(arg);
+                        });
 
-                        if (arg.SaveResults.All(i => i > 0))
+                        if (saveResults.All(i => i > 0))
                         {
                             await this.LoadOnlySavedData(arg.ChangedDataSet.Tables[this.dbViewTable.TableName]);
                             //await this.DataSearch();
@@ -169,7 +174,7 @@ namespace TMT.Controls.WinForms.Panels
                 arg.SelectedRowIndexList.UnionWith(selectedRowIndexes);
             }
 
-            var args = new DataLoadArgs();
+            var args = new DataLoadEventArgs();
             args.DataLoadArgList.Add(arg);
 
             await Task.Run(async () => await this.DataPopulateAllRecords(args));
@@ -223,29 +228,30 @@ namespace TMT.Controls.WinForms.Panels
             foreach (var keyViewColumn in keyViewColumnList)
             {
                 var keyDbColumnValueList = rowList.Select(r => r[keyViewColumn.DataPropertyName].ToString());
-                if (keyDbColumnValueList.Count() > 0)
+                if (keyDbColumnValueList.Count() <= 0)
                 {
-                    var idConcatList = string.Join("; ", keyDbColumnValueList);
+                    continue;
+                }
+                var idConcatList = string.Join("; ", keyDbColumnValueList);
 
-                    var searchCondition = searchConditionList.SingleOrDefault(r => r.ColumnName == keyViewColumn.DataPropertyName);
-                    if (searchCondition != null)
+                var searchCondition = searchConditionList.SingleOrDefault(r => r.ColumnName == keyViewColumn.DataPropertyName);
+                if (searchCondition != null)
+                {
+                    searchCondition.Value += $"; {idConcatList}";
+                }
+                else
+                {
+                    searchConditionList.Add(new SearchEntity
                     {
-                        searchCondition.Value += $"; {idConcatList}";
-                    }
-                    else
-                    {
-                        searchConditionList.Add(new SearchEntity
-                        {
-                            ColumnName = keyViewColumn.DataPropertyName,
-                            Value = idConcatList,
-                            DataType = keyViewColumn.ValueType
-                        });
-                    }
+                        ColumnName = keyViewColumn.DataPropertyName,
+                        Value = idConcatList,
+                        DataType = keyViewColumn.ValueType
+                    });
                 }
             }
         }
 
-        private void AfterLoad(DataLoadArgs args)
+        private void AfterLoad(DataLoadEventArgs args)
         {
             var arg = args.DataLoadArgList.First();
 
@@ -253,31 +259,62 @@ namespace TMT.Controls.WinForms.Panels
             this.dbViewTable.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
             this.dbViewTable.AutoResizeRows(DataGridViewAutoSizeRowsMode.DisplayedCells);
 
-            if (arg.SelectedRowIndexList != null &&
-                arg.SelectedRowIndexList.Count > 0)
-            {
-                bool firstIndex = true;
-                foreach (DataGridViewRow row in this.dbViewTable.Rows)
-                {
-                    if (arg.SelectedRowIndexList.Contains(row.Index))
-                    {
-                        row.Selected = true;
-                        if (firstIndex)
-                        {
-                            this.dbViewTable.FirstDisplayedScrollingRowIndex = row.Index;
-                            firstIndex = false;
-                        }
-                    }
-                }
-                arg.SelectedRowIndexList.Clear();
-            }
-
             if (this.dbViewTable.DataSourceTable == null ||
                 this.dbViewTable.DataSourceTable.Rows.Count == 0)
             {
                 MessageDialog.Show(this, Properties.Resources.Exclamation_NoDataFoundText,
                                       Properties.Resources.Exclamation_NoDataFound,
                                       MessageDialogIcon.Asterisk);
+                return;
+            }
+
+            if (arg.SelectedRowIndexList == null ||
+                arg.SelectedRowIndexList.Count <= 0)
+            {
+                return;
+            }
+            bool firstIndex = true;
+            foreach (DataGridViewRow row in this.dbViewTable.Rows)
+            {
+                if (arg.SelectedRowIndexList.Contains(row.Index) == false)
+                {
+                    continue;
+                }
+                row.Selected = true;
+                if (firstIndex)
+                {
+                    this.dbViewTable.FirstDisplayedScrollingRowIndex = row.Index;
+                    firstIndex = false;
+                }
+            }
+            arg.SelectedRowIndexList.Clear();
+        }
+
+        private void DbTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex > -1 && e.RowIndex > -1)
+            {
+                this.DataChanged();
+            }
+        }
+
+        private void DbTable_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            if (e.Row != null)
+            {
+                this.DataChanged();
+            }
+        }
+
+        private void DbTable_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            if (e.Row != null)
+            {
+                if (MessageDialog.ShowQuestion(this, Properties.Resources.QUESTION_DeleteConfirmAll,
+                                          Properties.Resources.QUESTION_Delete) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
             }
         }
 
@@ -318,7 +355,7 @@ namespace TMT.Controls.WinForms.Panels
                 SetSearchConditionTable(arg.SearchConditionList, savedData, keyViewColumnList);
             }
 
-            var args = new DataLoadArgs();
+            var args = new DataLoadEventArgs();
             args.DataLoadArgList.Add(arg);
 
             await Task.Run(async () => await this.DataPopulateAllRecords(args));
@@ -343,34 +380,6 @@ namespace TMT.Controls.WinForms.Panels
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
-            }
-        }
-
-        private void DbTable_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex > -1 && e.RowIndex > -1)
-            {
-                this.DataChanged();
-            }
-        }
-
-        private void DbTable_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-            if (e.Row != null)
-            {
-                this.DataChanged();
-            }
-        }
-
-        private void DbTable_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
-        {
-            if (e.Row != null)
-            {
-                if (MessageDialog.ShowQuestion(this, Properties.Resources.QUESTION_DeleteConfirmAll,
-                                          Properties.Resources.QUESTION_Delete) == DialogResult.No)
-                {
-                    e.Cancel = true;
-                }
             }
         }
     }

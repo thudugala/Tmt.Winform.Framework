@@ -84,8 +84,8 @@ namespace TMT.Controls.WinForms
             {
                 if (captureScreenToolStripMenuItem.Checked)
                 {
-                    Rectangle bounds = this.ParentForm.Bounds;
-                    using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+                    var bounds = this.ParentForm.Bounds;
+                    using (var bitmap = new Bitmap(bounds.Width, bounds.Height))
                     {
                         using (var g = Graphics.FromImage(bitmap))
                         {

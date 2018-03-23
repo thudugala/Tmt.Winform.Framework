@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -80,8 +80,8 @@
       <DependentUpon>BaseUserControl.cs</DependentUpon>
     </Compile>
     <Compile Include="ColumnData.cs" />
-    <Compile Include="DataLoadArgs.cs" />
-    <Compile Include="DataSaveArg.cs" />
+    <Compile Include="DataLoadEventArgs.cs" />
+    <Compile Include="DataSaveEventArgs.cs" />
     <Compile Include="DataValidatingEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IDataManager.cs" />
