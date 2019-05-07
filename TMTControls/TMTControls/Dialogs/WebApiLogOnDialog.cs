@@ -173,7 +173,7 @@ namespace TMT.Controls.WinForms.Dialogs
                 textBoxUserId.Tag = textBoxUserId.Text;
                 textBoxPassword.Text = Properties.Settings.Default.LogInPassword;
                 textBoxServerUrl.Text = Properties.Settings.Default.ServerURL;
-                comboBoxAuthSource.Text = (Properties.Settings.Default.LDAPAuth) ? LDAP : DB;
+                comboBoxAuthSource.Text = Properties.Settings.Default.LDAPAuth ? LDAP : DB;
                 textBoxLdapServerUrl.Text = Properties.Settings.Default.LDAPServerURL;
 
                 if (this.OnlyDBAuth)
@@ -182,7 +182,7 @@ namespace TMT.Controls.WinForms.Dialogs
                     textBoxLdapServerUrl.Visible = false;
                 }
 
-                this.Image = IconChar.SignIn.ToBitmap(72, Color.FromArgb(82, 124, 182));
+                this.Image = IconChar.SignInAlt.ToBitmap(72, Color.FromArgb(82, 124, 182));
             }
             catch (Exception ex)
             {

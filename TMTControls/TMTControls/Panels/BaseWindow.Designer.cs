@@ -152,7 +152,7 @@
             this.buttonSave.FlatAppearance.BorderSize = 0;
             this.buttonSave.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonSave.Flip = FontAwesome.Sharp.FlipOrientation.Normal;
-            this.buttonSave.IconChar = FontAwesome.Sharp.IconChar.FloppyO;
+            this.buttonSave.IconChar = FontAwesome.Sharp.IconChar.Save;
             this.buttonSave.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(1)))), ((int)(((byte)(72)))), ((int)(((byte)(152)))));
             this.buttonSave.IconSize = 48;
             this.buttonSave.Location = new System.Drawing.Point(0, 108);
@@ -173,7 +173,7 @@
             this.buttonRefresh.FlatAppearance.BorderSize = 0;
             this.buttonRefresh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonRefresh.Flip = FontAwesome.Sharp.FlipOrientation.Normal;
-            this.buttonRefresh.IconChar = FontAwesome.Sharp.IconChar.Refresh;
+            this.buttonRefresh.IconChar = FontAwesome.Sharp.IconChar.Redo;
             this.buttonRefresh.IconColor = System.Drawing.Color.CornflowerBlue;
             this.buttonRefresh.IconSize = 48;
             this.buttonRefresh.Location = new System.Drawing.Point(0, 54);

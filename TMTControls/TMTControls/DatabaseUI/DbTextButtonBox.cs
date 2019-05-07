@@ -72,12 +72,12 @@ namespace TMT.Controls.WinForms.DatabaseUI
             }
 
             e.FillSearchConditionTable();
-            ListOfValueLoading?.Invoke(this, e);
+            ListOfValueLoading?.Invoke(this, e);           
             if (e.Handled == false)
             {
                 var basewindow = this.FindParentBaseWindow();
                 if (basewindow != null)
-                {
+                {                    
                     await basewindow.DataPopulateAllListOfValueRecords(e);
                 }
             }
@@ -90,7 +90,7 @@ namespace TMT.Controls.WinForms.DatabaseUI
 
         private void InitializeComponent()
         {
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(DbTextButtonBox));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DbTextButtonBox));
             this.SuspendLayout();
             // 
             // InnerTextBox

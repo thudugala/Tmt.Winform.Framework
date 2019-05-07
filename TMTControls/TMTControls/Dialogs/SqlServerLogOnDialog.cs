@@ -67,7 +67,7 @@ namespace TMT.Controls.WinForms.Dialogs
             try
             {
                 this.DialogResult = DialogResult.None;
-                this.Image = IconChar.SignIn.ToBitmap(72, Color.DarkBlue);
+                this.Image = IconChar.SignInAlt.ToBitmap(72, Color.DarkBlue);
             }
             catch
             {

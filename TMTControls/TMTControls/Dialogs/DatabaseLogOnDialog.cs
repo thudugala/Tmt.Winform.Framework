@@ -60,7 +60,7 @@ namespace TMT.Controls.WinForms.Dialogs
             try
             {
                 this.DialogResult = DialogResult.None;
-                labelHeader.Image = IconChar.SignIn.ToBitmap(72, Color.DarkBlue);
+                labelHeader.Image = IconChar.SignInAlt.ToBitmap(72, Color.DarkBlue);
             }
             catch
             {

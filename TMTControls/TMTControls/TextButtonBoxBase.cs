@@ -335,8 +335,9 @@ namespace TMT.Controls.WinForms
                         ListOfValueViewName = lovEvent.ListOfValueViewName
                     };
 
-                    dbTextButton.ListOfValueText = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
-                    
+                    dbTextButton.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
+                    dbTextButton.ListOfValueText = dbTextButton.Text;
+
                     dbTextButton.CausesValidation = true;
                     dbTextButton.Focus();
 

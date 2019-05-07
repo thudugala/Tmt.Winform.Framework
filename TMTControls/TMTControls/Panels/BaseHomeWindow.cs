@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -23,13 +24,33 @@ namespace TMT.Controls.WinForms.Panels
 
         private void InitializeTileButtons()
         {
-            foreach (var tileButton in this.Controls.OfType<TileButton>())
+            var tileButtonList = GetButtonsList(this.Controls);
+            foreach (var tileButton in tileButtonList)
             {
                 if (tileButton.NavigatePanel != null)
                 {
                     tileButton.Click += TileButton_Click;
                 }
             }
+        }
+
+        private List<TileButton> GetButtonsList(ControlCollection controlCollection)
+        {
+            var controlList = new List<TileButton>();
+            foreach (var control in controlCollection)
+            {
+                if(control is TileButton tileButton)
+                {
+                    controlList.Add(tileButton);
+                }
+                else if(control is Panel panel)
+                {
+                    var childList = GetButtonsList(panel.Controls);
+                    controlList.AddRange(childList);
+                }
+            }
+
+            return controlList;
         }
 
         public void ShowCharts()
