@@ -27,10 +27,7 @@ namespace TMT.Controls.WinForms.Panels
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public DataTable DataSourceTable
         {
-            get
-            {
-                return this.bindingSourceForm.DataSource as DataTable;
-            }
+            get => bindingSourceForm.DataSource as DataTable;
             set
             {
                 this.bindingSourceForm.SuspendBinding();
@@ -56,11 +53,8 @@ namespace TMT.Controls.WinForms.Panels
         [Category("Data"), DefaultValue(false)]
         public override bool IsDeleteAllowed
         {
-            get
-            {
-                return (this._focusedChildDataGridView != null && this._focusedChildDataGridView.ContainsFocus) ?
-                    this._focusedChildDataGridView.IsDeleteAllowed : base.IsDeleteAllowed;
-            }
+            get => (_focusedChildDataGridView != null && _focusedChildDataGridView.ContainsFocus) ?
+                    _focusedChildDataGridView.IsDeleteAllowed : base.IsDeleteAllowed;
             set => base.IsDeleteAllowed = value;
         }
 
@@ -120,7 +114,7 @@ namespace TMT.Controls.WinForms.Panels
                 //{
                 //    return;
                 //}
-                int foundIndex = bindingSourceForm.Find(recordSelector.ValueMember, recordSelector.SelectedValue);
+                var foundIndex = bindingSourceForm.Find(recordSelector.ValueMember, recordSelector.SelectedValue);
                 if (foundIndex <= -1)
                 {
                     return;
@@ -152,7 +146,7 @@ namespace TMT.Controls.WinForms.Panels
                 {
                     return;
                 }
-                int foundIndex = bindingSourceForm.Find(recordSelector.ValueMember, recordSelector.SelectedValue);
+                var foundIndex = bindingSourceForm.Find(recordSelector.ValueMember, recordSelector.SelectedValue);
                 if (foundIndex <= -1)
                 {
                     return;
@@ -192,8 +186,8 @@ namespace TMT.Controls.WinForms.Panels
                         if (saveResults.Any(i => i > 0))
                         {
                             if ((recordSelector.PreviousSelectedValue == null || string.IsNullOrWhiteSpace(recordSelector.PreviousSelectedValue.ToString())) &&
-                               (arg.GeneratedKey != null &&
-                                string.IsNullOrWhiteSpace(arg.GeneratedKey.ToString()) == false))
+                               arg.GeneratedKey != null &&
+                                string.IsNullOrWhiteSpace(arg.GeneratedKey.ToString()) == false)
                             {
                                 recordSelector.PreviousSelectedValue = arg.GeneratedKey;
                             }
@@ -368,7 +362,7 @@ namespace TMT.Controls.WinForms.Panels
                     var rowCollection = dataToBeSaved.Tables[this.TableName].Rows
                                                                             .Cast<DataRow>()
                                                                             .Where(r => r.RowState != DataRowState.Deleted);
-                    foreach (DataRow row in rowCollection)
+                    foreach (var row in rowCollection)
                     {
                         foreach (var mandatoryField in mandatoryFieldList)
                         {
@@ -407,7 +401,7 @@ namespace TMT.Controls.WinForms.Panels
             {
                 return null;
             }
-            int foundIndex = bindingSourceForm.Find(recordSelector.ValueMember, recordSelector.SelectedValue);
+            var foundIndex = bindingSourceForm.Find(recordSelector.ValueMember, recordSelector.SelectedValue);
             if (foundIndex <= -1 || this.DataSourceTable.Rows.Count <= foundIndex)
             {
                 return null;
@@ -415,11 +409,7 @@ namespace TMT.Controls.WinForms.Panels
             // this is required, so that UI Heared UI change when recordSelector value change.
             bindingSourceForm.Position = foundIndex;
             var primarySelectedRow = this.DataSourceTable.Rows[foundIndex];
-            if (primarySelectedRow.RowState != DataRowState.Deleted)
-            {
-                return primarySelectedRow;
-            }
-            return null;
+            return primarySelectedRow.RowState != DataRowState.Deleted ? primarySelectedRow : null;
         }
 
         protected async Task LoadAllChildGridViewsData()
@@ -670,7 +660,7 @@ namespace TMT.Controls.WinForms.Panels
 
             var columnInView = new HashSet<string>(myControls.Select(c => c.DbColumnName));
             var columnNameList = changedData.Columns.Cast<DataColumn>().Select(c => c.ColumnName);
-            foreach (string colName in columnNameList)
+            foreach (var colName in columnNameList)
             {
                 if (columnInView.Contains(colName) == false)
                 {
@@ -690,7 +680,7 @@ namespace TMT.Controls.WinForms.Panels
                     }
                 }
             }
-            foreach (string readOnlyColumnName in readOnlyColumnsToRemove)
+            foreach (var readOnlyColumnName in readOnlyColumnsToRemove)
             {
                 changedData.Columns.Remove(readOnlyColumnName);
             }
@@ -773,7 +763,8 @@ namespace TMT.Controls.WinForms.Panels
                 }
                 else
                 {
-                    uiControl.TextChanged += UiControl_TextChanged;
+                    //uiControl.TextChanged += UiControl_TextChanged;
+                    uiControl.Validated += UiControl_TextChanged;
                 }
                 uiControl.GotFocus += UiControl_GotFocus;
 
@@ -843,29 +834,31 @@ namespace TMT.Controls.WinForms.Panels
 
         private void SetControlDataBindings(IEnumerable<Control> uiControlList)
         {
-            var controls = uiControlList.Where(c => (c is IDbControl dbControl && string.IsNullOrWhiteSpace(dbControl.DbColumnName) == false));
+            var controls = uiControlList.Where(c => c is IDbControl dbControl && string.IsNullOrWhiteSpace(dbControl.DbColumnName) == false);
 
             string propetyName;
             foreach (var dbControl in controls)
             {
                 var dbColumnName = (dbControl as IDbControl).DbColumnName;
 
-                if (dbControl is NumericUpDown ||
-                    dbControl is DateTimePicker)
+                switch (dbControl)
                 {
-                    propetyName = "Value";
-                }
-                else if (dbControl is DbCheckBox dbCheckBox)
-                {
-                    propetyName = nameof(dbCheckBox.DbValue);
-                }
-                else if (dbControl is ComboBox comboBox)
-                {
-                    propetyName = nameof(comboBox.SelectedValue);
-                }
-                else
-                {
-                    propetyName = "Text";
+                    case NumericUpDown _:
+                    case DateTimePicker _:
+                        propetyName = "Value";
+                        break;
+
+                    case DbCheckBox dbCheckBox:
+                        propetyName = nameof(dbCheckBox.DbValue);
+                        break;
+
+                    case ComboBox comboBox:
+                        propetyName = nameof(comboBox.SelectedValue);
+                        break;
+
+                    default:
+                        propetyName = "Text";
+                        break;
                 }
                 dbControl.DataBindings.Add(propetyName, this.bindingSourceForm, dbColumnName,
                                             true, DataSourceUpdateMode.OnValidation);
@@ -874,10 +867,10 @@ namespace TMT.Controls.WinForms.Panels
 
         private bool ShowEmptyExclamation(IDbControl control, object oValue)
         {
-            bool cancelSave = false;
+            var cancelSave = false;
             if (oValue == null || string.IsNullOrWhiteSpace(oValue.ToString()))
             {
-                string message = string.Format(CultureInfo.InvariantCulture, Properties.Resources.Exclamation_MandatoryValueEmpty,
+                var message = string.Format(CultureInfo.InvariantCulture, Properties.Resources.Exclamation_MandatoryValueEmpty,
                                               control.GetLableText());
 
                 errorProviderForm.SetError(control as Control, message);
@@ -927,8 +920,7 @@ namespace TMT.Controls.WinForms.Panels
             {
                 return;
             }
-            var dataRowView = this.bindingSourceForm.Current as DataRowView;
-            if (dataRowView == null)
+            if (!(this.bindingSourceForm.Current is DataRowView dataRowView))
             {
                 return;
             }
@@ -940,29 +932,31 @@ namespace TMT.Controls.WinForms.Panels
             {
                 return;
             }
-
+            
             object senderValue = null;
-            if (sender is NumericUpDown senderNumericUpDown)
+            switch (sender)
             {
-                senderValue = senderNumericUpDown.Value;
-            }
-            else if (sender is DateTimePicker senderDateTimePicker)
-            {
-                senderValue = senderDateTimePicker.Value;
-            }
-            else if (sender is DbCheckBox senderCheckBox)
-            {
-                senderValue = senderCheckBox.DbValue;
-            }
-            else if (sender is ComboBox senderComboBox)
-            {
-                senderValue = senderComboBox.SelectedValue;
-            }
-            else
-            {
-                senderValue = (sender as Control).Text;
-            }
+                case NumericUpDown senderNumericUpDown:
+                    senderValue = senderNumericUpDown.Value;
+                    break;
 
+                case DateTimePicker senderDateTimePicker:
+                    senderValue = senderDateTimePicker.Value;
+                    break;
+
+                case DbCheckBox senderCheckBox:
+                    senderValue = senderCheckBox.DbValue;
+                    break;
+
+                case ComboBox senderComboBox:
+                    senderValue = senderComboBox.SelectedValue;
+                    break;
+
+                default:
+                    senderValue = (sender as Control).Text;
+                    break;
+            }
+           
             var orginalValue = dataRowView.Row[dbControl.DbColumnName, DataRowVersion.Current];
             if ((senderValue == null && orginalValue != null) ||
                 (senderValue != null && orginalValue == null) ||

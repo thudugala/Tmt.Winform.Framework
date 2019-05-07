@@ -40,10 +40,15 @@ namespace TMT.Controls.WinForms.Panels
         [DefaultValue(true)]
         protected bool ShowSaveNullMessage { get; set; }
 
-        public void PerformClear()
+        public bool PerformClear()
         {
             try
             {
+                if(this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
                 this.WindowRecordState = WindowRecordState.None;
 
@@ -54,22 +59,32 @@ namespace TMT.Controls.WinForms.Panels
                 buttonDelete.Enabled = false;
                 buttonSave.Enabled = false;
                 buttonClear.Enabled = false;
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_ClearingData);
+                return false;
             }
             finally
             {
                 this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
             }
         }
 
-        public void PerformDataNew()
+        public bool PerformDataNew()
         {
             try
             {
+                if (this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.New;
 
                 this.DataNew();
@@ -82,21 +97,30 @@ namespace TMT.Controls.WinForms.Panels
 
                 buttonDelete.Enabled = this.IsDeleteAllowed;
                 buttonSave.Enabled = true;
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_AddingNew);
+                return false;
             }
             finally
             {
                 this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
             }
         }
 
-        public async Task PerformDataSave()
+        public async Task<bool> PerformDataSave()
         {
             try
             {
+                if (this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
                 progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.None;
@@ -111,10 +135,13 @@ namespace TMT.Controls.WinForms.Panels
 
                 buttonDelete.Enabled = this.IsDeleteAllowed;
                 buttonSave.Enabled = false;
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_SavingData);
+                return false;
             }
             finally
             {
@@ -123,11 +150,17 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
-        public void PerformDelete()
+        public bool PerformDelete()
         {
             try
             {
+                if (this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.None;
 
                 this.DataDelete();
@@ -140,22 +173,32 @@ namespace TMT.Controls.WinForms.Panels
 
                 buttonDelete.Enabled = this.IsDeleteAllowed;
                 buttonSave.Enabled = true;
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_Removing);
+                return false;
             }
             finally
             {
                 this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
             }
         }
 
-        public void PerformDuplicate()
+        public bool PerformDuplicate()
         {
             try
             {
+                if (this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
+                progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.New;
 
                 this.DataDuplicate();
@@ -168,21 +211,30 @@ namespace TMT.Controls.WinForms.Panels
 
                 buttonDelete.Enabled = this.IsDeleteAllowed;
                 buttonSave.Enabled = true;
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_DuplicatingNew);
+                return false;
             }
             finally
             {
                 this.UseWaitCursor = false;
+                progressBarBase.Visible = false;
             }
         }
 
-        public async Task PerformRefresh()
+        public async Task<bool> PerformRefresh()
         {
             try
             {
+                if (this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
                 progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.None;
@@ -197,10 +249,13 @@ namespace TMT.Controls.WinForms.Panels
 
                 buttonDelete.Enabled = this.IsDeleteAllowed;
                 buttonSave.Enabled = false;
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_ReLoadingData);
+                return false;
             }
             finally
             {
@@ -209,10 +264,15 @@ namespace TMT.Controls.WinForms.Panels
             }
         }
 
-        public async Task PerformSearch()
+        public async Task<bool> PerformSearch()
         {
             try
             {
+                if (this.progressBarBase.Visible)
+                {
+                    return false;
+                }
+
                 this.UseWaitCursor = true;
                 progressBarBase.Visible = true;
                 this.WindowRecordState = WindowRecordState.None;
@@ -230,10 +290,13 @@ namespace TMT.Controls.WinForms.Panels
                     buttonDelete.Enabled = this.IsDeleteAllowed;
                     buttonSave.Enabled = false;
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
                 ErrorDialog.Show(this, ex, Properties.Resources.ERROR_LoadingData);
+                return false;
             }
             finally
             {

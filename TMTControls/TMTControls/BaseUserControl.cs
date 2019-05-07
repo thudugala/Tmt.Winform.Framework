@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TMT.Controls.WinForms.Dialogs;
 
@@ -18,9 +19,10 @@ namespace TMT.Controls.WinForms
         [Category("Behavior")]
         public event EventHandler NavigateBack;
 
-        protected T NavigateToPanel<T>() where T : UserControl
+        protected async Task<T> NavigateToPanel<T>() where T : UserControl
         {
-            return (this.ParentForm as FormMain)?.LoadPanel(typeof(T)) as T;
+            var usercontrol = await (this.ParentForm as FormMain)?.LoadPanel(typeof(T));          
+            return usercontrol as T;
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
