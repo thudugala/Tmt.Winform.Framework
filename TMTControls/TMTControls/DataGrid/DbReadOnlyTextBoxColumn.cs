@@ -59,6 +59,9 @@ namespace TMT.Controls.WinForms.DataGrid
             }
         }
 
+        [Category("LOV Data"), DefaultValue("")]
+        public string ListOfValueViewName { get; set; }
+
         public override bool ReadOnly
         {
             get
@@ -78,6 +81,7 @@ namespace TMT.Controls.WinForms.DataGrid
         {
             DbReadOnlyTextBoxColumn that = (DbReadOnlyTextBoxColumn)base.Clone();
 
+            that.ListOfValueViewName = this.ListOfValueViewName;
             that.DataPropertyType = this.DataPropertyType;
             that.DataPropertyPrimaryKey = this.DataPropertyPrimaryKey;
             that.DataPropertyMandatory = this.DataPropertyMandatory;

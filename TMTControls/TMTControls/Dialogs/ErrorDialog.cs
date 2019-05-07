@@ -28,10 +28,7 @@ namespace TMT.Controls.WinForms.Dialogs
 
                 LogManager.GetLogger(System.Diagnostics.Process.GetCurrentProcess().ProcessName).Error(this._error);
             }
-            get
-            {
-                return this._error;
-            }
+            get => this._error;
         }
 
         public static DialogResult Show(IWin32Window owner, Exception ex, string caption)
@@ -45,14 +42,7 @@ namespace TMT.Controls.WinForms.Dialogs
                     Text = caption
                 };
 
-                if (owner == null)
-                {
-                    return errorDialog.ShowDialog();
-                }
-                else
-                {
-                    return errorDialog.ShowDialog(owner);
-                }
+                return owner == null ? errorDialog.ShowDialog() : errorDialog.ShowDialog(owner);
             }
             catch
             {

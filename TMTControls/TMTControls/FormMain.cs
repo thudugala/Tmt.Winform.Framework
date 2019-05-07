@@ -19,6 +19,29 @@ namespace TMT.Controls.WinForms
             InitializeComponent();
         }
 
+        private async void FormMain_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    this.Text += $" - {ApplicationDeployment.CurrentDeployment.CurrentVersion}";
+                }
+                TinyIoCContainer.Current.AutoRegister();
+
+                var theHomeWindow = TinyIoCContainer.Current.Resolve<IRootHomeWinodw>();
+                if (theHomeWindow == null)
+                {
+                    return;
+                }
+                await this.LoadPanel(theHomeWindow.GetType());
+            }
+            catch (Exception ex)
+            {
+                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
+            }
+        }
+
         public virtual async Task<UserControl> LoadPanel(Type panelType)
         {
             if (panelType == null)
@@ -133,30 +156,7 @@ namespace TMT.Controls.WinForms
             }
             catch { }
         }
-
-        private async void FormMain_Load(object sender, EventArgs e)
-        {
-            try
-            {
-                if (ApplicationDeployment.IsNetworkDeployed)
-                {
-                    this.Text += $" - {ApplicationDeployment.CurrentDeployment.CurrentVersion}";
-                }
-                TinyIoCContainer.Current.AutoRegister();
-
-                var theHomeWindow = TinyIoCContainer.Current.Resolve<IRootHomeWinodw>();
-                if (theHomeWindow == null)
-                {
-                    return;
-                }
-                await this.LoadPanel(theHomeWindow.GetType());
-            }
-            catch (Exception ex)
-            {
-                ErrorDialog.Show(this, ex, Properties.Resources.ERROR_PanelLoadIssue);
-            }
-        }
-
+                
         private async void FormMain_TileButtonClicked(object sender, TileButtonClickedEventArgs e)
         {
             try

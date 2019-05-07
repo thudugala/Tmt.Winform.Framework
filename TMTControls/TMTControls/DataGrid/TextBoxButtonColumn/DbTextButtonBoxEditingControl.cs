@@ -175,19 +175,20 @@ namespace TMT.Controls.WinForms.DataGrid
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            //
+            // 
             // InnerTextBox
-            //
-            this.InnerTextBox.BackColor = System.Drawing.Color.White;
+            // 
+            this.InnerTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.InnerTextBox.TextChanged += new System.EventHandler(this.InnerTextBox_TextChanged);
-            //
+            // 
             // DbTextButtonBoxEditingControl
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
             this.AutoSize = true;
             this.Name = "DbTextButtonBoxEditingControl";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private void InnerTextBox_TextChanged(object sender, EventArgs e)

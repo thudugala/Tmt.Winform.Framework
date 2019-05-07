@@ -177,9 +177,8 @@ namespace TMT.Controls.WinForms.Dialogs
                 var sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
                 if (sEntity != null)
                 {
-                    if (dbControl is CheckBox)
+                    if (dbControl is CheckBox dbCheckControl)
                     {
-                        var dbCheckControl = dbControl as CheckBox;
                         if (dbCheckControl.CheckState != CheckState.Indeterminate)
                         {
                             sEntity.Value = (dbCheckControl.Checked) ? Boolean.TrueString.ToUpper(CultureInfo.InvariantCulture) : Boolean.FalseString.ToUpper(CultureInfo.InvariantCulture);
@@ -271,6 +270,29 @@ namespace TMT.Controls.WinForms.Dialogs
             {
                 throw;
             }
+        }
+
+        private void BaseButtonClear_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                foreach (Control dbControl in tableLayoutPanelMain.Controls)
+                {
+                    var sEntity = this.EntityList.SingleOrDefault(en => en.ColumnName == dbControl.Name);
+                    if (sEntity != null)
+                    {
+                        if (dbControl is CheckBox dbCheckControl)
+                        {
+                            dbCheckControl.CheckState = CheckState.Indeterminate;
+                        }
+                        else
+                        {
+                            dbControl.Text = string.Empty;
+                        }
+                    }
+                }
+            }
+            catch { }
         }
     }
 }

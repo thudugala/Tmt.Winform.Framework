@@ -146,13 +146,10 @@
   <data name="InnerTextBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 1, 0</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="InnerTextBox.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="InnerTextBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 24</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="InnerTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>

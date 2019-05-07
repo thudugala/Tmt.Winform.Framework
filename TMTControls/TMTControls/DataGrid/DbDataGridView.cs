@@ -360,13 +360,13 @@ namespace TMT.Controls.WinForms.DataGrid
 
         internal async Task GetListOfValueSelectedRow(ListOfValueLoadingEventArgs e)
         {
-            ListOfValueLoading?.Invoke(this, e);
+            e.FillSearchConditionTable();
+            ListOfValueLoading?.Invoke(this, e);           
             if (e.Handled == false)
             {
                 var basewindow = this.FindParentBaseWindow();
                 if (basewindow != null)
-                {
-                    basewindow.FillSearchConditionTable(e);
+                {                    
                     await basewindow.DataPopulateAllListOfValueRecords(e);
                 }
             }
@@ -444,6 +444,10 @@ namespace TMT.Controls.WinForms.DataGrid
                         else if (viewCol is DbTextButtonBoxColumn viewTextButtonCol)
                         {
                             searchEntity.ListOfValueView = viewTextButtonCol.ListOfValueViewName;
+                        }
+                        else if (viewCol is DbReadOnlyTextBoxColumn readOnlyTextBoxColumn)
+                        {
+                            searchEntity.ListOfValueView = readOnlyTextBoxColumn.ListOfValueViewName;
                         }
                         searchEntityList.Add(searchEntity);
                     }

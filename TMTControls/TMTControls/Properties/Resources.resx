@@ -259,4 +259,16 @@
   <data name="ERROR_LoginDialog_LDAP" xml:space="preserve">
     <value>LDAP server is not reachable, please check your connection properties</value>
   </data>
+  <data name="ERROR_PasswordDialog" xml:space="preserve">
+    <value>Error in New Password</value>
+  </data>
+  <data name="ERROR_PasswordDialog_ConfirmPasswordEmpty" xml:space="preserve">
+    <value>New Confirm Password must have a value</value>
+  </data>
+  <data name="ERROR_PasswordDialog_NewPasswordEmpty" xml:space="preserve">
+    <value>New Password must have a value</value>
+  </data>
+  <data name="ERROR_PasswordDialog_PasswordNoMatch" xml:space="preserve">
+    <value>New Password and Confirm Password does not match </value>
+  </data>
 </root>

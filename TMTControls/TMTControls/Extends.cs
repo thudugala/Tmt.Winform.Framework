@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,7 +10,7 @@ using TMT.Controls.WinForms.Panels;
 namespace TMT.Controls.WinForms
 {
     public static class Extends
-    {        
+    {
         public static BaseUserControl FindParentBaseUserControl(this Control target)
         {
             if (target == null)
@@ -117,7 +116,7 @@ namespace TMT.Controls.WinForms
                 var removeList = new List<DataRow>();
                 foreach (DataRow row in changedData.Rows)
                 {
-                    if (row.RowState != DataRowState.Deleted && 
+                    if (row.RowState != DataRowState.Deleted &&
                         row.ItemArray.All(i => i == null || string.IsNullOrWhiteSpace(i.ToString())))
                     {
                         removeList.Add(row);

@@ -71,13 +71,13 @@ namespace TMT.Controls.WinForms.DatabaseUI
                 return;
             }
 
+            e.FillSearchConditionTable();
             ListOfValueLoading?.Invoke(this, e);
             if (e.Handled == false)
             {
                 var basewindow = this.FindParentBaseWindow();
                 if (basewindow != null)
                 {
-                    basewindow.FillSearchConditionTable(e);
                     await basewindow.DataPopulateAllListOfValueRecords(e);
                 }
             }
@@ -90,22 +90,22 @@ namespace TMT.Controls.WinForms.DatabaseUI
 
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DbTextButtonBox));
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(DbTextButtonBox));
             this.SuspendLayout();
-            //
+            // 
             // InnerTextBox
-            //
+            // 
             this.InnerTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.InnerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             resources.ApplyResources(this.InnerTextBox, "InnerTextBox");
             this.InnerTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.InnerTextBox_Validating);
-            //
+            // 
             // DbTextButtonBox
-            //
+            // 
             resources.ApplyResources(this, "$this");
             this.Name = "DbTextButtonBox";
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         private void InnerTextBox_Validating(object sender, CancelEventArgs e)

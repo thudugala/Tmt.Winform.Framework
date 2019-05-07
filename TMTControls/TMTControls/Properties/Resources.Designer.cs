@@ -295,6 +295,42 @@ namespace TMT.Controls.WinForms.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in New Password.
+        /// </summary>
+        public static string ERROR_PasswordDialog {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Confirm Password must have a value.
+        /// </summary>
+        public static string ERROR_PasswordDialog_ConfirmPasswordEmpty {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordDialog_ConfirmPasswordEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Password must have a value.
+        /// </summary>
+        public static string ERROR_PasswordDialog_NewPasswordEmpty {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordDialog_NewPasswordEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Password and Confirm Password does not match .
+        /// </summary>
+        public static string ERROR_PasswordDialog_PasswordNoMatch {
+            get {
+                return ResourceManager.GetString("ERROR_PasswordDialog_PasswordNoMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error reloading data to the window.
         /// </summary>
         public static string ERROR_ReLoadingData {

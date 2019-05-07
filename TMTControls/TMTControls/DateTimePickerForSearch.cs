@@ -10,7 +10,7 @@ namespace TMT.Controls.WinForms
     [ToolboxItem(false)]
     public partial class DateTimePickerForSearch : UserControl
     {
-        private static string SEMICOLON = ";";
+        private static string SEMICOLON = " or";
         private static string WHITE_SPACE = " ";
 
         private DateTimePickerDropDown dialog;

@@ -44,7 +44,7 @@ namespace TMT.Controls.WinForms.Panels
         {
             try
             {
-                if(this.progressBarBase.Visible)
+                if (this.progressBarBase.Visible)
                 {
                     return false;
                 }
@@ -346,44 +346,6 @@ namespace TMT.Controls.WinForms.Panels
                 }
             }
             arg.ListOfValueDataTable = dataTable;
-        }
-
-        internal void FillSearchConditionTable(ListOfValueLoadingEventArgs e)
-        {
-            if (e == null)
-            {
-                throw new ArgumentNullException(nameof(e));
-            }
-
-            if (e.IsValidate)
-            {
-                e.SearchConditionList.Add(new SearchEntity
-                {
-                    ColumnName = e.PrimaryColumnName,
-                    Value = e.PrimaryColumnValue,
-                    DataType = e.PrimaryColumnType,
-                    IsFuntion = false
-                });
-            }
-
-            if (e.FilterColumns == null || e.FilterColumns.Count <= 0)
-            {
-                return;
-            }
-
-            foreach (var filterColumn in e.FilterColumns)
-            {
-                if (e.Row.Cells[filterColumn.Value].Value != null)
-                {
-                    e.SearchConditionList.Add(new SearchEntity
-                    {
-                        ColumnName = filterColumn.Key,
-                        Value = e.Row.Cells[filterColumn.Value].ValueString(),
-                        DataType = e.Row.DataGridView.Columns[filterColumn.Value].ValueType,
-                        IsFuntion = false
-                    });
-                }
-            }
         }
 
         internal virtual Task LoadIfActive()

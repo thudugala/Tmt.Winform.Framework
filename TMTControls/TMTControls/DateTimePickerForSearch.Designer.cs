@@ -43,7 +43,7 @@
             resources.GetString("textBoxMain.AutoCompleteCustomSource4"),
             resources.GetString("textBoxMain.AutoCompleteCustomSource5")});
             this.textBoxMain.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.textBoxMain.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBoxMain.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             resources.ApplyResources(this.textBoxMain, "textBoxMain");
             this.textBoxMain.Name = "textBoxMain";
             this.textBoxMain.Enter += new System.EventHandler(this.textBoxMain_Enter);
@@ -51,15 +51,17 @@
             // buttonDorpDown
             // 
             resources.ApplyResources(this.buttonDorpDown, "buttonDorpDown");
-            this.buttonDorpDown.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.buttonDorpDown.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
-            this.buttonDorpDown.FlatAppearance.BorderSize = 0;
+            this.buttonDorpDown.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.buttonDorpDown.FlatAppearance.BorderColor = System.Drawing.SystemColors.WindowFrame;
+            this.buttonDorpDown.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.buttonDorpDown.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.buttonDorpDown.Flip = FontAwesome.Sharp.FlipOrientation.Normal;
             this.buttonDorpDown.IconChar = FontAwesome.Sharp.IconChar.CaretDown;
             this.buttonDorpDown.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(117)))), ((int)(((byte)(142)))));
             this.buttonDorpDown.IconSize = 18;
             this.buttonDorpDown.Name = "buttonDorpDown";
             this.buttonDorpDown.Rotation = 0D;
+            this.buttonDorpDown.TabStop = false;
             this.buttonDorpDown.UseVisualStyleBackColor = false;
             this.buttonDorpDown.Click += new System.EventHandler(this.buttonDorpDown_Click);
             // 
@@ -67,7 +69,6 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.textBoxMain);
             this.Controls.Add(this.buttonDorpDown);
             this.Name = "DateTimePickerForSearch";

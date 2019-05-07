@@ -43,7 +43,7 @@
             resources.GetString("InnerTextBox.AutoCompleteCustomSource4"),
             resources.GetString("InnerTextBox.AutoCompleteCustomSource5")});
             this.InnerTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.InnerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.InnerTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             resources.ApplyResources(this.InnerTextBox, "InnerTextBox");
             this.InnerTextBox.Name = "InnerTextBox";
             this.InnerTextBox.TextChanged += new System.EventHandler(this.InnerTextBox_TextChanged);
@@ -71,6 +71,7 @@
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Window;
             this.Controls.Add(this.InnerTextBox);
             this.Controls.Add(this.buttonOK);
             this.Name = "TextButtonBoxBase";

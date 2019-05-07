@@ -195,6 +195,19 @@ namespace TMT.Controls.WinForms.Panels
                             {
                                 await this.DataSearch();
                             }
+                            else
+                            {
+                                DataSourceTable.AcceptChanges();
+
+                                var childDataGridViewList = this.panelForm.GetChildDataGridViewList();
+                                if (childDataGridViewList.Count > 0)
+                                {
+                                    foreach (var childDataGridView in childDataGridViewList)
+                                    {
+                                        childDataGridView.DataSourceTable.AcceptChanges();
+                                    }
+                                }
+                            }
                         }
                         else
                         {
@@ -472,7 +485,7 @@ namespace TMT.Controls.WinForms.Panels
 
         protected async override Task SearchDialogListOfValuesLoading(ListOfValueLoadingEventArgs e)
         {
-            this.FillSearchConditionTable(e);
+            e.FillSearchConditionTable();
             await base.SearchDialogListOfValuesLoading(e);
         }
 

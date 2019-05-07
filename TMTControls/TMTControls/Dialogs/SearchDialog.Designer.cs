@@ -34,11 +34,13 @@
             this.buttonCancel = new TMT.Controls.WinForms.BaseButton();
             this.checkBoxCaseSensitive = new System.Windows.Forms.CheckBox();
             this.checkBoxTop100 = new System.Windows.Forms.CheckBox();
+            this.baseButtonClear = new TMT.Controls.WinForms.BaseButton();
             this.panelMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.baseButtonClear);
             this.panelMain.Controls.Add(this.checkBoxTop100);
             this.panelMain.Controls.Add(this.buttonCancel);
             this.panelMain.Controls.Add(this.tableLayoutPanelMain);
@@ -87,6 +89,16 @@
             this.checkBoxTop100.Name = "checkBoxTop100";
             this.checkBoxTop100.UseVisualStyleBackColor = true;
             // 
+            // baseButtonClear
+            // 
+            resources.ApplyResources(this.baseButtonClear, "baseButtonClear");
+            this.baseButtonClear.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.baseButtonClear.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
+            this.baseButtonClear.FlatAppearance.BorderSize = 0;
+            this.baseButtonClear.Name = "baseButtonClear";
+            this.baseButtonClear.UseVisualStyleBackColor = false;
+            this.baseButtonClear.Click += new System.EventHandler(this.BaseButtonClear_Click);
+            // 
             // SearchDialog
             // 
             this.AcceptButton = this.buttonOK;
@@ -110,5 +122,6 @@
         private TMT.Controls.WinForms.BaseButton buttonCancel;
         private System.Windows.Forms.CheckBox checkBoxCaseSensitive;
         private System.Windows.Forms.CheckBox checkBoxTop100;
+        private BaseButton baseButtonClear;
     }
 }

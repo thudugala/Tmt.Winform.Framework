@@ -61,7 +61,7 @@ namespace TMT.Controls.WinForms.Panels
                 }
 
                 this.SearchDialog.DialogResult = DialogResult.Ignore;
-                await this.DataSearch();
+                await this.PerformRefresh();
             }
             catch (Exception ex)
             {
@@ -213,12 +213,6 @@ namespace TMT.Controls.WinForms.Panels
         protected override bool DataValidateBeforeSave(DataSet dataToBeSaved)
         {
             return this.dbViewTable.DataValidateBeforeSave(dataToBeSaved);
-        }
-
-        protected override async Task SearchDialogListOfValuesLoading(ListOfValueLoadingEventArgs e)
-        {
-            this.FillSearchConditionTable(e);
-            await this.SearchDialogListOfValuesLoading(e);
         }
 
         private static void SetSearchConditionTable(IList<SearchEntity> searchConditionList, DataTable dataTable, IReadOnlyCollection<DataGridViewColumn> keyViewColumnList)

@@ -20,11 +20,11 @@ namespace TMT.Controls.WinForms.Dialogs
 
         public Dictionary<string, object> SelectedRow { get; private set; }
 
-        public void SetDataSourceTable(DataTable table)
+        public void SetDataSourceTable(ListOfValueLoadingEventArgs lovEvent)
         {
             DbMain.SetTheme();
-
-            DbMain.DataSourceTable = table;
+            
+            DbMain.DataSourceTable = lovEvent.ListOfValueDataTable;
             if (DbMain.DataSourceTable != null)
             {
                 var colType = this.GetColumnTypeDictionary();
@@ -49,7 +49,7 @@ namespace TMT.Controls.WinForms.Dialogs
                     else if (colType[dCol.ColumnName] == "ENUM_BOOLEAN")
                     {
                         vCol = new DataGridViewCheckBoxColumn();
-                        var checkVCol = (vCol as DataGridViewCheckBoxColumn);
+                        var checkVCol = vCol as DataGridViewCheckBoxColumn;
                         checkVCol.FalseValue = "FALSE";
                         checkVCol.TrueValue = "TRUE";
                         checkVCol.IndeterminateValue = "FALSE";
@@ -66,13 +66,18 @@ namespace TMT.Controls.WinForms.Dialogs
                         vCol.Visible = false;
                     }
 
+                    if (lovEvent.HiddenColumns.Contains(dCol.ColumnName))
+                    {
+                        vCol.Visible = false;
+                    }
+
                     this.SelectedRow.Add(dCol.ColumnName, string.Empty);
 
                     DbMain.Columns.Add(vCol);
                 }
                 DbMain.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.DisplayedCells);
 
-                buttonSearch.Enabled = (DbMain.DataSourceTable.Rows.Count > 1);
+                buttonSearch.Enabled = DbMain.DataSourceTable.Rows.Count > 1;
             }
         }
 
@@ -97,7 +102,7 @@ namespace TMT.Controls.WinForms.Dialogs
 
                     var keyList = this.SelectedRow.Keys.ToList();
 
-                    foreach (string key in keyList)
+                    foreach (var key in keyList)
                     {
                         this.SelectedRow[key] = row.Cells["col" + key].Value;
                     }
@@ -138,7 +143,7 @@ namespace TMT.Controls.WinForms.Dialogs
 
                 if (searchDialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    string filter = string.Empty;
+                    var filter = string.Empty;
 
                     foreach (var sEntity in searchDialog.EntityList)
                     {
@@ -147,7 +152,7 @@ namespace TMT.Controls.WinForms.Dialogs
                             var sValueArray = sEntity.Value.ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                             if (sValueArray.Length > 0)
                             {
-                                for (int i = 0; i < sValueArray.Length; i++)
+                                for (var i = 0; i < sValueArray.Length; i++)
                                 {
                                     if (string.IsNullOrWhiteSpace(filter) == false)
                                     {

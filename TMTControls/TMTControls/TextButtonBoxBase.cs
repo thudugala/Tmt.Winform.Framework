@@ -44,67 +44,37 @@ namespace TMT.Controls.WinForms
 
         public override Color BackColor
         {
-            get
-            {
-                return InnerTextBox.BackColor;
-            }
-            set
-            {
-                InnerTextBox.BackColor = value;
-            }
+            get => InnerTextBox.BackColor;
+            set => InnerTextBox.BackColor = value;
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ButtonHeight
         {
-            get
-            {
-                return buttonOK.Height;
-            }
-            set
-            {
-                buttonOK.Height = value;
-            }
+            get => buttonOK.Height;
+            set => buttonOK.Height = value;
         }
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ButtonWidth
         {
-            get
-            {
-                return buttonOK.Width;
-            }
-            set
-            {
-                buttonOK.Width = value;
-            }
+            get => buttonOK.Width;
+            set => buttonOK.Width = value;
         }
 
         [Category("Behavior"), DefaultValue(CharacterCasing.Normal)]
         public CharacterCasing CharacterCasing
         {
-            get
-            {
-                return this.InnerTextBox.CharacterCasing;
-            }
-            set
-            {
-                this.InnerTextBox.CharacterCasing = value;
-            }
+            get => InnerTextBox.CharacterCasing;
+            set => InnerTextBox.CharacterCasing = value;
         }
 
         public override Color ForeColor
         {
-            get
-            {
-                return InnerTextBox.ForeColor;
-            }
-            set
-            {
-                InnerTextBox.ForeColor = value;
-            }
+            get => InnerTextBox.ForeColor;
+            set => InnerTextBox.ForeColor = value;
         }
 
         [Category("Design"), DefaultValue(TextInputType.Text)]
@@ -118,27 +88,26 @@ namespace TMT.Controls.WinForms
         [EditorBrowsable(EditorBrowsableState.Always)]
         public override string Text
         {
-            get
-            {
-                return InnerTextBox.Text;
-            }
-            set
-            {
-                InnerTextBox.Text = value;
-            }
+            get => InnerTextBox.Text;
+            set => InnerTextBox.Text = value;
         }
 
         public HorizontalAlignment TextAlign
         {
-            get
-            {
-                return InnerTextBox.TextAlign;
-            }
-            set
-            {
-                InnerTextBox.TextAlign = value;
-            }
+            get => InnerTextBox.TextAlign;
+            set => InnerTextBox.TextAlign = value;
         }
+
+        [Category("Behavior"), DefaultValue(false)]
+        [RefreshProperties(RefreshProperties.Repaint)]
+        public bool ReadOnly
+        {
+            get => InnerTextBox.ReadOnly;
+            set => InnerTextBox.ReadOnly = value;
+        }
+
+        [DefaultValue(false)]
+        public bool AllowedValidate { get; set; }
 
         public void ClearUndo()
         {
@@ -217,7 +186,7 @@ namespace TMT.Controls.WinForms
                 await Task.Run(async () => await gridview.GetListOfValueSelectedRow(lovEvent));
 
                 this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
-                this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
+                this._lovDialog.SetDataSourceTable(lovEvent);
 
                 if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -257,12 +226,12 @@ namespace TMT.Controls.WinForms
                 var gridview = sender.EditingControlDataGridView as DbDataGridView;
                 var currentColumn = gridview.CurrentCell.OwningColumn as DbTextButtonBoxColumn;
 
-                string sValue = string.Empty;
+                var sValue = string.Empty;
                 if (gridview.CurrentCell.Value != null)
                 {
                     sValue = gridview.CurrentCell.Value.ToString();
 
-                    object oldOValue = gridview.CurrentCell.Tag;
+                    var oldOValue = gridview.CurrentCell.Tag;
                     if (oldOValue != null && sValue == oldOValue.ToString())
                     {
                         return;
@@ -291,7 +260,7 @@ namespace TMT.Controls.WinForms
 
                     if (lovEvent.ListOfValueDataTable != null)
                     {
-                        bool dataFound = (lovEvent.ListOfValueDataTable.Rows.Count == 1);
+                        var dataFound = lovEvent.ListOfValueDataTable.Rows.Count == 1;
 
                         if (dataFound)
                         {
@@ -312,7 +281,7 @@ namespace TMT.Controls.WinForms
                             gridview.SetListOfValueSelectedRow(lovLoaded);
                         }
 
-                        gridview.CurrentCell.Style.BackColor = (dataFound) ? Color.Empty : Color.Red;
+                        gridview.CurrentCell.Style.BackColor = dataFound ? Color.Empty : Color.Red;
                     }
                     else
                     {
@@ -355,7 +324,7 @@ namespace TMT.Controls.WinForms
                 await Task.Run(async () => await dbTextButton.GetListOfValueSelectedRow(lovEvent));
 
                 this._lovDialog.Text = lovEvent.ListOfValueHeaderText;
-                this._lovDialog.SetDataSourceTable(lovEvent.ListOfValueDataTable);
+                this._lovDialog.SetDataSourceTable(lovEvent);
 
                 if (this._lovDialog.ShowDialog(this) == DialogResult.OK)
                 {
@@ -366,9 +335,8 @@ namespace TMT.Controls.WinForms
                         ListOfValueViewName = lovEvent.ListOfValueViewName
                     };
 
-                    dbTextButton.Text = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
-                    dbTextButton.ListOfValueText = dbTextButton.Text;
-
+                    dbTextButton.ListOfValueText = lovLoaded.SelectedRow[lovEvent.PrimaryColumnName].ToString();
+                    
                     dbTextButton.CausesValidation = true;
                     dbTextButton.Focus();
 
@@ -390,7 +358,7 @@ namespace TMT.Controls.WinForms
         {
             try
             {
-                if (dbTextButton.ListOfValueText != dbTextButton.Text)
+                if (AllowedValidate && dbTextButton.ListOfValueText != dbTextButton.Text)
                 {
                     var lovEvent = new ListOfValueLoadingEventArgs()
                     {
@@ -403,12 +371,12 @@ namespace TMT.Controls.WinForms
 
                     await Task.Run(async () => await dbTextButton.GetListOfValueSelectedRow(lovEvent));
 
-                    bool dataFound = (lovEvent.ListOfValueDataTable != null && lovEvent.ListOfValueDataTable.Rows.Count == 1);
+                    var dataFound = lovEvent.ListOfValueDataTable != null && lovEvent.ListOfValueDataTable.Rows.Count == 1;
                     if (dataFound)
                     {
                         dbTextButton.ListOfValueText = dbTextButton.Text;
 
-                        DataRow selectedDataRow = lovEvent.ListOfValueDataTable.Rows[0];
+                        var selectedDataRow = lovEvent.ListOfValueDataTable.Rows[0];
                         var selectedRow = new Dictionary<string, object>();
                         foreach (DataColumn col in lovEvent.ListOfValueDataTable.Columns)
                         {
@@ -425,7 +393,7 @@ namespace TMT.Controls.WinForms
                         dbTextButton.SetListOfValueSelectedRow(lovLoaded);
                     }
 
-                    this.BackColor = (dataFound) ? Color.Empty : Color.Red;
+                    this.BackColor = dataFound ? Color.Empty : Color.Red;
                 }
                 else
                 {

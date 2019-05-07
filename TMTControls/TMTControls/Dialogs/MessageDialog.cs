@@ -67,6 +67,11 @@ namespace TMT.Controls.WinForms.Dialogs
             }
         }
 
+        public static DialogResult ShowError(IWin32Window owner, string error, string caption)
+        {
+            return Show(owner, error, caption, MessageDialogButton.OK, MessageDialogIcon.Error);
+        }
+
         public static DialogResult ShowQuestion(IWin32Window owner, string question, string caption)
         {
             return Show(owner, question, caption, MessageDialogButton.YesNo, MessageDialogIcon.Question);
@@ -89,7 +94,7 @@ namespace TMT.Controls.WinForms.Dialogs
         }
 
         private void SetIcon(MessageDialogIcon icon)
-        {            
+        {
             switch (icon)
             {
                 case MessageDialogIcon.Asterisk:
